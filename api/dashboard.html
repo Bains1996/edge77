@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDGE77 Client Workspace — AXAL GLOBAL INC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surface: '#060913',
+                        surfaceLight: '#0D1225',
+                        surfaceCard: 'rgba(13, 18, 37, 0.7)',
+                        accent: '#3B82F6',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #060913; color: #F3F4F6; }
+        .glass { background: rgba(13, 18, 37, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.1); }
+        .glass-hover:hover { background: rgba(13, 18, 37, 0.8); border-color: rgba(59, 130, 246, 0.25); }
+        .glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.15); }
+        .glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
+        .sidebar-item { transition: all 0.2s ease; }
+        .sidebar-item:hover { background: rgba(59, 130, 246, 0.1); }
+        .sidebar-item.active { background: rgba(59, 130, 246, 0.15); border-left: 3px solid #3B82F6; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { border: 3px solid rgba(59, 130, 246, 0.1); border-top: 3px solid #3B82F6; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(6, 9, 19, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="min-h-screen bg-surface">
+
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 glass z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 -translate-x-full">
+        <!-- Logo -->
+        <div class="p-6 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-blue-700 flex items-center justify-center font-bold text-white text-sm tracking-wider">E77</div>
+                <div>
+                    <div class="font-bold text-lg tracking-tight text-white">EDGE77</div>
+                    <div class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Client Workspace</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 py-4 px-3 space-y-1">
+            <button onclick="switchTab('queue')" id="nav-queue" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-200 text-left">
+                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Approval Queue
+            </button>
+            <button onclick="switchTab('contract')" id="nav-contract" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 text-left">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                Contract Matrix
+            </button>
+            <button onclick="switchTab('ingestion')" id="nav-ingestion" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 text-left">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Ingestion Hub
+            </button>
+        </nav>
+
+        <!-- Client Info -->
+        <div class="p-4 border-t border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center border border-emerald-500/20">
+                    <span class="text-emerald-400 text-xs font-bold">AG</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-semibold text-gray-200 truncate">AXAL GLOBAL INC</div>
+                    <div class="text-[10px] text-gray-500 truncate">client_demo_001</div>
+                </div>
+                <div class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot" title="Online"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen">
+
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-30 glass border-b border-white/5">
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-white/5 text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <div>
+                        <h1 id="pageTitle" class="text-base font-semibold text-white">Approval Queue</h1>
+                        <p class="text-xs text-gray-500">Review and manage freight audit invoices</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div id="connectionStatus" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></div>
+                        <span class="text-[11px] font-medium text-emerald-400">Live</span>
+                    </div>
+                    <button onclick="refreshCurrentTab()" class="p-2 rounded-lg hover:bg-white/5 text-gray-400 transition-colors" title="Refresh data">
+                        <svg id="refreshIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="p-4 sm:p-6 lg:p-8">
+
+            <!-- ZONE 1: Approval Queue -->
+            <div id="tab-queue" class="tab-content active fade-in">
+                <!-- Stats Row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="glass rounded-xl p-4">
+                        <div class="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-1">Total Audits</div>
+                        <div id="statTotal" class="text-2xl font-bold text-white">—</div>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <div class="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-1">Pending</div>
+                        <div id="statPending" class="text-2xl font-bold text-warning">—</div>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <div class="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-1">Overcharges Found</div>
+                        <div id="statOvercharges" class="text-2xl font-bold text-error">—</div>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <div class="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-1">Fees Earned</div>
+                        <div id="statFees" class="text-2xl font-bold text-success">—</div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="glass rounded-xl overflow-hidden">
+                    <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-semibold text-white">Audit Queue</h2>
+                            <span id="auditCount" class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400 font-medium">0</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="statusFilter" onchange="filterAudits()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-accent/50 appearance-none cursor-pointer">
+                                <option value="ALL">All Status</option>
+                                <option value="PENDING_APPROVAL">Pending Approval</option>
+                                <option value="PASS">Pass</option>
+                                <option value="DISPUTED">Disputed</option>
+                                <option value="RESOLVED">Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="queueLoading" class="flex items-center justify-center py-16">
+                        <div class="text-center">
+                            <div class="spinner mx-auto mb-3"></div>
+                            <div class="text-xs text-gray-500">Loading audit data...</div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="queueEmpty" class="hidden py-16 text-center">
+                        <svg class="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <div class="text-sm text-gray-400 font-medium">No invoices pending review</div>
+                        <div class="text-xs text-gray-600 mt-1">New audits will appear here automatically</div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="queueError" class="hidden py-16 text-center">
+                        <svg class="w-12 h-12 mx-auto text-error/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                        <div class="text-sm text-gray-400 font-medium" id="queueErrorMsg">Failed to load audits</div>
+                        <div class="text-xs text-gray-600 mt-1">Showing mock data for demonstration</div>
+                    </div>
+
+                    <!-- Table Content -->
+                    <div id="queueTable" class="hidden overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-white/5">
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold">Tracking ID</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-right">Total</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-right hidden sm:table-cell">Fuel Surcharge</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-right">Overcharge</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-right hidden md:table-cell">Fee</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-center">Status</th>
+                                    <th class="px-5 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-semibold text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZONE 2: Contract Matrix -->
+            <div id="tab-contract" class="tab-content">
+                <div class="grid lg:grid-cols-5 gap-6">
+                    <!-- Contract Form -->
+                    <div class="lg:col-span-3 glass rounded-xl p-6">
+                        <h2 class="text-sm font-semibold text-white mb-1">Contract Settings</h2>
+                        <p class="text-xs text-gray-500 mb-6">Configure your audit rules and dispute behavior</p>
+
+                        <div id="contractLoading" class="flex items-center justify-center py-12">
+                            <div class="text-center">
+                                <div class="spinner mx-auto mb-3"></div>
+                                <div class="text-xs text-gray-500">Loading contract...</div>
+                            </div>
+                        </div>
+
+                        <form id="contractForm" class="hidden space-y-5" onsubmit="handleContractSubmit(event)">
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-2">Max Allowed Fuel Surcharge (%)</label>
+                                <input type="number" id="inputMaxFuel" step="0.01" min="0" required
+                                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-colors"
+                                    placeholder="e.g. 30.00">
+                                <p class="text-[11px] text-gray-600 mt-1.5">Invoices exceeding this threshold are flagged for overcharge</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-2">Carrier Billing Email</label>
+                                <input type="email" id="inputEmail" required
+                                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-colors"
+                                    placeholder="billing@carrier.com">
+                                <p class="text-[11px] text-gray-600 mt-1.5">Receiving address for automated dispute emails</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-2">Dispute Mode</label>
+                                <select id="selectDisputeMode" required
+                                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-colors appearance-none cursor-pointer">
+                                    <option value="MANUAL_GATE">MANUAL GATE — Requires approval before dispute</option>
+                                    <option value="AUTONOMOUS">AUTONOMOUS — Auto-dispatch disputes on detection</option>
+                                </select>
+                                <p class="text-[11px] text-gray-600 mt-1.5">Manual gate queues disputes for review; autonomous sends immediately</p>
+                            </div>
+
+                            <div class="pt-2 flex items-center gap-3">
+                                <button type="submit" id="saveContractBtn"
+                                    class="px-5 py-2.5 bg-accent hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg shadow-accent/10">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    Save Contract
+                                </button>
+                                <span id="contractSaveStatus" class="text-xs hidden"></span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Current Contract Card -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="glass rounded-xl p-6">
+                            <h3 class="text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-4">Active Contract</h3>
+                            <div id="contractDisplay" class="space-y-4">
+                                <div class="flex justify-between items-center py-2 border-b border-white/5">
+                                    <span class="text-xs text-gray-500">Max Fuel %</span>
+                                    <span id="displayMaxFuel" class="text-sm font-mono text-white">—</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-white/5">
+                                    <span class="text-xs text-gray-500">Billing Email</span>
+                                    <span id="displayEmail" class="text-sm font-mono text-white truncate ml-2">—</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-white/5">
+                                    <span class="text-xs text-gray-500">Dispute Mode</span>
+                                    <span id="displayMode" class="text-sm font-mono text-white">—</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2">
+                                    <span class="text-xs text-gray-500">Created</span>
+                                    <span id="displayCreated" class="text-xs text-gray-400">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-xl p-6">
+                            <h3 class="text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-3">How It Works</h3>
+                            <ul class="space-y-2.5 text-xs text-gray-400">
+                                <li class="flex items-start gap-2"><span class="w-4 h-4 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-[8px] text-accent font-bold">1</span></span> Set your max fuel surcharge threshold</li>
+                                <li class="flex items-start gap-2"><span class="w-4 h-4 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-[8px] text-accent font-bold">2</span></span> Invoices are compared against contract terms</li>
+                                <li class="flex items-start gap-2"><span class="w-4 h-4 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-[8px] text-accent font-bold">3</span></span> Overcharges are detected and flagged automatically</li>
+                                <li class="flex items-start gap-2"><span class="w-4 h-4 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-[8px] text-accent font-bold">4</span></span> Disputes are sent based on your chosen mode</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZONE 3: Ingestion Control Hub -->
+            <div id="tab-ingestion" class="tab-content">
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <!-- Email Ingestion -->
+                    <div class="glass rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-semibold text-white">Email Ingestion</h2>
+                                <p class="text-xs text-gray-500">Forward carrier invoices directly</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/[0.03] rounded-lg border border-white/5 p-4 mb-4">
+                            <div class="text-[10px] uppercase tracking-wider text-gray-600 mb-2 font-semibold">Dedicated Ingestion Email</div>
+                            <div class="flex items-center gap-2">
+                                <code id="ingestionEmail" class="text-sm text-accent font-medium flex-1 truncate">incoming-docs@edge77.com</code>
+                                <button onclick="copyToClipboard('incoming-docs@edge77.com')" class="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-md text-[11px] text-gray-300 font-medium transition-colors flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-gray-400 space-y-2">
+                            <p class="font-medium text-gray-300">Instructions:</p>
+                            <ol class="list-decimal list-inside space-y-1 text-gray-500">
+                                <li>Forward carrier invoice PDFs to the email above</li>
+                                <li>Invoices are automatically parsed via AI extraction</li>
+                                <li>Results appear in your Approval Queue within seconds</li>
+                                <li>Use the subject line for custom tracking (optional)</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- API Ingestion -->
+                    <div class="glass rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-semibold text-white">API Ingestion</h2>
+                                <p class="text-xs text-gray-500">Programmatic invoice submission</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/[0.03] rounded-lg border border-white/5 p-4 mb-4">
+                            <div class="text-[10px] uppercase tracking-wider text-gray-600 mb-2 font-semibold">API Token</div>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-white/5 rounded-md px-3 py-2 font-mono text-sm text-gray-300 overflow-hidden">
+                                    <span id="tokenDisplay" class="select-all">••••••••••••••••••••••••••••••••</span>
+                                </div>
+                                <button onclick="toggleToken()" class="flex-shrink-0 p-2 bg-white/5 hover:bg-white/10 rounded-md text-gray-400 transition-colors" title="Show/Hide token">
+                                    <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                </button>
+                                <button onclick="copyToClipboard(getApiToken())" class="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-md text-[11px] text-gray-300 font-medium transition-colors flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-gray-400 mb-4">
+                            Submit invoices programmatically via the API:
+                        </div>
+
+                        <div class="bg-[#0a0e1a] rounded-lg border border-white/5 overflow-hidden">
+                            <div class="flex items-center justify-between px-4 py-2 border-b border-white/5">
+                                <span class="text-[10px] uppercase tracking-wider text-gray-600 font-semibold">cURL Example</span>
+                                <button onclick="copyToClipboard(getCodeSnippet())" class="text-[10px] text-gray-500 hover:text-gray-300 transition-colors font-medium">Copy</button>
+                            </div>
+                            <pre class="p-4 text-xs text-gray-300 overflow-x-auto leading-relaxed"><code id="codeSnippet"><span class="text-gray-500"># Submit invoice via API</span>
+<span class="text-emerald-400">curl</span> -X POST https://api.edge77.com/v1/invoice/ingest \
+  -H <span class="text-warning">"Authorization: Bearer YOUR_TOKEN"</span> \
+  -H <span class="text-warning">"Content-Type: multipart/form-data"</span> \
+  -F <span class="text-warning">"file=@invoice.pdf"</span> \
+  -F <span class="text-warning">"client_id=client_demo_001"</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[100] transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="glass rounded-xl px-5 py-3 flex items-center gap-3 shadow-2xl">
+            <div id="toastIcon" class="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span id="toastMessage" class="text-sm text-gray-200 font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        const CLIENT_ID = 'client_demo_001';
+        const API_BASE = '/v1';
+        const MOCK_API_TOKEN = 'edge77_live_sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+
+        let allAudits = [];
+        let currentContract = null;
+        let tokenVisible = false;
+        let currentTab = 'queue';
+
+        const MOCK_AUDITS = [
+            { id: 1, tracking_id: 'TRK-2024-0891', client_id: CLIENT_ID, total_charge: 2847.50, currency: 'USD', fuel_surcharge: 482.10, base_freight_rate: 2365.40, overcharge_amount: 182.10, fee_earned: 54.63, status: 'PENDING_APPROVAL', dispute_sent: false },
+            { id: 2, tracking_id: 'TRK-2024-0892', client_id: CLIENT_ID, total_charge: 1253.00, currency: 'USD', fuel_surcharge: 198.75, base_freight_rate: 1054.25, overcharge_amount: 0, fee_earned: 0, status: 'PASS', dispute_sent: false },
+            { id: 3, tracking_id: 'TRK-2024-0893', client_id: CLIENT_ID, total_charge: 4120.80, currency: 'USD', fuel_surcharge: 824.16, base_freight_rate: 3296.64, overcharge_amount: 524.16, fee_earned: 157.25, status: 'PENDING_APPROVAL', dispute_sent: false },
+            { id: 4, tracking_id: 'TRK-2024-0894', client_id: CLIENT_ID, total_charge: 976.40, currency: 'USD', fuel_surcharge: 146.46, base_freight_rate: 829.94, overcharge_amount: 0, fee_earned: 0, status: 'PASS', dispute_sent: false },
+            { id: 5, tracking_id: 'TRK-2024-0895', client_id: CLIENT_ID, total_charge: 3450.00, currency: 'USD', fuel_surcharge: 690.00, base_freight_rate: 2760.00, overcharge_amount: 390.00, fee_earned: 117.00, status: 'DISPUTED', dispute_sent: true },
+            { id: 6, tracking_id: 'TRK-2024-0896', client_id: CLIENT_ID, total_charge: 2105.75, currency: 'USD', fuel_surcharge: 315.86, base_freight_rate: 1789.89, overcharge_amount: 115.86, fee_earned: 34.76, status: 'RESOLVED', dispute_sent: true },
+            { id: 7, tracking_id: 'TRK-2024-0897', client_id: CLIENT_ID, total_charge: 5678.90, currency: 'USD', fuel_surcharge: 953.41, base_freight_rate: 4725.49, overcharge_amount: 653.41, fee_earned: 196.02, status: 'PENDING_APPROVAL', dispute_sent: false },
+            { id: 8, tracking_id: 'TRK-2024-0898', client_id: CLIENT_ID, total_charge: 890.25, currency: 'USD', fuel_surcharge: 115.73, base_freight_rate: 774.52, overcharge_amount: 0, fee_earned: 0, status: 'PASS', dispute_sent: false },
+        ];
+
+        const MOCK_CONTRACT = {
+            client_id: CLIENT_ID,
+            max_allowed_fuel: 30.00,
+            carrier_billing_email: 'disputes@carrier-example.com',
+            dispute_mode: 'MANUAL_GATE',
+            created_at: '2024-09-15T10:30:00Z'
+        };
+
+        function fmt(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        function statusBadge(status) {
+            const map = {
+                'PASS': { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+                'PENDING_APPROVAL': { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
+                'DISPUTED': { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
+                'RESOLVED': { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+                'PROCESSING': { bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20' }
+            };
+            const s = map[status] || map['PROCESSING'];
+            return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${s.bg} ${s.text} ${s.border}">${status.replace('_', ' ')}</span>`;
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('[id^="nav-"]').forEach(n => { n.classList.remove('active'); n.classList.add('text-gray-400'); });
+
+            const tab = document.getElementById('tab-' + tabId);
+            const nav = document.getElementById('nav-' + tabId);
+            if (tab) { tab.classList.add('active'); tab.classList.add('fade-in'); }
+            if (nav) { nav.classList.add('active'); nav.classList.remove('text-gray-400'); nav.classList.add('text-gray-200'); }
+
+            const titles = { queue: 'Approval Queue', contract: 'Contract Matrix', ingestion: 'Ingestion Control Hub' };
+            document.getElementById('pageTitle').textContent = titles[tabId] || tabId;
+            currentTab = tabId;
+        }
+
+        window.switchTab = function(tabId) {
+            showTab(tabId);
+            if (tabId === 'queue' && allAudits.length === 0) fetchAudits(CLIENT_ID);
+            if (tabId === 'contract' && !currentContract) fetchContract(CLIENT_ID);
+            closeSidebar();
+        };
+
+        window.refreshCurrentTab = function() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => icon.classList.remove('animate-spin'), 1000);
+            if (currentTab === 'queue') { allAudits = []; fetchAudits(CLIENT_ID); }
+            else if (currentTab === 'contract') { currentContract = null; fetchContract(CLIENT_ID); }
+        };
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        };
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            const colors = {
+                success: { bg: 'bg-success/10', text: 'text-success', icon: 'M5 13l4 4L19 7' },
+                error: { bg: 'bg-error/10', text: 'text-error', icon: 'M6 18L18 6M6 6l12 12' },
+                info: { bg: 'bg-accent/10', text: 'text-accent', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
+            };
+            const c = colors[type] || colors.info;
+            toastMsg.textContent = message;
+            toastIcon.className = 'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ' + c.bg;
+            toastIcon.innerHTML = '<svg class="w-3.5 h-3.5 ' + c.text + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="' + c.icon + '"/></svg>';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        }
+
+        function renderAudits(audits) {
+            const tbody = document.getElementById('auditTableBody');
+            const filtered = document.getElementById('statusFilter').value;
+            const items = filtered === 'ALL' ? audits : audits.filter(a => a.status === filtered);
+
+            document.getElementById('auditCount').textContent = audits.length;
+            document.getElementById('statTotal').textContent = audits.length;
+            document.getElementById('statPending').textContent = audits.filter(a => a.status === 'PENDING_APPROVAL').length;
+            document.getElementById('statOvercharges').textContent = audits.filter(a => a.overcharge_amount > 0).length;
+            document.getElementById('statFees').textContent = fmt(audits.reduce((s, a) => s + a.fee_earned, 0));
+
+            if (items.length === 0) {
+                document.getElementById('queueTable').classList.add('hidden');
+                document.getElementById('queueEmpty').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('queueEmpty').classList.add('hidden');
+            document.getElementById('queueTable').classList.remove('hidden');
+
+            tbody.innerHTML = items.map(a => `
+                <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                    <td class="px-5 py-3.5">
+                        <span class="font-mono text-xs text-white font-medium">${a.tracking_id}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right">
+                        <span class="font-mono text-xs text-white">${fmt(a.total_charge)}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right hidden sm:table-cell">
+                        <span class="font-mono text-xs text-gray-400">${fmt(a.fuel_surcharge)}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right">
+                        <span class="font-mono text-xs ${a.overcharge_amount > 0 ? 'text-error font-semibold' : 'text-gray-500'}">${a.overcharge_amount > 0 ? fmt(a.overcharge_amount) : '—'}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right hidden md:table-cell">
+                        <span class="font-mono text-xs ${a.fee_earned > 0 ? 'text-success font-semibold' : 'text-gray-500'}">${a.fee_earned > 0 ? fmt(a.fee_earned) : '—'}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-center">${statusBadge(a.status)}</td>
+                    <td class="px-5 py-3.5 text-center">
+                        ${a.status === 'PENDING_APPROVAL'
+                            ? `<button onclick="approveDispute(${a.id})" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-[11px] font-semibold rounded-lg border border-emerald-500/20 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/10">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                Approve & Fire
+                               </button>`
+                            : `<span class="text-[10px] text-gray-600">—</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.filterAudits = function() { renderAudits(allAudits); };
+
+        async function fetchAudits(clientId) {
+            const loading = document.getElementById('queueLoading');
+            const empty = document.getElementById('queueEmpty');
+            const error = document.getElementById('queueError');
+            const table = document.getElementById('queueTable');
+
+            loading.classList.remove('hidden');
+            empty.classList.add('hidden');
+            error.classList.add('hidden');
+            table.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE}/client/${clientId}/audits`);
+                if (!res.ok) throw new Error('API returned ' + res.status);
+                const data = await res.json();
+                allAudits = Array.isArray(data) ? data : (data.audits || data.results || []);
+                if (allAudits.length === 0) {
+                    loading.classList.add('hidden');
+                    empty.classList.remove('hidden');
+                } else {
+                    loading.classList.add('hidden');
+                    renderAudits(allAudits);
+                }
+                document.getElementById('connectionStatus').classList.remove('hidden');
+                document.getElementById('connectionStatus').classList.add('flex');
+            } catch (err) {
+                console.warn('API unavailable, using mock data:', err.message);
+                allAudits = [...MOCK_AUDITS];
+                loading.classList.add('hidden');
+                renderAudits(allAudits);
+                document.getElementById('queueError').classList.remove('hidden');
+                document.getElementById('queueErrorMsg').textContent = 'API unavailable — showing mock data';
+            }
+        }
+
+        async function fetchContract(clientId) {
+            const loading = document.getElementById('contractLoading');
+            const form = document.getElementById('contractForm');
+
+            loading.classList.remove('hidden');
+            form.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE}/client/${clientId}/contract`);
+                if (!res.ok) throw new Error('API returned ' + res.status);
+                const data = await res.json();
+                currentContract = data;
+            } catch (err) {
+                console.warn('API unavailable, using mock contract:', err.message);
+                currentContract = { ...MOCK_CONTRACT };
+            }
+
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+            populateContractForm(currentContract);
+            displayContract(currentContract);
+        }
+
+        function populateContractForm(c) {
+            document.getElementById('inputMaxFuel').value = c.max_allowed_fuel || '';
+            document.getElementById('inputEmail').value = c.carrier_billing_email || '';
+            document.getElementById('selectDisputeMode').value = c.dispute_mode || 'MANUAL_GATE';
+        }
+
+        function displayContract(c) {
+            document.getElementById('displayMaxFuel').textContent = c.max_allowed_fuel ? c.max_allowed_fuel + '%' : '—';
+            document.getElementById('displayEmail').textContent = c.carrier_billing_email || '—';
+            document.getElementById('displayMode').textContent = c.dispute_mode || '—';
+            document.getElementById('displayCreated').textContent = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+        }
+
+        window.handleContractSubmit = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('saveContractBtn');
+            const statusEl = document.getElementById('contractSaveStatus');
+            const payload = {
+                max_allowed_fuel: parseFloat(document.getElementById('inputMaxFuel').value),
+                carrier_billing_email: document.getElementById('inputEmail').value,
+                dispute_mode: document.getElementById('selectDisputeMode').value
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;"></div> Saving...';
+
+            try {
+                const res = await fetch(`${API_BASE}/client/${CLIENT_ID}/contract`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Failed to save');
+                currentContract = await res.json();
+                showToast('Contract saved successfully', 'success');
+            } catch (err) {
+                currentContract = { ...MOCK_CONTRACT, ...payload, client_id: CLIENT_ID };
+                showToast('Contract saved (demo mode)', 'info');
+            }
+
+            displayContract(currentContract);
+            btn.disabled = false;
+            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Save Contract';
+        };
+
+        window.approveDispute = async function(auditId) {
+            const audit = allAudits.find(a => a.id === auditId);
+            if (!audit) return;
+
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/client/${CLIENT_ID}/audits/${auditId}/approve`, { method: 'POST' });
+                if (!res.ok) throw new Error('Failed');
+                const result = await res.json();
+                showToast(`Dispute fired for ${audit.tracking_id}`, 'success');
+            } catch (err) {
+                showToast(`Dispute queued for ${audit.tracking_id} (demo)`, 'info');
+            }
+
+            audit.status = 'DISPUTED';
+            audit.dispute_sent = true;
+            renderAudits(allAudits);
+        };
+
+        window.copyToClipboard = function(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard', 'success'));
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Copied to clipboard', 'success');
+            }
+        };
+
+        window.getApiToken = function() { return MOCK_API_TOKEN; };
+
+        window.toggleToken = function() {
+            tokenVisible = !tokenVisible;
+            const display = document.getElementById('tokenDisplay');
+            display.textContent = tokenVisible ? MOCK_API_TOKEN : '••••••••••••••••••••••••••••••••';
+        };
+
+        window.getCodeSnippet = function() {
+            return `curl -X POST https://api.edge77.com/v1/invoice/ingest \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: multipart/form-data" \\
+  -F "file=@invoice.pdf" \\
+  -F "client_id=client_demo_001"`;
+        };
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                document.getElementById('sidebar').classList.remove('-translate-x-full');
+                document.getElementById('sidebarOverlay').classList.add('hidden');
+            }
+        });
+
+        fetchAudits(CLIENT_ID);
+    })();
+    </script>
+</body>
+</html>
