@@ -20,7 +20,11 @@ if SUPABASE_URL and SUPABASE_KEY:
     except Exception as e:
         logger.warning(f"[EDGE77 ENGINE] Failed to initialize Supabase: {e}. Operating in mock mode.")
 else:
-    logger.warning("[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. Operating in mock mode.")
+    logger.warning(
+        "[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. "
+        "Operating in MOCK MODE — all data is in-memory and will be lost on restart. "
+        "Set SUPABASE_URL and SUPABASE_KEY environment variables for production use."
+    )
 
 
 MOCK_AUDITS: list[dict] = []
@@ -29,6 +33,8 @@ MOCK_CONTRACTS: dict[str, dict] = {
         "base_fee_per_shipment": 25.00,
         "dispute_fee_percentage": 0.25,
         "minimum_overcharge_to_dispute": 5.00,
+        "dispute_mode": "MANUAL_GATE",
+        "max_allowed_fuel": 0.0,
     }
 }
 
@@ -165,7 +171,6 @@ def update_audit_status(
         update_data = {
             "status": status,
             "dispute_sent": dispute_sent,
-            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
         if MOCK_MODE:
@@ -190,7 +195,7 @@ def update_audit_status(
         return {}
 
 
-def get_client_stats(client_id: dict) -> dict:
+def get_client_stats(client_id: str) -> dict:
     try:
         if MOCK_MODE:
             client_audits = [a for a in MOCK_AUDITS if a.get("client_id") == client_id]

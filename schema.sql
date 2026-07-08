@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS freight_audits (
     fee_earned NUMERIC(12, 2) DEFAULT 0.00,
     status VARCHAR(50) DEFAULT 'PROCESSING',
     dispute_sent BOOLEAN DEFAULT FALSE,
+    overcharge_detected BOOLEAN DEFAULT FALSE,
     raw_text TEXT,
     ai_response JSONB,
     error_log TEXT,

@@ -1,0 +1,35 @@
+{
+  "displayName": "EDGE77 Budget Alert",
+  "budgetFilter": {
+    "projects": ["projects/edge77-prod"]
+  },
+  "amount": {
+    "specifiedAmount": {
+      "currencyCode": "CAD",
+      "units": "5"
+    }
+  },
+  "thresholdRules": [
+    {
+      "thresholdPercent": 0.2,
+      "spendBasis": "CURRENT_SPEND"
+    },
+    {
+      "thresholdPercent": 0.5,
+      "spendBasis": "CURRENT_SPEND"
+    },
+    {
+      "thresholdPercent": 0.8,
+      "spendBasis": "CURRENT_SPEND"
+    },
+    {
+      "thresholdPercent": 1.0,
+      "spendBasis": "CURRENT_SPEND"
+    }
+  ],
+  "allUpdatesRule": {
+    "pubsubTopic": "",
+    "emailNotifications": true,
+    "defaultRecipients": true
+  }
+}

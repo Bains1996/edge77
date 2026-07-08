@@ -77,6 +77,8 @@ async def process_invoice_background(
       2. Parse with AI via OpenRouter
       3. Evaluate overcharge and optionally send dispute
     """
+    import sys
+    print(f"{LOG_PREFIX} Background pipeline STARTED for tracking_id={tracking_id}", file=sys.stderr, flush=True)
     try:
         log.info(
             f"{LOG_PREFIX} Background pipeline started",
@@ -85,7 +87,9 @@ async def process_invoice_background(
         )
 
         # 1. Extract text from PDF
+        print(f"{LOG_PREFIX} STEP1: Extracting text from {len(pdf_bytes)} bytes", file=sys.stderr, flush=True)
         extracted = extract_text(pdf_bytes)
+        print(f"{LOG_PREFIX} STEP1 result: success={extracted.success}", file=sys.stderr, flush=True)
         if not extracted.success:
             log.error(
                 f"{LOG_PREFIX} PDF extraction failed",
@@ -103,7 +107,9 @@ async def process_invoice_background(
         )
 
         # 2. Parse with AI
-        parsed: FreightInvoiceSchema = parse_invoice(extracted.raw_text)
+        print(f"{LOG_PREFIX} STEP2: Parsing with AI, text_len={len(extracted.raw_text)}", file=sys.stderr, flush=True)
+        parsed: FreightInvoiceSchema = await parse_invoice(extracted.raw_text)
+        print(f"{LOG_PREFIX} STEP2 result: parsed OK, total={parsed.total_charge}", file=sys.stderr, flush=True)
 
         log.info(
             f"{LOG_PREFIX} AI parse complete",
@@ -113,7 +119,28 @@ async def process_invoice_background(
         )
 
         # 3. Evaluate and dispute
+        print(f"{LOG_PREFIX} STEP3: Evaluating overcharge", file=sys.stderr, flush=True)
         result = evaluate_and_dispute(parsed.model_dump(), client_id)
+        print(f"{LOG_PREFIX} STEP3 result: overcharge={result.overcharge}, fee={result.fee_earned}", file=sys.stderr, flush=True)
+
+        # 4. Update the original audit record with AI results
+        from v1_database.supabase_client import supabase as _supabase
+        try:
+            _supabase.table("freight_audits").update({
+                "total_charge": parsed.total_charge,
+                "currency": parsed.currency,
+                "fuel_surcharge": parsed.fuel_surcharge,
+                "base_freight_rate": parsed.base_freight_rate,
+                "overcharge_amount": result.overcharge,
+                "fee_earned": result.fee_earned,
+                "status": result.status,
+                "raw_text": extracted.raw_text[:5000] if extracted.raw_text else None,
+                "ai_response": parsed.model_dump_json()[:5000] if hasattr(parsed, 'model_dump_json') else str(parsed)[:5000],
+                "overcharge_detected": result.overcharge > 0,
+            }).eq("tracking_id", tracking_id).eq("client_id", client_id).execute()
+            print(f"{LOG_PREFIX} STEP4: Audit record updated in DB", file=sys.stderr, flush=True)
+        except Exception as db_exc:
+            print(f"{LOG_PREFIX} STEP4: Failed to update audit record: {db_exc}", file=sys.stderr, flush=True)
 
         log.info(
             f"{LOG_PREFIX} Pipeline complete",
@@ -130,16 +157,17 @@ async def process_invoice_background(
             error=str(exc),
             exc_info=True,
         )
+        print(f"{LOG_PREFIX} PIPELINE FAILED: {exc}", file=sys.stderr, flush=True)
         try:
             update_audit_status_by_tracking(client_id, tracking_id, "PIPELINE_FAILED")
         except Exception:
             pass
 
 
-def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
+async def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
     """Import and invoke the OpenRouter parser."""
     from v1_ai_brain.openrouter_parser import parse_invoice as _parse
-    return _parse(extracted_text)
+    return await _parse(extracted_text)
 
 
 def update_audit_status_by_tracking(client_id: str, tracking_id: str, status: str) -> None:
@@ -214,7 +242,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://edge77-364995933969.us-central1.run.app",
+        "http://localhost:8000",
+        "http://localhost:8080",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -270,10 +302,32 @@ async def serve_dashboard():
 
 @app.get("/health")
 async def health_check():
+    checks = {
+        "supabase": "skip",
+        "openrouter": "skip",
+    }
+
+    if not MOCK_MODE:
+        try:
+            from v1_database.supabase_client import supabase as _sb
+            _sb.table("freight_audits").select("id").limit(1).execute()
+            checks["supabase"] = "ok"
+        except Exception as e:
+            checks["supabase"] = f"error: {str(e)[:100]}"
+
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if api_key:
+        checks["openrouter"] = "configured"
+    else:
+        checks["openrouter"] = "not_configured"
+
+    unhealthy = [k for k, v in checks.items() if v.startswith("error")]
+
     return {
-        "status": "healthy",
+        "status": "healthy" if not unhealthy else "degraded",
         "service": "edge77-gateway",
         "mode": "mock" if MOCK_MODE else "production",
+        "checks": checks,
         "timestamp": time.time(),
     }
 
@@ -448,6 +502,24 @@ async def client_stats(
 
 
 # ---------------------------------------------------------------------------
+# GET /v1/client/{client_id}/contract
+# ---------------------------------------------------------------------------
+
+@app.get("/v1/client/{client_id}/contract")
+async def get_contract(
+    client_id: str,
+    authorization: Optional[str] = Header(None),
+):
+    _verify_token(authorization)
+    contract = get_client_contract(client_id)
+    log.info(f"{LOG_PREFIX} Fetched contract", client_id=client_id)
+    return {
+        "client_id": client_id,
+        "contract": contract,
+    }
+
+
+# ---------------------------------------------------------------------------
 # POST /v1/client/{client_id}/contract
 # ---------------------------------------------------------------------------
 
@@ -518,6 +590,31 @@ async def update_contract(
         "status": "success",
         "client_id": client_id,
         "contract": contract,
+    }
+
+
+# ---------------------------------------------------------------------------
+# POST /v1/client/{client_id}/audits/{audit_id}/approve
+# ---------------------------------------------------------------------------
+
+@app.post("/v1/client/{client_id}/audits/{audit_id}/approve")
+async def approve_audit(
+    client_id: str,
+    audit_id: int,
+    authorization: Optional[str] = Header(None),
+):
+    _verify_token(authorization)
+
+    record = update_audit_status(audit_id, "APPROVED")
+    if not record:
+        raise HTTPException(status_code=404, detail=f"Audit {audit_id} not found")
+
+    log.info(f"{LOG_PREFIX} Audit approved", client_id=client_id, audit_id=audit_id)
+
+    return {
+        "status": "success",
+        "audit_id": audit_id,
+        "new_status": "APPROVED",
     }
 
 

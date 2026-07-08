@@ -5,6 +5,7 @@ with pypdf as fallback. Never crashes the pipeline.
 """
 
 import io
+import os
 import logging
 import tempfile
 from dataclasses import dataclass, field
@@ -70,6 +71,7 @@ def _format_tables(tables: list) -> list[list[list[str]]]:
 
 def _extract_with_pdfplumber(pdf_bytes: bytes) -> ExtractedContent:
     """Primary extraction using pdfplumber."""
+    tmp_path = None
     try:
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp.write(pdf_bytes)
@@ -104,6 +106,12 @@ def _extract_with_pdfplumber(pdf_bytes: bytes) -> ExtractedContent:
             )
     except Exception as e:
         raise RuntimeError(f"pdfplumber failed: {e}") from e
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
 
 
 def _extract_with_pypdf(pdf_bytes: bytes) -> ExtractedContent:

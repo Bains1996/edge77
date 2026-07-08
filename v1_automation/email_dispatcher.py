@@ -1,31 +1,55 @@
 import os
+import smtplib
 import logging
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone
 
 logger = logging.getLogger("edge77.engine")
 
+AWS_SES_ACCESS_KEY = os.getenv("AWS_SES_ACCESS_KEY")
+AWS_SES_SECRET_KEY = os.getenv("AWS_SES_SECRET_KEY")
+AWS_SES_REGION = os.getenv("AWS_SES_REGION", "us-east-1")
+AWS_SES_FROM_EMAIL = os.getenv("AWS_SES_FROM_EMAIL", "disputes@edge77.com")
+AWS_SES_FROM_NAME = os.getenv("AWS_SES_FROM_NAME", "EDGE77 Audit Division")
+
+GMAIL_ADDRESS = os.getenv("GMAIL_ADDRESS", "axalglobalinc@gmail.com")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+GMAIL_FROM_NAME = os.getenv("GMAIL_FROM_NAME", "EDGE77 Audit Division")
+
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+BREVO_FROM_EMAIL = os.getenv("BREVO_FROM_EMAIL", "audit@edge77.com")
+BREVO_FROM_NAME = os.getenv("BREVO_FROM_NAME", "EDGE77 Audit Division")
+
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL", "audit@edge77.com")
 
+_email_provider = None
 _sendgrid_client = None
-_sendgrid_available = False
 
-try:
-    if SENDGRID_API_KEY:
+if AWS_SES_ACCESS_KEY and AWS_SES_SECRET_KEY:
+    _email_provider = "ses"
+    logger.info("[EDGE77 ENGINE] Amazon SES provider initialized (best, ~$0.10/1000 emails)")
+elif GMAIL_APP_PASSWORD:
+    _email_provider = "gmail"
+    logger.info("[EDGE77 ENGINE] Gmail SMTP provider initialized (free, 500/day)")
+elif BREVO_API_KEY:
+    _email_provider = "brevo"
+    logger.info("[EDGE77 ENGINE] Brevo email provider initialized")
+elif SENDGRID_API_KEY:
+    try:
         from sendgrid import SendGridAPIClient
         _sendgrid_client = SendGridAPIClient(SENDGRID_API_KEY)
-        _sendgrid_available = True
-        logger.info("[EDGE77 ENGINE] SendGrid client initialized successfully")
-    else:
-        logger.warning(
-            "[EDGE77 ENGINE] SENDGRID_API_KEY not set. Email dispatch disabled."
-        )
-except ImportError:
-    logger.warning(
-        "[EDGE77 ENGINE] sendgrid package not installed. Email dispatch disabled."
-    )
-except Exception as e:
-    logger.warning("[EDGE77 ENGINE] Failed to initialize SendGrid: %s", e)
+        _email_provider = "sendgrid"
+        logger.info("[EDGE77 ENGINE] SendGrid email provider initialized")
+    except ImportError:
+        logger.warning("[EDGE77 ENGINE] sendgrid package not installed")
+        _sendgrid_client = None
+    except Exception as e:
+        logger.warning("[EDGE77 ENGINE] Failed to initialize SendGrid: %s", e)
+        _sendgrid_client = None
+else:
+    logger.warning("[EDGE77 ENGINE] No email API key set. Email dispatch disabled.")
 
 
 def build_dispute_html(
@@ -179,16 +203,90 @@ def build_dispute_html(
 </html>"""
 
 
-def send_dispute_email(to_email: str, subject: str, html_body: str) -> bool:
-    if not _sendgrid_available or not _sendgrid_client:
-        logger.warning(
-            "[EDGE77 ENGINE] SendGrid not available — cannot send email to %s",
-            to_email,
+def _send_via_ses(to_email: str, subject: str, html_body: str) -> bool:
+    try:
+        import boto3
+        from botocore.exceptions import ClientError
+
+        client = boto3.client(
+            "ses",
+            aws_access_key_id=AWS_SES_ACCESS_KEY,
+            aws_secret_access_key=AWS_SES_SECRET_KEY,
+            region_name=AWS_SES_REGION,
         )
+
+        response = client.send_email(
+            Source=f"{AWS_SES_FROM_NAME} <{AWS_SES_FROM_EMAIL}>",
+            Destination={"ToAddresses": [to_email]},
+            Message={
+                "Subject": {"Data": subject, "Charset": "UTF-8"},
+                "Body": {"Html": {"Data": html_body, "Charset": "UTF-8"}},
+            },
+        )
+
+        logger.info("[EDGE77 ENGINE] SES email sent to %s (messageId=%s)", to_email, response["MessageId"])
+        return True
+    except ClientError as e:
+        logger.error("[EDGE77 ENGINE] SES error for %s: %s", to_email, e.response["Error"]["Message"])
+        return False
+    except Exception as e:
+        logger.error("[EDGE77 ENGINE] SES send failed for %s: %s", to_email, e)
         return False
 
-    if not to_email:
-        logger.warning("[EDGE77 ENGINE] No recipient email provided — skipping send")
+
+def _send_via_gmail(to_email: str, subject: str, html_body: str) -> bool:
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["From"] = f"{GMAIL_FROM_NAME} <{GMAIL_ADDRESS}>"
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(html_body, "html"))
+
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(GMAIL_ADDRESS, GMAIL_APP_PASSWORD)
+            server.sendmail(GMAIL_ADDRESS, to_email, msg.as_string())
+
+        logger.info("[EDGE77 ENGINE] Gmail email sent to %s", to_email)
+        return True
+    except Exception as e:
+        logger.error("[EDGE77 ENGINE] Gmail send failed for %s: %s", to_email, e)
+        return False
+
+
+def _send_via_brevo(to_email: str, subject: str, html_body: str) -> bool:
+    import httpx
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "api-key": BREVO_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    payload = {
+        "sender": {"email": BREVO_FROM_EMAIL, "name": BREVO_FROM_NAME},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_body,
+    }
+
+    try:
+        resp = httpx.post(url, json=payload, headers=headers, timeout=30)
+        if resp.status_code in (200, 201):
+            logger.info("[EDGE77 ENGINE] Brevo email sent to %s (status=%d)", to_email, resp.status_code)
+            return True
+        else:
+            logger.error("[EDGE77 ENGINE] Brevo returned status %d for %s: %s", resp.status_code, to_email, resp.text[:200])
+            return False
+    except Exception as e:
+        logger.error("[EDGE77 ENGINE] Brevo send failed for %s: %s", to_email, e)
+        return False
+
+
+def _send_via_sendgrid(to_email: str, subject: str, html_body: str) -> bool:
+    if not _email_provider == "sendgrid":
         return False
 
     try:
@@ -204,43 +302,46 @@ def send_dispute_email(to_email: str, subject: str, html_body: str) -> bool:
         response = _sendgrid_client.send(message)
 
         if 200 <= response.status_code < 300:
-            logger.info(
-                "[EDGE77 ENGINE] Dispute email sent to %s (status=%d)",
-                to_email,
-                response.status_code,
-            )
+            logger.info("[EDGE77 ENGINE] SendGrid email sent to %s (status=%d)", to_email, response.status_code)
             return True
         else:
-            logger.error(
-                "[EDGE77 ENGINE] SendGrid returned status %d for email to %s",
-                response.status_code,
-                to_email,
-            )
+            logger.error("[EDGE77 ENGINE] SendGrid returned status %d for %s", response.status_code, to_email)
             return False
-
     except Exception as e:
-        logger.error(
-            "[EDGE77 ENGINE] Failed to send dispute email to %s: %s",
-            to_email,
-            e,
-        )
+        logger.error("[EDGE77 ENGINE] SendGrid send failed for %s: %s", to_email, e)
         return False
 
 
-def send_processing_complete(to_email: str, tracking_id: str, status: str) -> bool:
-    if not _sendgrid_available or not _sendgrid_client:
-        logger.warning(
-            "[EDGE77 ENGINE] SendGrid not available — cannot send notification to %s",
-            to_email,
-        )
+def send_dispute_email(to_email: str, subject: str, html_body: str) -> bool:
+    if not _email_provider:
+        logger.warning("[EDGE77 ENGINE] No email provider configured — cannot send to %s", to_email)
         return False
 
     if not to_email:
-        logger.warning("[EDGE77 ENGINE] No recipient email for notification — skipping")
+        logger.warning("[EDGE77 ENGINE] No recipient email provided — skipping")
+        return False
+
+    if _email_provider == "ses":
+        return _send_via_ses(to_email, subject, html_body)
+    elif _email_provider == "gmail":
+        return _send_via_gmail(to_email, subject, html_body)
+    elif _email_provider == "brevo":
+        return _send_via_brevo(to_email, subject, html_body)
+    elif _email_provider == "sendgrid":
+        return _send_via_sendgrid(to_email, subject, html_body)
+    return False
+
+
+def send_processing_complete(to_email: str, tracking_id: str, status: str) -> bool:
+    if not _email_provider:
+        logger.warning("[EDGE77 ENGINE] No email provider — cannot notify %s", to_email)
+        return False
+
+    if not to_email:
+        logger.warning("[EDGE77 ENGINE] No recipient email — skipping")
         return False
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
     subject = f"EDGE77 Audit Complete — {tracking_id} [{status}]"
 
     html_body = f"""<!DOCTYPE html>
@@ -253,66 +354,20 @@ def send_processing_complete(to_email: str, tracking_id: str, status: str) -> bo
     <span style="color: #ffffff; font-size: 18px; font-weight: 700; letter-spacing: 2px;">EDGE77</span>
     <span style="color: #8892b0; font-size: 11px; float: right; padding-top: 6px;">Axal Global Inc.</span>
   </div>
-
   <div style="background-color: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
     <h3 style="margin: 0 0 16px 0; font-size: 16px;">Audit Processing Complete</h3>
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <tr>
-        <td style="padding: 8px 0; color: #555;">Tracking ID</td>
-        <td style="padding: 8px 0; font-weight: 600;">{tracking_id}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px 0; color: #555;">Final Status</td>
-        <td style="padding: 8px 0; font-weight: 600; color: #2563eb;">{status}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px 0; color: #555;">Processed At</td>
-        <td style="padding: 8px 0;">{timestamp}</td>
-      </tr>
+      <tr><td style="padding: 8px 0; color: #555;">Tracking ID</td><td style="padding: 8px 0; font-weight: 600;">{tracking_id}</td></tr>
+      <tr><td style="padding: 8px 0; color: #555;">Final Status</td><td style="padding: 8px 0; font-weight: 600; color: #2563eb;">{status}</td></tr>
+      <tr><td style="padding: 8px 0; color: #555;">Processed At</td><td style="padding: 8px 0;">{timestamp}</td></tr>
     </table>
   </div>
-
   <div style="background-color: #f0f2f5; padding: 16px 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 6px 6px;">
-    <p style="margin: 0; font-size: 11px; color: #888;">
-      Automated notification — EDGE77 Freight Audit Platform &bull; Axal Global Inc.
-    </p>
+    <p style="margin: 0; font-size: 11px; color: #888;">Automated notification — EDGE77 Freight Audit Platform &bull; Axal Global Inc.</p>
   </div>
 </td></tr>
 </table>
 </body>
 </html>"""
 
-    try:
-        from sendgrid.helpers.mail import Mail, Email, To, Content
-
-        message = Mail(
-            from_email=Email(SENDGRID_FROM_EMAIL),
-            to_emails=To(to_email),
-            subject=subject,
-            html_content=Content("text/html", html_body),
-        )
-
-        response = _sendgrid_client.send(message)
-
-        if 200 <= response.status_code < 300:
-            logger.info(
-                "[EDGE77 ENGINE] Processing notification sent to %s for %s",
-                to_email,
-                tracking_id,
-            )
-            return True
-        else:
-            logger.error(
-                "[EDGE77 ENGINE] Notification failed (status=%d) for %s",
-                response.status_code,
-                tracking_id,
-            )
-            return False
-
-    except Exception as e:
-        logger.error(
-            "[EDGE77 ENGINE] Failed to send processing notification for %s: %s",
-            tracking_id,
-            e,
-        )
-        return False
+    return send_dispute_email(to_email, subject, html_body)

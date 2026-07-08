@@ -1,0 +1,28 @@
+{
+  "displayName": "EDGE77 Uptime Alert",
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "Uptime Check Failed",
+      "conditionThreshold": {
+        "filter": "resource.type = \"uptime_url\" AND metric.type = \"monitoring.googleapis.com/uptime_check/check_passed\" AND metric.labels.check_id = \"edge77-health-check\"",
+        "comparison": "COMPARISON_LT",
+        "thresholdValue": 1,
+        "duration": "300s",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_NEXT_OLDER",
+            "crossSeriesReducer": "REDUCE_COUNT_FALSE"
+          }
+        ],
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  }
+}

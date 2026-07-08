@@ -1,0 +1,161 @@
+{
+  "displayName": "Edge77 Dashboard",
+  "mosaicLayout": {
+    "columns": 12,
+    "tiles": [
+      {
+        "width": 6,
+        "height": 4,
+        "xPos": 0,
+        "yPos": 0,
+        "widget": {
+          "title": "Request Count",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"edge77\" AND metric.type = \"run.googleapis.com/request_count\"",
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "perSeriesAligner": "ALIGN_RATE",
+                  "crossSeriesReducer": "REDUCE_SUM"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "xPos": 6,
+        "yPos": 0,
+        "widget": {
+          "title": "Request Latency (p95)",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"edge77\" AND metric.type = \"run.googleapis.com/request_latencies\"",
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "perSeriesAligner": "ALIGN_PERCENTILE_95",
+                  "crossSeriesReducer": "REDUCE_MEAN"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "xPos": 0,
+        "yPos": 4,
+        "widget": {
+          "title": "Container CPU Utilization",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"edge77\" AND metric.type = \"run.googleapis.com/container/cpu/utilization\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "CPU Utilization",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "xPos": 6,
+        "yPos": 4,
+        "widget": {
+          "title": "Container Memory Utilization",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"edge77\" AND metric.type = \"run.googleapis.com/container/memory/utilization\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "Memory Utilization",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 4,
+        "xPos": 0,
+        "yPos": 8,
+        "widget": {
+          "title": "Request Count by Status",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"edge77\" AND metric.type = \"run.googleapis.com/request_count\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.labels.response_code_class"
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "Requests/sec",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 4,
+        "xPos": 0,
+        "yPos": 12,
+        "widget": {
+          "title": "Uptime Check Status",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "resource.type = \"uptime_url\" AND metric.type = \"monitoring.googleapis.com/uptime_check/check_passed\"",
+                "aggregation": {
+                  "alignmentPeriod": "300s",
+                  "perSeriesAligner": "ALIGN_NEXT_OLDER",
+                  "crossSeriesReducer": "REDUCE_MEAN"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

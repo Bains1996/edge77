@@ -403,7 +403,14 @@
 
         const CLIENT_ID = 'client_demo_001';
         const API_BASE = '/v1';
-        const MOCK_API_TOKEN = 'edge77_live_sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+        const API_TOKEN = localStorage.getItem('edge77_api_token') || '';
+
+        function authHeaders(method = 'GET') {
+            return {
+                'Authorization': `Bearer ${API_TOKEN}`,
+                'X-Timestamp': new Date().toISOString(),
+            };
+        }
 
         let allAudits = [];
         let currentContract = null;
@@ -570,7 +577,7 @@
             table.classList.add('hidden');
 
             try {
-                const res = await fetch(`${API_BASE}/client/${clientId}/audits`);
+                const res = await fetch(`${API_BASE}/client/${clientId}/audits`, { headers: authHeaders() });
                 if (!res.ok) throw new Error('API returned ' + res.status);
                 const data = await res.json();
                 allAudits = Array.isArray(data) ? data : (data.audits || data.results || []);
@@ -601,7 +608,7 @@
             form.classList.add('hidden');
 
             try {
-                const res = await fetch(`${API_BASE}/client/${clientId}/contract`);
+                const res = await fetch(`${API_BASE}/client/${clientId}/contract`, { headers: authHeaders() });
                 if (!res.ok) throw new Error('API returned ' + res.status);
                 const data = await res.json();
                 currentContract = data;
@@ -645,7 +652,7 @@
             try {
                 const res = await fetch(`${API_BASE}/client/${CLIENT_ID}/contract`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 if (!res.ok) throw new Error('Failed to save');
@@ -671,7 +678,7 @@
             btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div>';
 
             try {
-                const res = await fetch(`${API_BASE}/client/${CLIENT_ID}/audits/${auditId}/approve`, { method: 'POST' });
+                const res = await fetch(`${API_BASE}/client/${CLIENT_ID}/audits/${auditId}/approve`, { method: 'POST', headers: authHeaders() });
                 if (!res.ok) throw new Error('Failed');
                 const result = await res.json();
                 showToast(`Dispute fired for ${audit.tracking_id}`, 'success');

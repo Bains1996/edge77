@@ -64,7 +64,7 @@ def validate_timestamp(timestamp: str, max_age: int = 300) -> bool:
         request_time = datetime.fromisoformat(timestamp)
         now = datetime.now(timezone.utc)
         age_seconds = (now - request_time).total_seconds()
-        return 0 <= age_seconds <= max_age
+        return -30 <= age_seconds <= max_age
     except (ValueError, TypeError):
         return False
 

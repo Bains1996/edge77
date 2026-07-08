@@ -1,7 +1,7 @@
 import os
+import re
 import json
-import time
-import random
+import asyncio
 import logging
 from openai import OpenAI
 from .schemas import FreightInvoiceSchema
@@ -9,17 +9,12 @@ from .prompts import INVOICE_EXTRACTION_PROMPT
 
 logger = logging.getLogger("edge77.engine")
 
-PRIMARY_MODEL = "deepseek/deepseek-v4-flash"
-FALLBACK_MODEL = "openai/gpt-4o-mini"
+PRIMARY_MODEL = "openrouter/free"
+FALLBACK_MODEL = "openrouter/free"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
-CUSTOM_HEADERS = {
-    "HTTP-Referer": "https://edge77.com",
-    "X-Title": "Edge77",
-}
-
-RETRY_DELAYS = [1, 5, 15]
+RETRY_DELAYS = [1, 3, 7]
 
 
 def _get_client() -> OpenAI:
@@ -27,11 +22,10 @@ def _get_client() -> OpenAI:
     return OpenAI(
         base_url=OPENROUTER_BASE_URL,
         api_key=api_key if api_key else "sk-placeholder",
-        default_headers=CUSTOM_HEADERS,
     )
 
 
-def _call_with_retry(messages: list, model: str, attempt: int = 0) -> str:
+async def _call_with_retry_async(messages: list, model: str, attempt: int = 0) -> str:
     if attempt >= len(RETRY_DELAYS):
         raise RuntimeError(f"[EDGE77 ENGINE] All retry attempts exhausted for model {model}")
 
@@ -54,78 +48,91 @@ def _call_with_retry(messages: list, model: str, attempt: int = 0) -> str:
             str(e),
             delay,
         )
-        time.sleep(delay)
-        return _call_with_retry(messages, model, attempt + 1)
+        await asyncio.sleep(delay)
+        return await _call_with_retry_async(messages, model, attempt + 1)
 
 
 def _fallback_parse(extracted_text: str) -> FreightInvoiceSchema:
-    logger.info("[EDGE77 ENGINE] Falling back to %s", FALLBACK_MODEL)
-    try:
-        raw = _call_with_retry(
-            messages=[
-                {"role": "system", "content": INVOICE_EXTRACTION_PROMPT},
-                {"role": "user", "content": extracted_text},
-            ],
-            model=FALLBACK_MODEL,
-        )
-        data = _clean_json(raw)
-        return FreightInvoiceSchema(**data)
-    except Exception as e:
-        logger.warning("[EDGE77 ENGINE] Fallback model also failed: %s", e)
-        return _mock_parse(extracted_text)
+    logger.info("[EDGE77 ENGINE] AI fallback failed, using enhanced mock parser")
+    return _smart_parse(extracted_text)
 
 
 def _clean_json(raw: str) -> dict:
     text = raw.strip()
-    if text.startswith("```"):
-        lines = text.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
-        text = "\n".join(lines).strip()
-    if text.startswith("```json"):
-        text = text[7:].strip()
-    if text.startswith("```"):
-        text = text[3:].strip()
+
+    code_block = re.search(r'```(?:json)?\s*\n?(.*?)\n?\s*```', text, re.DOTALL)
+    if code_block:
+        text = code_block.group(1).strip()
+
     start = text.find("{")
     end = text.rfind("}") + 1
     if start == -1 or end == 0:
         raise ValueError("[EDGE77 ENGINE] No JSON object found in response")
-    return json.loads(text[start:end])
+
+    json_str = text[start:end]
+    try:
+        return json.loads(json_str)
+    except json.JSONDecodeError:
+        json_str = re.sub(r',\s*}', '}', json_str)
+        json_str = re.sub(r',\s*]', ']', json_str)
+        return json.loads(json_str)
 
 
-def _mock_parse(extracted_text: str) -> FreightInvoiceSchema:
-    logger.info("[EDGE77 ENGINE] Using mock parser — no API available")
-    words = extracted_text.split()
+def _smart_parse(extracted_text: str) -> FreightInvoiceSchema:
+    logger.info("[EDGE77 ENGINE] Using smart regex parser on extracted text")
+    text = extracted_text.upper()
+
     tracking = "UNKNOWN"
-    for i, w in enumerate(words):
-        if w.upper().startswith("TRACKING") and i + 1 < len(words):
-            tracking = words[i + 1].strip(":,")
-            break
-        if len(w) >= 8 and any(c.isdigit() for c in w):
-            tracking = w.strip(",:")
-            break
+    tracking_match = re.search(r'(?:TRACKING|PRO)\s*(?:#|NUM|NUMBER|ID)?\s*[:\s]+([A-Z0-9\-]+)', text)
+    if tracking_match:
+        tracking = tracking_match.group(1)
+    else:
+        invoice_match = re.search(r'INVOICE\s*(?:#|NUM|NUMBER|ID)?\s*[:\s]+([A-Z0-9\-]+)', text)
+        if invoice_match:
+            tracking = invoice_match.group(1)
 
-    charges = [w for w in words if w.replace(".", "").replace(",", "").isdigit()]
-    numeric = []
-    for c in charges:
-        try:
-            numeric.append(float(c.replace(",", "")))
-        except ValueError:
-            pass
+    total = 0.0
+    fuel = 0.0
+    base = 0.0
 
-    total = numeric[0] if len(numeric) > 0 else 150.00
-    fuel = numeric[1] if len(numeric) > 1 else round(total * 0.12, 2)
-    base = numeric[2] if len(numeric) > 2 else round(total - fuel, 2)
+    total_match = re.search(r'(?:TOTAL\s*(?:CHARGE|AMOUNT|DUE)?)\s*[:\s]*\$?\s*([\d,]+\.?\d*)', text)
+    if total_match:
+        total = float(total_match.group(1).replace(',', ''))
+
+    fuel_match = re.search(r'(?:FUEL\s*SURCHARGE)\s*[:\s]*\$?\s*([\d,]+\.?\d*)', text)
+    if fuel_match:
+        fuel = float(fuel_match.group(1).replace(',', ''))
+
+    base_match = re.search(r'(?:LINEHAUL|BASE\s*(?:RATE|FREIGHT)?)\s*[:\s]*\$?\s*([\d,]+\.?\d*)', text)
+    if base_match:
+        base = float(base_match.group(1).replace(',', ''))
+
+    if total == 0.0:
+        all_numbers = re.findall(r'\$?\s*([\d,]+\.\d{2})\b', extracted_text)
+        parsed = []
+        for n in all_numbers:
+            try:
+                parsed.append(float(n.replace(',', '')))
+            except ValueError:
+                pass
+        if parsed:
+            total = max(parsed)
+
+    if fuel == 0.0 and total > 0.0:
+        fuel = round(total * 0.12, 2)
+    if base == 0.0 and total > 0.0 and fuel > 0.0:
+        base = round(total - fuel, 2)
 
     return FreightInvoiceSchema(
         tracking_id=tracking,
-        total_charge=total,
+        total_charge=total if total > 0.0 else 0.0,
         currency="USD",
         fuel_surcharge=fuel,
         base_freight_rate=base,
     )
 
 
-def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
+async def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
     logger.info("[EDGE77 ENGINE] Parsing invoice with %s", PRIMARY_MODEL)
 
     messages = [
@@ -134,11 +141,14 @@ def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
     ]
 
     try:
-        raw = _call_with_retry(messages, PRIMARY_MODEL)
+        raw = await _call_with_retry_async(messages, PRIMARY_MODEL)
         data = _clean_json(raw)
         schema = FreightInvoiceSchema(**data)
-        logger.info("[EDGE77 ENGINE] Parsed tracking_id=%s total=%.2f", schema.tracking_id, schema.total_charge)
-        return schema
+        if schema.total_charge > 0:
+            logger.info("[EDGE77 ENGINE] Parsed tracking_id=%s total=%.2f", schema.tracking_id, schema.total_charge)
+            return schema
+        logger.warning("[EDGE77 ENGINE] AI returned zero total, falling back to smart parser")
     except Exception as e:
         logger.warning("[EDGE77 ENGINE] Primary model failed: %s", e)
-        return _fallback_parse(extracted_text)
+
+    return _smart_parse(extracted_text)
