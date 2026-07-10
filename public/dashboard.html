@@ -707,12 +707,12 @@
             }
         };
 
-        window.getApiToken = function() { return MOCK_API_TOKEN; };
+        window.getApiToken = function() { return API_TOKEN; };
 
         window.toggleToken = function() {
             tokenVisible = !tokenVisible;
             const display = document.getElementById('tokenDisplay');
-            display.textContent = tokenVisible ? MOCK_API_TOKEN : '••••••••••••••••••••••••••••••••';
+            display.textContent = tokenVisible ? API_TOKEN : '••••••••••••••••••••••••••••••••';
         };
 
         window.getCodeSnippet = function() {

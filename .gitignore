@@ -17,6 +17,7 @@ htmlcov/
 .vercel
 *.log
 test_*.py
+!/tests/test_*.py
 fix_schema.py
 setup_db.py
 test_connection.py

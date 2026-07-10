@@ -13,7 +13,7 @@ AWS_SES_REGION = os.getenv("AWS_SES_REGION", "us-east-1")
 AWS_SES_FROM_EMAIL = os.getenv("AWS_SES_FROM_EMAIL", "disputes@edge77.com")
 AWS_SES_FROM_NAME = os.getenv("AWS_SES_FROM_NAME", "EDGE77 Audit Division")
 
-GMAIL_ADDRESS = os.getenv("GMAIL_ADDRESS", "axalglobalinc@gmail.com")
+GMAIL_ADDRESS = os.getenv("GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 GMAIL_FROM_NAME = os.getenv("GMAIL_FROM_NAME", "EDGE77 Audit Division")
 

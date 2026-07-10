@@ -2,6 +2,7 @@
 import os
 from datetime import datetime, timezone
 os.environ.setdefault("INTERNAL_API_TOKEN", "test_token_for_tests")
+os.environ["HMAC_SECRET"] = ""
 
 from fastapi.testclient import TestClient
 from v1_ingestion.main_gateway import app

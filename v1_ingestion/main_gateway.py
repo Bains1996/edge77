@@ -124,21 +124,24 @@ async def process_invoice_background(
         print(f"{LOG_PREFIX} STEP3 result: overcharge={result.overcharge}, fee={result.fee_earned}", file=sys.stderr, flush=True)
 
         # 4. Update the original audit record with AI results
-        from v1_database.supabase_client import supabase as _supabase
+        from v1_database.supabase_client import _rest_update, MOCK_MODE
         try:
-            _supabase.table("freight_audits").update({
-                "total_charge": parsed.total_charge,
-                "currency": parsed.currency,
-                "fuel_surcharge": parsed.fuel_surcharge,
-                "base_freight_rate": parsed.base_freight_rate,
-                "overcharge_amount": result.overcharge,
-                "fee_earned": result.fee_earned,
-                "status": result.status,
-                "raw_text": extracted.raw_text[:5000] if extracted.raw_text else None,
-                "ai_response": parsed.model_dump_json()[:5000] if hasattr(parsed, 'model_dump_json') else str(parsed)[:5000],
-                "overcharge_detected": result.overcharge > 0,
-            }).eq("tracking_id", tracking_id).eq("client_id", client_id).execute()
-            print(f"{LOG_PREFIX} STEP4: Audit record updated in DB", file=sys.stderr, flush=True)
+            if MOCK_MODE:
+                print(f"{LOG_PREFIX} STEP4: Mock mode — skipping DB update", file=sys.stderr, flush=True)
+            else:
+                _rest_update("freight_audits", {
+                    "total_charge": parsed.total_charge,
+                    "currency": parsed.currency,
+                    "fuel_surcharge": parsed.fuel_surcharge,
+                    "base_freight_rate": parsed.base_freight_rate,
+                    "overcharge_amount": result.overcharge,
+                    "fee_earned": result.fee_earned,
+                    "status": result.status,
+                    "raw_text": extracted.raw_text[:5000] if extracted.raw_text else None,
+                    "ai_response": parsed.model_dump_json()[:5000] if hasattr(parsed, 'model_dump_json') else str(parsed)[:5000],
+                    "overcharge_detected": result.overcharge > 0,
+                }, {"tracking_id": f"eq.{tracking_id}", "client_id": f"eq.{client_id}"})
+                print(f"{LOG_PREFIX} STEP4: Audit record updated in DB", file=sys.stderr, flush=True)
         except Exception as db_exc:
             print(f"{LOG_PREFIX} STEP4: Failed to update audit record: {db_exc}", file=sys.stderr, flush=True)
 
@@ -172,7 +175,7 @@ async def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
 
 def update_audit_status_by_tracking(client_id: str, tracking_id: str, status: str) -> None:
     """Find an audit record by tracking_id and update its status."""
-    from v1_database.supabase_client import MOCK_AUDITS, MOCK_MODE, supabase
+    from v1_database.supabase_client import MOCK_AUDITS, MOCK_MODE, _rest_select
 
     if MOCK_MODE:
         for audit in MOCK_AUDITS:
@@ -182,16 +185,14 @@ def update_audit_status_by_tracking(client_id: str, tracking_id: str, status: st
         return
 
     try:
-        result = (
-            supabase.table("freight_audits")
-            .select("id")
-            .eq("client_id", client_id)
-            .eq("tracking_id", tracking_id)
-            .limit(1)
-            .execute()
-        )
-        if result.data:
-            update_audit_status(result.data[0]["id"], status)
+        rows = _rest_select("freight_audits", {
+            "select": "id",
+            "client_id": f"eq.{client_id}",
+            "tracking_id": f"eq.{tracking_id}",
+            "limit": 1,
+        })
+        if rows:
+            update_audit_status(rows[0]["id"], status)
     except Exception as exc:
         log.error(f"{LOG_PREFIX} Failed to update audit status: {exc}")
 
@@ -205,6 +206,16 @@ def _verify_token(authorization: Optional[str]) -> str:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
     token = authorization[7:]
+
+    # Check if it's a per-client API key (e77_ prefix)
+    if token.startswith("e77_"):
+        from v1_database.api_keys import validate_api_key
+        key_data = validate_api_key(token)
+        if not key_data:
+            raise HTTPException(status_code=403, detail="Invalid or revoked API key")
+        return key_data["client_id"]
+
+    # Fall back to internal token
     if not INTERNAL_API_TOKEN:
         raise HTTPException(status_code=500, detail="INTERNAL_API_TOKEN not configured")
     if not hmac.compare_digest(token, INTERNAL_API_TOKEN):
@@ -243,6 +254,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://edge77-yyqrijv53a-uc.a.run.app",
+        "https://edge77.axalglobal.com",
         "https://edge77-364995933969.us-central1.run.app",
         "http://localhost:8000",
         "http://localhost:8080",
@@ -309,8 +322,8 @@ async def health_check():
 
     if not MOCK_MODE:
         try:
-            from v1_database.supabase_client import supabase as _sb
-            _sb.table("freight_audits").select("id").limit(1).execute()
+            from v1_database.supabase_client import _async_rest_select
+            await _async_rest_select("freight_audits", {"select": "id", "limit": 1})
             checks["supabase"] = "ok"
         except Exception as e:
             checks["supabase"] = f"error: {str(e)[:100]}"
@@ -421,7 +434,7 @@ async def get_invoice_status(
 ):
     _verify_token(authorization)
 
-    from v1_database.supabase_client import MOCK_AUDITS, supabase as _supabase
+    from v1_database.supabase_client import MOCK_AUDITS, _rest_select
 
     if MOCK_MODE:
         record = next(
@@ -430,14 +443,12 @@ async def get_invoice_status(
         )
     else:
         try:
-            result = (
-                _supabase.table("freight_audits")
-                .select("*")
-                .eq("tracking_id", tracking_id)
-                .limit(1)
-                .execute()
-            )
-            record = result.data[0] if result.data else None
+            rows = _rest_select("freight_audits", {
+                "select": "*",
+                "tracking_id": f"eq.{tracking_id}",
+                "limit": 1,
+            })
+            record = rows[0] if rows else None
         except Exception as exc:
             log.error(f"{LOG_PREFIX} Status lookup failed: {exc}")
             raise HTTPException(status_code=500, detail="Failed to query audit status")
@@ -545,7 +556,7 @@ async def update_contract(
     if dispute_mode is not None and dispute_mode not in ("AUTONOMOUS", "MANUAL_GATE"):
         raise HTTPException(status_code=422, detail="dispute_mode must be AUTONOMOUS or MANUAL_GATE")
 
-    from v1_database.supabase_client import MOCK_CONTRACTS, supabase as _supabase
+    from v1_database.supabase_client import MOCK_CONTRACTS, _rest_select, _rest_insert, _rest_update
 
     if MOCK_MODE:
         existing = MOCK_CONTRACTS.get(client_id, MOCK_CONTRACTS["default"].copy())
@@ -572,12 +583,17 @@ async def update_contract(
 
             update_data["client_id"] = client_id
 
-            result = (
-                _supabase.table("client_contracts")
-                .upsert(update_data, on_conflict="client_id")
-                .execute()
-            )
-            contract = result.data[0] if result.data else update_data
+            existing = _rest_select("client_contracts", {
+                "select": "client_id",
+                "client_id": f"eq.{client_id}",
+                "limit": 1,
+            })
+            if existing:
+                rows = _rest_update("client_contracts", update_data, {"client_id": f"eq.{client_id}"})
+                contract = rows[0] if rows else update_data
+            else:
+                record = _rest_insert("client_contracts", update_data)
+                contract = record if record else update_data
         except HTTPException:
             raise
         except Exception as exc:
@@ -616,6 +632,81 @@ async def approve_audit(
         "audit_id": audit_id,
         "new_status": "APPROVED",
     }
+
+
+# ---------------------------------------------------------------------------
+# Admin: API Key Management
+# ---------------------------------------------------------------------------
+
+@app.post("/v1/admin/api-keys")
+async def create_api_key(
+    request: Request,
+    authorization: Optional[str] = Header(None),
+):
+    """Generate a new per-client API key. Requires internal token auth."""
+    _verify_token(authorization)
+
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    client_id = body.get("client_id")
+    name = body.get("name", "default")
+
+    if not client_id:
+        raise HTTPException(status_code=422, detail="client_id is required")
+
+    from v1_database.api_keys import generate_api_key
+    result = generate_api_key(client_id, name)
+
+    log.info(f"{LOG_PREFIX} API key generated", client_id=client_id, key_prefix=result["key_prefix"])
+
+    return {
+        "status": "success",
+        "client_id": client_id,
+        "api_key": result["api_key"],
+        "key_prefix": result["key_prefix"],
+        "name": name,
+        "message": "Store this key securely — it will not be shown again",
+    }
+
+
+@app.get("/v1/admin/api-keys")
+async def list_api_keys(
+    client_id: str,
+    authorization: Optional[str] = Header(None),
+):
+    """List API keys for a client. Requires internal token auth."""
+    _verify_token(authorization)
+
+    if not MOCK_MODE:
+        from v1_database.supabase_client import _rest_select
+        rows = _rest_select("client_api_keys", {
+            "select": "id,key_prefix,name,active,created_at,last_used_at",
+            "client_id": f"eq.{client_id}",
+            "order": "created_at.desc",
+        })
+        return {"client_id": client_id, "keys": rows}
+
+    return {"client_id": client_id, "keys": []}
+
+
+@app.delete("/v1/admin/api-keys/{key_id}")
+async def revoke_api_key(
+    key_id: str,
+    authorization: Optional[str] = Header(None),
+):
+    """Revoke (deactivate) an API key. Requires internal token auth."""
+    _verify_token(authorization)
+
+    if not MOCK_MODE:
+        from v1_database.supabase_client import _rest_update
+        _rest_update("client_api_keys", {"active": False}, {"id": f"eq.{key_id}"})
+        log.info(f"{LOG_PREFIX} API key revoked", key_id=key_id)
+        return {"status": "success", "message": "Key revoked"}
+
+    return {"status": "success", "message": "Key revoked (mock mode)"}
 
 
 # ---------------------------------------------------------------------------

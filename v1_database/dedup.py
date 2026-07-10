@@ -2,7 +2,7 @@ import hashlib
 import logging
 from datetime import datetime, timezone
 
-from .supabase_client import supabase, MOCK_MODE, MOCK_AUDITS
+from .supabase_client import MOCK_MODE, MOCK_AUDITS, _rest_select
 
 logger = logging.getLogger("edge77")
 
@@ -32,16 +32,14 @@ def check_and_mark_duplicate(
                     return True
             return False
 
-        result = (
-            supabase.table("freight_audits")
-            .select("id")
-            .eq("client_id", client_id)
-            .eq("tracking_id", tracking_id)
-            .eq("pdf_hash", pdf_hash)
-            .limit(1)
-            .execute()
-        )
-        is_dup = len(result.data) > 0
+        rows = _rest_select("freight_audits", {
+            "select": "id",
+            "client_id": f"eq.{client_id}",
+            "tracking_id": f"eq.{tracking_id}",
+            "pdf_hash": f"eq.{pdf_hash}",
+            "limit": 1,
+        })
+        is_dup = len(rows) > 0
         if is_dup:
             logger.info(
                 f"[EDGE77 ENGINE] Duplicate detected: client={client_id} tracking={tracking_id}"
@@ -60,15 +58,13 @@ def is_duplicate(client_id: str, pdf_hash: str) -> bool:
                 for a in MOCK_AUDITS
             )
 
-        result = (
-            supabase.table("freight_audits")
-            .select("id")
-            .eq("client_id", client_id)
-            .eq("pdf_hash", pdf_hash)
-            .limit(1)
-            .execute()
-        )
-        return len(result.data) > 0
+        rows = _rest_select("freight_audits", {
+            "select": "id",
+            "client_id": f"eq.{client_id}",
+            "pdf_hash": f"eq.{pdf_hash}",
+            "limit": 1,
+        })
+        return len(rows) > 0
     except Exception as e:
         logger.error(f"[EDGE77 ENGINE] Failed to check hash duplicate: {e}")
         return False

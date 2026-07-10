@@ -43,7 +43,7 @@ pip install -r requirements.txt
 # --- Step 5: Configure Environment ---
 echo -e "\n${YELLOW}[5/8] Configuring environment...${NC}"
 if [ ! -f ".env" ]; then
-    cp .env.production .env
+    cp .env.example .env
     echo -e "${RED}IMPORTANT: Edit .env with your actual API keys!${NC}"
     echo "  nano /home/ubuntu/edge77/.env"
     echo ""

@@ -135,7 +135,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     - Bearer token authentication
     """
 
-    SKIP_PATHS: set[str] = {"/", "/dashboard", "/health", "/health/live", "/health/ready", "/docs", "/openapi.json"}
+    SKIP_PATHS: set[str] = {"/", "/dashboard", "/health", "/health/live", "/health/ready"}
 
     def __init__(
         self,
@@ -190,6 +190,25 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         token = auth_header[7:]
+
+        # Check if it's a per-client API key (e77_ prefix)
+        if token.startswith("e77_"):
+            from v1_database.api_keys import validate_api_key
+            key_data = validate_api_key(token)
+            if not key_data:
+                return JSONResponse(
+                    status_code=403,
+                    content={"error": "Invalid or revoked API key"},
+                )
+            request.state.client_id = key_data["client_id"]
+            request.state.auth_type = "api_key"
+            response = await call_next(request)
+            remaining = self.rate_limiter.get_remaining(client_id)
+            response.headers["X-RateLimit-Limit"] = str(self.rate_limiter.max_requests)
+            response.headers["X-RateLimit-Remaining"] = str(remaining)
+            return response
+
+        # Fall back to internal token auth
         if not self.api_token:
             return JSONResponse(
                 status_code=500,
@@ -233,6 +252,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     content={"error": "Invalid HMAC signature"},
                 )
 
+        request.state.auth_type = "internal_token"
         response = await call_next(request)
         remaining = self.rate_limiter.get_remaining(client_id)
         response.headers["X-RateLimit-Limit"] = str(self.rate_limiter.max_requests)

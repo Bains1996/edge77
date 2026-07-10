@@ -1,30 +1,110 @@
 import os
+import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Optional
+import httpx
 
 logger = logging.getLogger("edge77")
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
-supabase = None
+_rest_client: Optional[httpx.Client] = None
+_async_rest_client: Optional[httpx.AsyncClient] = None
 MOCK_MODE = True
 
-if SUPABASE_URL and SUPABASE_KEY:
-    try:
-        from supabase import create_client, Client
-        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-        MOCK_MODE = False
-        logger.info("[EDGE77 ENGINE] Supabase client initialized successfully")
-    except Exception as e:
-        logger.warning(f"[EDGE77 ENGINE] Failed to initialize Supabase: {e}. Operating in mock mode.")
-else:
-    logger.warning(
-        "[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. "
-        "Operating in MOCK MODE — all data is in-memory and will be lost on restart. "
-        "Set SUPABASE_URL and SUPABASE_KEY environment variables for production use."
+
+def _get_rest_client() -> Optional[httpx.Client]:
+    global _rest_client
+    if _rest_client is not None:
+        return _rest_client
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return None
+    _rest_client = httpx.Client(
+        base_url=f"{SUPABASE_URL}/rest/v1",
+        headers={
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation",
+        },
+        timeout=15.0,
     )
+    return _rest_client
+
+
+def _get_async_rest_client() -> Optional[httpx.AsyncClient]:
+    global _async_rest_client
+    if _async_rest_client is not None:
+        return _async_rest_client
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return None
+    _async_rest_client = httpx.AsyncClient(
+        base_url=f"{SUPABASE_URL}/rest/v1",
+        headers={
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation",
+        },
+        timeout=15.0,
+    )
+    return _async_rest_client
+
+
+def _rest_select(table: str, params: dict) -> list[dict]:
+    client = _get_rest_client()
+    if not client:
+        return []
+    resp = client.get(f"/{table}", params=params)
+    resp.raise_for_status()
+    return resp.json()
+
+
+async def _async_rest_select(table: str, params: dict) -> list[dict]:
+    client = _get_async_rest_client()
+    if not client:
+        return []
+    resp = await client.get(f"/{table}", params=params)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def _rest_insert(table: str, data: dict) -> dict:
+    client = _get_rest_client()
+    if not client:
+        return {}
+    resp = client.post(f"/{table}", json=data)
+    resp.raise_for_status()
+    rows = resp.json()
+    return rows[0] if rows else {}
+
+
+def _rest_update(table: str, data: dict, filters: dict) -> list[dict]:
+    client = _get_rest_client()
+    if not client:
+        return []
+    resp = client.patch(f"/{table}", json=data, params=filters)
+    resp.raise_for_status()
+    return resp.json()
+
+
+try:
+    if SUPABASE_URL and SUPABASE_KEY:
+        c = _get_rest_client()
+        if c:
+            resp = c.get("/freight_audits", params={"select": "id", "limit": 1})
+            resp.raise_for_status()
+            MOCK_MODE = False
+            logger.info("[EDGE77 ENGINE] Supabase REST client initialized successfully")
+    else:
+        logger.warning(
+            "[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. "
+            "Operating in MOCK MODE — all data is in-memory and will be lost on restart."
+        )
+except Exception as e:
+    logger.warning(f"[EDGE77 ENGINE] Failed to initialize Supabase REST client: {e}. Operating in mock mode.")
 
 
 MOCK_AUDITS: list[dict] = []
@@ -59,30 +139,22 @@ def save_audit_record(data: dict) -> dict:
         client_id = data.get("client_id")
         tracking_id = data.get("tracking_id")
 
-        existing = (
-            supabase.table("freight_audits")
-            .select("id")
-            .eq("client_id", client_id)
-            .eq("tracking_id", tracking_id)
-            .limit(1)
-            .execute()
-        )
+        existing = _rest_select("freight_audits", {
+            "select": "id",
+            "client_id": f"eq.{client_id}",
+            "tracking_id": f"eq.{tracking_id}",
+            "limit": 1,
+        })
 
-        if existing.data:
-            record_id = existing.data[0]["id"]
+        if existing:
+            record_id = existing[0]["id"]
             update_data = {k: v for k, v in data.items() if k not in ("client_id", "tracking_id")}
-            result = (
-                supabase.table("freight_audits")
-                .update(update_data)
-                .eq("id", record_id)
-                .execute()
-            )
-            record = result.data[0] if result.data else {"id": record_id, **data}
+            rows = _rest_update("freight_audits", update_data, {"id": f"eq.{record_id}"})
+            record = rows[0] if rows else {"id": record_id, **data}
             logger.info(f"[EDGE77 ENGINE] Updated audit record id={record_id}")
             return record
         else:
-            result = supabase.table("freight_audits").insert(data).execute()
-            record = result.data[0] if result.data else {}
+            record = _rest_insert("freight_audits", data)
             logger.info(f"[EDGE77 ENGINE] Saved audit record id={record.get('id')}")
             return record
     except Exception as e:
@@ -98,15 +170,13 @@ def check_duplicate(client_id: str, tracking_id: str) -> bool:
                 for a in MOCK_AUDITS
             )
 
-        result = (
-            supabase.table("freight_audits")
-            .select("id")
-            .eq("client_id", client_id)
-            .eq("tracking_id", tracking_id)
-            .limit(1)
-            .execute()
-        )
-        return len(result.data) > 0
+        rows = _rest_select("freight_audits", {
+            "select": "id",
+            "client_id": f"eq.{client_id}",
+            "tracking_id": f"eq.{tracking_id}",
+            "limit": 1,
+        })
+        return len(rows) > 0
     except Exception as e:
         logger.error(f"[EDGE77 ENGINE] Failed to check duplicate: {e}")
         return False
@@ -117,15 +187,13 @@ def get_client_contract(client_id: str) -> dict:
         if MOCK_MODE:
             return MOCK_CONTRACTS.get(client_id, MOCK_CONTRACTS["default"])
 
-        result = (
-            supabase.table("client_contracts")
-            .select("*")
-            .eq("client_id", client_id)
-            .limit(1)
-            .execute()
-        )
-        if result.data:
-            return result.data[0]
+        rows = _rest_select("client_contracts", {
+            "select": "*",
+            "client_id": f"eq.{client_id}",
+            "limit": 1,
+        })
+        if rows:
+            return rows[0]
 
         logger.info(f"[EDGE77 ENGINE] No contract found for client {client_id}, using defaults")
         return MOCK_CONTRACTS["default"]
@@ -147,18 +215,17 @@ def get_client_audits(
                 filtered = [a for a in filtered if a.get("status") == status_filter]
             return filtered[offset : offset + limit]
 
-        query = (
-            supabase.table("freight_audits")
-            .select("*")
-            .eq("client_id", client_id)
-            .order("created_at", desc=True)
-            .range(offset, offset + limit - 1)
-        )
+        params = {
+            "select": "*",
+            "client_id": f"eq.{client_id}",
+            "order": "created_at.desc",
+            "limit": limit,
+            "offset": offset,
+        }
         if status_filter:
-            query = query.eq("status", status_filter)
+            params["status"] = f"eq.{status_filter}"
 
-        result = query.execute()
-        return result.data or []
+        return _rest_select("freight_audits", params)
     except Exception as e:
         logger.error(f"[EDGE77 ENGINE] Failed to fetch audits for {client_id}: {e}")
         return []
@@ -181,13 +248,8 @@ def update_audit_status(
                     return audit
             return {}
 
-        result = (
-            supabase.table("freight_audits")
-            .update(update_data)
-            .eq("id", audit_id)
-            .execute()
-        )
-        record = result.data[0] if result.data else {}
+        rows = _rest_update("freight_audits", update_data, {"id": f"eq.{audit_id}"})
+        record = rows[0] if rows else {}
         logger.info(f"[EDGE77 ENGINE] Updated audit {audit_id} to status={status}")
         return record
     except Exception as e:
@@ -208,13 +270,10 @@ def get_client_stats(client_id: str) -> dict:
                 "fees_earned": round(fees, 2),
             }
 
-        result = (
-            supabase.table("freight_audits")
-            .select("id, overcharge_detected, fee_earned")
-            .eq("client_id", client_id)
-            .execute()
-        )
-        rows = result.data or []
+        rows = _rest_select("freight_audits", {
+            "select": "id,overcharge_detected,fee_earned",
+            "client_id": f"eq.{client_id}",
+        })
         total = len(rows)
         overcharges = sum(1 for r in rows if r.get("overcharge_detected"))
         fees = sum(r.get("fee_earned", 0) or 0 for r in rows)

@@ -8,12 +8,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Create non-root user
+RUN groupadd -r edge77 && useradd -r -g edge77 -d /app -s /sbin/nologin edge77
+
 # Copy requirements first (for Docker cache)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
+
+# Set ownership
+RUN chown -R edge77:edge77 /app
+
+# Switch to non-root user
+USER edge77
 
 # Expose port
 EXPOSE 8080

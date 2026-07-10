@@ -3,25 +3,27 @@ import re
 import json
 import asyncio
 import logging
-from openai import OpenAI
+from openai import AsyncOpenAI
 from .schemas import FreightInvoiceSchema
 from .prompts import INVOICE_EXTRACTION_PROMPT
 
 logger = logging.getLogger("edge77.engine")
 
-PRIMARY_MODEL = "openrouter/free"
-FALLBACK_MODEL = "openrouter/free"
+PRIMARY_MODEL = "anthropic/claude-3.5-sonnet"
+FALLBACK_MODEL = "openai/gpt-4o-mini"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 RETRY_DELAYS = [1, 3, 7]
 
 
-def _get_client() -> OpenAI:
+def _get_async_client() -> AsyncOpenAI:
     api_key = os.environ.get("OPENROUTER_API_KEY", "")
-    return OpenAI(
+    if not api_key:
+        raise RuntimeError("[EDGE77 ENGINE] OPENROUTER_API_KEY not configured. Set it in environment variables.")
+    return AsyncOpenAI(
         base_url=OPENROUTER_BASE_URL,
-        api_key=api_key if api_key else "sk-placeholder",
+        api_key=api_key,
     )
 
 
@@ -30,8 +32,8 @@ async def _call_with_retry_async(messages: list, model: str, attempt: int = 0) -
         raise RuntimeError(f"[EDGE77 ENGINE] All retry attempts exhausted for model {model}")
 
     try:
-        client = _get_client()
-        response = client.chat.completions.create(
+        client = _get_async_client()
+        response = await client.chat.completions.create(
             model=model,
             messages=messages,
             temperature=0.0,
