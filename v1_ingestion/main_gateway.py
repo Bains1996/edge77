@@ -278,6 +278,10 @@ app.add_middleware(
     level=LOG_LEVEL,
 )
 
+# --- Samsara integration routes ---
+from v1_integrations.samsara_routes import router as samsara_router
+app.include_router(samsara_router)
+
 
 # ---------------------------------------------------------------------------
 # Static files & pages

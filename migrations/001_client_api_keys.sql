@@ -1,5 +1,5 @@
 -- EDGE77: Client API Keys table
--- Run this against your Supabase database
+-- Run this in Supabase SQL Editor
 
 CREATE TABLE IF NOT EXISTS client_api_keys (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -22,13 +22,3 @@ ALTER TABLE client_api_keys ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Service role full access" ON client_api_keys
     FOR ALL
     USING (auth.role() = 'service_role');
-
--- Insert initial demo key
-INSERT INTO client_api_keys (client_id, key_hash, key_prefix, name, rate_limit_per_minute)
-VALUES (
-    'client_demo_001',
-    encode(sha512('e77_demo_key_001_32chars_placeholder_xxxxxxxxxxxxxxxx'::bytea), 'hex'),
-    'e77_demo',
-    'Demo Client',
-    100
-) ON CONFLICT (key_hash) DO NOTHING;

@@ -135,7 +135,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     - Bearer token authentication
     """
 
-    SKIP_PATHS: set[str] = {"/", "/dashboard", "/health", "/health/live", "/health/ready"}
+    SKIP_PATHS: set[str] = {"/", "/dashboard", "/health", "/health/live", "/health/ready", "/v1/samsara/callback"}
 
     def __init__(
         self,

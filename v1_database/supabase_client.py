@@ -90,6 +90,21 @@ def _rest_update(table: str, data: dict, filters: dict) -> list[dict]:
     return resp.json()
 
 
+def _rest_upsert(table: str, data: dict) -> dict:
+    """Insert or update a row (upsert) using Supabase REST API."""
+    client = _get_rest_client()
+    if not client:
+        return {}
+    resp = client.post(
+        f"/{table}",
+        json=data,
+        headers={"Prefer": "resolution=merge-duplicates"},
+    )
+    resp.raise_for_status()
+    rows = resp.json()
+    return rows[0] if rows else {}
+
+
 try:
     if SUPABASE_URL and SUPABASE_KEY:
         c = _get_rest_client()
