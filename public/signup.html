@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — EDGE77</title>
+    <meta name="description" content="Create your EDGE77 account and start auditing freight invoices for free.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        surface: '#fafafa',
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                        'accent-hover': '#1557b0',
+                        success: '#0d9f6e',
+                        error: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #fafafa; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+        .btn-primary { background: #1a73e8; color: #fff; font-weight: 500; border-radius: 100px; padding: 14px 32px; font-size: 15px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; width: 100%; }
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .input-field { width: 100%; background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 14px 16px; font-size: 15px; transition: all 0.2s ease; outline: none; }
+        .input-field:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+        .input-field::placeholder { color: #9e9e9e; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 10px; padding: 12px 16px; font-size: 13px; display: none; }
+        .error-msg.visible { display: block; }
+        .success-msg { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; border-radius: 10px; padding: 12px 16px; font-size: 13px; display: none; }
+        .success-msg.visible { display: block; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center px-6 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-10">
+                <a href="/" class="inline-flex items-center gap-2.5 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-ink flex items-center justify-center">
+                        <span class="text-white font-bold text-sm tracking-tight">E77</span>
+                    </div>
+                    <span class="text-ink font-bold text-xl tracking-tight">EDGE77</span>
+                </a>
+                <h1 class="text-2xl font-bold text-ink mb-2">Create your account</h1>
+                <p class="text-sm text-ink-light">Start auditing freight invoices for free</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMsg" class="error-msg mb-4"></div>
+
+            <!-- Success Message -->
+            <div id="successMsg" class="success-msg mb-4"></div>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="space-y-5" onsubmit="handleSignup(event)">
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-ink mb-2">Full name</label>
+                    <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="John Smith" class="input-field">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-ink mb-2">Work email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@company.com" class="input-field">
+                </div>
+
+                <div>
+                    <label for="company" class="block text-sm font-medium text-ink mb-2">Company name</label>
+                    <input type="text" id="company" name="company" required autocomplete="organization" placeholder="Acme Logistics" class="input-field">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-ink mb-2">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="At least 8 characters" minlength="8" class="input-field">
+                    <p class="text-xs text-ink-muted mt-1.5">Must be at least 8 characters</p>
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-ink mb-2">Confirm password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password" placeholder="Repeat your password" class="input-field">
+                </div>
+
+                <div class="flex items-start gap-2">
+                    <input type="checkbox" id="terms" required class="w-4 h-4 mt-0.5 rounded border-gray-300 text-accent focus:ring-accent">
+                    <label for="terms" class="text-sm text-ink-light">
+                        I agree to the
+                        <a href="/terms" class="text-accent hover:text-accent-hover font-medium" target="_blank">Terms of Service</a>
+                        and
+                        <a href="/privacy" class="text-accent hover:text-accent-hover font-medium" target="_blank">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" id="signupBtn" class="btn-primary">
+                    <span id="signupText">Create account</span>
+                    <span id="signupSpinner" class="spinner hidden"></span>
+                </button>
+            </form>
+
+            <!-- Login link -->
+            <p class="mt-8 text-center text-sm text-ink-light">
+                Already have an account?
+                <a href="/login" class="text-accent hover:text-accent-hover font-medium">Log in</a>
+            </p>
+
+            <!-- Footer -->
+            <div class="mt-10 text-center">
+                <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ruarvrwswjhtgywkkjie.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YXJ2cndzd2podGd5d2traWplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYwNjA4MDAsImV4cCI6MjA0MTYzNjgwMH0.eNEFzO7vQnHjGo4EvYfGjKjYBfNvFnNcFqJfHq3pWkY';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = document.getElementById('signupBtn');
+            const text = document.getElementById('signupText');
+            const spinner = document.getElementById('signupSpinner');
+            const errorEl = document.getElementById('errorMsg');
+            const successEl = document.getElementById('successMsg');
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            errorEl.classList.remove('visible');
+            successEl.classList.remove('visible');
+
+            if (password !== confirmPassword) {
+                errorEl.textContent = 'Passwords do not match.';
+                errorEl.classList.add('visible');
+                return;
+            }
+
+            if (password.length < 8) {
+                errorEl.textContent = 'Password must be at least 8 characters.';
+                errorEl.classList.add('visible');
+                return;
+            }
+
+            btn.disabled = true;
+            text.textContent = 'Creating account...';
+            spinner.classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            company: company,
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                if (data.user && data.user.identities && data.user.identities.length === 0) {
+                    errorEl.textContent = 'An account with this email already exists.';
+                    errorEl.classList.add('visible');
+                    btn.disabled = false;
+                    text.textContent = 'Create account';
+                    spinner.classList.add('hidden');
+                    return;
+                }
+
+                if (data.session) {
+                    localStorage.setItem('edge77_user_id', data.user.id);
+                    localStorage.setItem('edge77_user_email', data.user.email);
+                    localStorage.setItem('edge77_access_token', data.session.access_token);
+                    localStorage.setItem('edge77_api_token', data.session.access_token);
+                    window.location.href = '/dashboard';
+                } else {
+                    successEl.textContent = 'Account created! Check your email to verify your address, then log in.';
+                    successEl.classList.add('visible');
+                    btn.disabled = false;
+                    text.textContent = 'Create account';
+                    spinner.classList.add('hidden');
+                }
+            } catch (err) {
+                errorEl.textContent = err.message || 'Failed to create account. Please try again.';
+                errorEl.classList.add('visible');
+                btn.disabled = false;
+                text.textContent = 'Create account';
+                spinner.classList.add('hidden');
+            }
+        }
+
+        // Redirect if already logged in
+        (async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                localStorage.setItem('edge77_user_id', session.user.id);
+                localStorage.setItem('edge77_user_email', session.user.email);
+                localStorage.setItem('edge77_access_token', session.access_token);
+                localStorage.setItem('edge77_api_token', session.access_token);
+                window.location.href = '/dashboard';
+            }
+        })();
+    </script>
+</body>
+</html>

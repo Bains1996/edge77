@@ -11,9 +11,10 @@ Endpoints:
 
 import os
 import json
+import hmac
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException, Header
 from pydantic import BaseModel
 
 from v1_integrations.stripe_client import (
@@ -32,7 +33,26 @@ log = get_logger("edge77.billing")
 router = APIRouter(prefix="/v1/billing", tags=["billing"])
 
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://edge77.vercel.app")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://edge77-364995933969.us-central1.run.app")
+INTERNAL_API_TOKEN = os.getenv("INTERNAL_API_TOKEN", "")
+
+
+def _verify_billing_auth(authorization: Optional[str] = None) -> str:
+    """Verify billing endpoint auth. Returns client_id or raises."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
+    token = authorization[7:]
+    if token.startswith("e77_"):
+        from v1_database.api_keys import validate_api_key
+        key_data = validate_api_key(token)
+        if not key_data:
+            raise HTTPException(status_code=403, detail="Invalid or revoked API key")
+        return key_data["client_id"]
+    if not INTERNAL_API_TOKEN:
+        raise HTTPException(status_code=500, detail="INTERNAL_API_TOKEN not configured")
+    if not hmac.compare_digest(token, INTERNAL_API_TOKEN):
+        raise HTTPException(status_code=403, detail="Invalid API token")
+    return "__admin__"
 
 
 # ── Request Models ───────────────────────────────────────────────────────
@@ -58,8 +78,9 @@ class UsageRequest(BaseModel):
 # ── Routes ───────────────────────────────────────────────────────────────
 
 @router.post("/checkout")
-async def create_checkout(req: CheckoutRequest):
+async def create_checkout(req: CheckoutRequest, authorization: Optional[str] = Header(None)):
     """Create a Stripe Checkout session for self-serve subscription signup."""
+    _verify_billing_auth(authorization)
     tier_config = PRICING_TIERS.get(req.tier)
     if not tier_config:
         raise HTTPException(400, f"Unknown tier: {req.tier}")
@@ -111,8 +132,9 @@ async def create_checkout(req: CheckoutRequest):
 
 
 @router.post("/portal")
-async def create_portal(req: PortalRequest):
+async def create_portal(req: PortalRequest, authorization: Optional[str] = Header(None)):
     """Create a Stripe Customer Portal session for managing billing."""
+    _verify_billing_auth(authorization)
     customer_data = get_stripe_customer(req.client_id)
     if not customer_data:
         raise HTTPException(404, "No billing account found. Subscribe first.")
@@ -129,8 +151,9 @@ async def create_portal(req: PortalRequest):
 
 
 @router.post("/usage")
-async def report_usage(req: UsageRequest):
+async def report_usage(req: UsageRequest, authorization: Optional[str] = Header(None)):
     """Report usage for metered billing (called after each audit)."""
+    _verify_billing_auth(authorization)
     customer_data = get_stripe_customer(req.client_id)
     if not customer_data:
         return {"status": "skipped", "reason": "no_billing_account"}
@@ -157,9 +180,9 @@ async def report_usage(req: UsageRequest):
 
 
 @router.get("/subscription")
-async def get_subscription_status(client_id: str):
+async def get_subscription_status(client_id: str, authorization: Optional[str] = Header(None)):
     """Get current subscription status for a client."""
-    customer_data = get_stripe_customer(req.client_id) if False else None
+    _verify_billing_auth(authorization)
     sub_data = get_subscription(client_id)
 
     if not sub_data:
@@ -182,8 +205,9 @@ async def get_subscription_status(client_id: str):
 
 
 @router.get("/invoices")
-async def list_invoices(client_id: str, limit: int = 25):
+async def list_invoices(client_id: str, limit: int = 25, authorization: Optional[str] = Header(None)):
     """List invoices for a client."""
+    _verify_billing_auth(authorization)
     customer_data = get_stripe_customer(client_id)
     if not customer_data:
         return {"invoices": []}

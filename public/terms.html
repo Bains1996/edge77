@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service — EDGE77</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(250,250,250,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: transform 0.3s ease-in-out;
+        }
+        .header.hidden { transform: translateY(-100%); }
+
+        .btn-primary {
+            background: #1a73e8; color: #fff; font-weight: 500;
+            border-radius: 100px; padding: 14px 32px; font-size: 15px;
+            transition: all 0.2s ease; display: inline-flex;
+            align-items: center; gap: 8px; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26,115,232,0.3); }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 0; height: 1.5px; background: #1a1a1a; transition: width 0.2s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link.active { color: #1a1a1a; }
+        .nav-link.active::after { width: 100%; }
+
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-menu.open { max-height: 400px; }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        html { scroll-behavior: smooth; }
+
+        .legal-content h2 {
+            font-size: 24px; font-weight: 700; color: #1a1a1a;
+            margin-top: 48px; margin-bottom: 16px;
+        }
+        .legal-content h3 {
+            font-size: 18px; font-weight: 600; color: #1a1a1a;
+            margin-top: 32px; margin-bottom: 12px;
+        }
+        .legal-content p {
+            font-size: 15px; line-height: 1.8; color: #6b6b6b;
+            margin-bottom: 16px;
+        }
+        .legal-content ul {
+            list-style: disc; padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .legal-content li {
+            font-size: 15px; line-height: 1.8; color: #6b6b6b;
+            margin-bottom: 8px;
+        }
+        .legal-content a { color: #1a73e8; text-decoration: none; }
+        .legal-content a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header" class="header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/#features" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Features</a>
+                <a href="/pricing" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Pricing</a>
+                <a href="/#customers" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Customers</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-3">
+                <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
+            </div>
+            <button id="mobile-toggle" class="md:hidden p-2 -mr-2" aria-label="Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5">
+        <div class="px-6 py-4 space-y-1">
+            <a href="/#features" class="block py-2.5 text-sm text-ink-light">Features</a>
+            <a href="/pricing" class="block py-2.5 text-sm text-ink-light">Pricing</a>
+            <a href="/login" class="block py-2.5 text-sm text-ink-light">Log in</a>
+            <a href="/signup" class="block btn-primary text-sm text-center mt-2">Start Free</a>
+        </div>
+    </div>
+</header>
+
+
+<!-- CONTENT -->
+<main class="pt-28 pb-20">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <div class="mb-8">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-ink mb-4">Terms of Service</h1>
+            <p class="text-sm text-ink-muted">Last updated: July 12, 2026</p>
+        </div>
+
+        <div class="legal-content">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using the EDGE77 platform ("Service"), operated by Axal Global Inc. ("Company," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the Service.</p>
+            <p>These Terms apply to all visitors, users, and others who access or use the Service. By using the Service on behalf of an organization, you represent that you have authority to bind that organization to these Terms.</p>
+
+            <h2>2. Description of Service</h2>
+            <p>EDGE77 provides an AI-powered freight invoice audit and dispute recovery platform. The Service includes:</p>
+            <ul>
+                <li>Automated extraction and parsing of carrier invoices</li>
+                <li>Contract compliance verification against agreed-upon rates</li>
+                <li>Identification of billing errors and overcharges</li>
+                <li>Automated dispute filing and recovery tracking</li>
+                <li>Dashboard reporting and analytics</li>
+            </ul>
+
+            <h2>3. Account Registration</h2>
+            <p>To use the Service, you must create an account and provide accurate, complete, and current information. You are responsible for safeguarding your password and for all activity that occurs under your account.</p>
+            <p>You must notify us immediately of any unauthorized use of your account. We are not liable for any loss arising from unauthorized use.</p>
+
+            <h2>4. Pricing and Payment</h2>
+            <h3>4.1 Contingency Fees</h3>
+            <p>The Service operates on a contingency fee model. You pay a percentage of the amount recovered from carrier overcharges. The applicable percentage depends on your subscription plan:</p>
+            <ul>
+                <li><strong>Starter:</strong> 15% contingency fee</li>
+                <li><strong>Growth:</strong> 12% contingency fee</li>
+                <li><strong>Enterprise:</strong> 10% contingency fee</li>
+            </ul>
+
+            <h3>4.2 Subscription Fees</h3>
+            <p>Monthly subscription fees apply to Growth ($499/month) and Enterprise ($2,999/month) plans. The Starter plan has no monthly subscription fee.</p>
+
+            <h3>4.3 Payment Processing</h3>
+            <p>Payments are processed through Stripe, Inc. By using the Service, you agree to Stripe's terms of service. We do not store your payment card information.</p>
+
+            <h3>4.4 Refund Policy</h3>
+            <p>Subscription fees are non-refundable. Contingency fees are only charged on successfully recovered amounts. If we do not recover funds, you owe nothing.</p>
+
+            <h2>5. Your Data</h2>
+            <h3>5.1 Ownership</h3>
+            <p>You retain all rights to your data, including invoice data, contract data, and any information you upload to the Service. We do not claim ownership of your data.</p>
+
+            <h3>5.2 License to Process</h3>
+            <p>You grant us a limited license to process your data solely for the purpose of providing the Service. This includes extracting, analyzing, comparing, and storing invoice data as necessary to perform audits and file disputes.</p>
+
+            <h3>5.3 Data Security</h3>
+            <p>We implement industry-standard security measures including AES-256 encryption at rest, TLS 1.3 in transit, role-based access controls, and regular security audits. However, no method of transmission or storage is 100% secure.</p>
+
+            <h2>6. Intellectual Property</h2>
+            <p>The Service, including its design, code, algorithms, and documentation, is owned by Axal Global Inc. and protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, or reverse-engineer any part of the Service.</p>
+
+            <h2>7. Prohibited Uses</h2>
+            <p>You agree not to:</p>
+            <ul>
+                <li>Use the Service for any unlawful purpose</li>
+                <li>Attempt to gain unauthorized access to any part of the Service</li>
+                <li>Interfere with or disrupt the Service or servers</li>
+                <li>Use automated means (bots, scrapers) to access the Service without written permission</li>
+                <li>Transmit malware, viruses, or other harmful code</li>
+                <li>Impersonate another person or organization</li>
+                <li>Use the Service to compete with us or build a competing product</li>
+            </ul>
+
+            <h2>8. Third-Party Integrations</h2>
+            <p>The Service may integrate with third-party platforms (e.g., TMS, ERP, carrier portals, Samsara). Your use of these integrations is subject to their respective terms. We are not responsible for third-party services or their availability.</p>
+
+            <h2>9. Disclaimers</h2>
+            <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE.</p>
+            <p>We do not guarantee the outcome of any dispute filed through the Service. Recovery amounts depend on carrier responses, contractual terms, and applicable regulations.</p>
+
+            <h2>10. Limitation of Liability</h2>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, AXAL GLOBAL INC. SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR BUSINESS OPPORTUNITIES.</p>
+            <p>Our total liability for any claim arising from the Service shall not exceed the greater of (a) the fees you paid us in the twelve (12) months preceding the claim, or (b) $100.</p>
+
+            <h2>11. Indemnification</h2>
+            <p>You agree to indemnify, defend, and hold harmless Axal Global Inc., its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorneys' fees) arising from your use of the Service or violation of these Terms.</p>
+
+            <h2>12. Termination</h2>
+            <p>We may suspend or terminate your access to the Service at any time, with or without cause, with or without notice. Upon termination, your right to use the Service ceases immediately. Sections 5, 6, 9, 10, 11, and 14 survive termination.</p>
+
+            <h2>13. Modifications</h2>
+            <p>We reserve the right to modify these Terms at any time. We will notify you of material changes by posting the updated Terms and updating the "Last updated" date. Your continued use of the Service after changes constitutes acceptance of the new Terms.</p>
+
+            <h2>14. Governing Law</h2>
+            <p>These Terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any disputes shall be resolved in the state or federal courts located in Wilmington, Delaware.</p>
+
+            <h2>15. Contact</h2>
+            <p>For questions about these Terms, contact us at:</p>
+            <p><strong>Axal Global Inc.</strong><br>
+            Email: <a href="mailto:legal@edge77.com">legal@edge77.com</a><br>
+            Web: <a href="https://edge77.com">edge77.com</a></p>
+        </div>
+    </div>
+</main>
+
+
+<!-- FOOTER -->
+<footer class="border-t border-black/5 py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Product</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/#features" class="text-sm text-ink-light hover:text-ink transition-colors">Features</a></li>
+                    <li><a href="/pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
+                    <li><a href="/#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
+                    <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Legal</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<div class="bg-white pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] font-bold text-ink/5 leading-none tracking-tighter select-none text-center">EDGE77</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const header = document.getElementById('header');
+    let lastScroll = 0, ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                if (y > lastScroll && y > 200) header.classList.add('hidden');
+                else header.classList.remove('hidden');
+                lastScroll = y; ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+    mobileToggle.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuIcon.setAttribute('d', menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+    });
+})();
+</script>
+</body>
+</html>

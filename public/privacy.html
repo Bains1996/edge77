@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — EDGE77</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(250,250,250,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: transform 0.3s ease-in-out;
+        }
+        .header.hidden { transform: translateY(-100%); }
+
+        .btn-primary {
+            background: #1a73e8; color: #fff; font-weight: 500;
+            border-radius: 100px; padding: 14px 32px; font-size: 15px;
+            transition: all 0.2s ease; display: inline-flex;
+            align-items: center; gap: 8px; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26,115,232,0.3); }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 0; height: 1.5px; background: #1a1a1a; transition: width 0.2s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-menu.open { max-height: 400px; }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        html { scroll-behavior: smooth; }
+
+        .legal-content h2 {
+            font-size: 24px; font-weight: 700; color: #1a1a1a;
+            margin-top: 48px; margin-bottom: 16px;
+        }
+        .legal-content h3 {
+            font-size: 18px; font-weight: 600; color: #1a1a1a;
+            margin-top: 32px; margin-bottom: 12px;
+        }
+        .legal-content p {
+            font-size: 15px; line-height: 1.8; color: #6b6b6b;
+            margin-bottom: 16px;
+        }
+        .legal-content ul {
+            list-style: disc; padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .legal-content li {
+            font-size: 15px; line-height: 1.8; color: #6b6b6b;
+            margin-bottom: 8px;
+        }
+        .legal-content a { color: #1a73e8; text-decoration: none; }
+        .legal-content a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header" class="header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/#features" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Features</a>
+                <a href="/pricing" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Pricing</a>
+                <a href="/#customers" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Customers</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-3">
+                <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
+            </div>
+            <button id="mobile-toggle" class="md:hidden p-2 -mr-2" aria-label="Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5">
+        <div class="px-6 py-4 space-y-1">
+            <a href="/#features" class="block py-2.5 text-sm text-ink-light">Features</a>
+            <a href="/pricing" class="block py-2.5 text-sm text-ink-light">Pricing</a>
+            <a href="/login" class="block py-2.5 text-sm text-ink-light">Log in</a>
+            <a href="/signup" class="block btn-primary text-sm text-center mt-2">Start Free</a>
+        </div>
+    </div>
+</header>
+
+
+<!-- CONTENT -->
+<main class="pt-28 pb-20">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <div class="mb-8">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-ink mb-4">Privacy Policy</h1>
+            <p class="text-sm text-ink-muted">Last updated: July 12, 2026</p>
+        </div>
+
+        <div class="legal-content">
+            <h2>1. Introduction</h2>
+            <p>Axal Global Inc. ("we," "us," or "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use the EDGE77 platform and related services (collectively, the "Service").</p>
+            <p>By using the Service, you consent to the data practices described in this policy. If you do not agree, please discontinue use of the Service.</p>
+
+            <h2>2. Information We Collect</h2>
+            <h3>2.1 Information You Provide</h3>
+            <ul>
+                <li><strong>Account information:</strong> Name, email address, company name, job title, password</li>
+                <li><strong>Billing information:</strong> Payment card details processed by Stripe (we do not store card numbers)</li>
+                <li><strong>Invoice data:</strong> Carrier invoices, shipping documents, rate contracts uploaded for auditing</li>
+                <li><strong>Communications:</strong> Support requests, feedback, and correspondence</li>
+            </ul>
+
+            <h3>2.2 Information Collected Automatically</h3>
+            <ul>
+                <li><strong>Usage data:</strong> Pages viewed, features used, actions taken, timestamps</li>
+                <li><strong>Device data:</strong> Browser type, operating system, device identifiers</li>
+                <li><strong>Log data:</strong> IP address, access times, referring URLs</li>
+                <li><strong>Cookies:</strong> Session cookies for authentication and preference storage</li>
+            </ul>
+
+            <h3>2.3 Third-Party Data</h3>
+            <p>When you connect third-party services (TMS, ERP, carrier portals, Samsara), we receive data from those services as authorized by you. This includes invoice data, shipment tracking, and fuel transaction data.</p>
+
+            <h2>3. How We Use Your Information</h2>
+            <p>We use collected information to:</p>
+            <ul>
+                <li>Provide, operate, and maintain the Service</li>
+                <li>Process and audit carrier invoices on your behalf</li>
+                <li>File disputes and track recovery of overcharges</li>
+                <li>Process payments and manage your subscription</li>
+                <li>Send service-related communications (account alerts, billing notices)</li>
+                <li>Improve and optimize the Service</li>
+                <li>Detect, prevent, and address technical issues and fraud</li>
+                <li>Comply with legal obligations</li>
+            </ul>
+
+            <h2>4. How We Share Your Information</h2>
+            <p>We do <strong>not</strong> sell your personal information. We share data only in the following circumstances:</p>
+            <ul>
+                <li><strong>Service providers:</strong> We share data with trusted providers who assist in operating the Service (cloud hosting, payment processing, analytics). These providers are contractually bound to protect your data.</li>
+                <li><strong>Carrier disputes:</strong> When you approve a dispute, we share relevant invoice and contract data with the carrier to process the claim.</li>
+                <li><strong>Legal compliance:</strong> We may disclose information if required by law, regulation, or legal process.</li>
+                <li><strong>Business transfers:</strong> In connection with a merger, acquisition, or sale of assets, your data may be transferred with appropriate notice.</li>
+            </ul>
+
+            <h2>5. Data Security</h2>
+            <p>We implement industry-standard security measures:</p>
+            <ul>
+                <li>AES-256 encryption for data at rest</li>
+                <li>TLS 1.3 encryption for data in transit</li>
+                <li>Role-based access controls (RBAC) across all systems</li>
+                <li>Regular security audits and penetration testing</li>
+                <li>SOC 2 Type II compliance (Enterprise plan)</li>
+                <li>Automated threat detection and monitoring</li>
+            </ul>
+            <p>While we strive to protect your data, no method of electronic transmission or storage is 100% secure. We cannot guarantee absolute security.</p>
+
+            <h2>6. Data Retention</h2>
+            <p>We retain your data for as long as your account is active or as needed to provide the Service. Specifically:</p>
+            <ul>
+                <li><strong>Account data:</strong> Retained until you delete your account, then removed within 30 days</li>
+                <li><strong>Invoice data:</strong> Retained for the duration of your subscription plus 12 months for audit trail purposes</li>
+                <li><strong>Usage logs:</strong> Retained for 12 months for security and debugging</li>
+                <li><strong>Billing records:</strong> Retained for 7 years as required by tax and financial regulations</li>
+            </ul>
+            <p>After retention periods expire, data is securely deleted or anonymized.</p>
+
+            <h2>7. Your Rights</h2>
+            <p>Depending on your jurisdiction, you may have the following rights:</p>
+            <ul>
+                <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+                <li><strong>Correction:</strong> Request correction of inaccurate data</li>
+                <li><strong>Deletion:</strong> Request deletion of your personal data</li>
+                <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format</li>
+                <li><strong>Objection:</strong> Object to processing of your personal data</li>
+                <li><strong>Restriction:</strong> Request restricted processing in certain circumstances</li>
+            </ul>
+            <p>To exercise these rights, contact us at <a href="mailto:privacy@edge77.com">privacy@edge77.com</a>. We will respond within 30 days.</p>
+
+            <h2>8. International Data Transfers</h2>
+            <p>Your data may be processed in the United States or other countries where our service providers operate. By using the Service, you consent to the transfer of your data to these locations. We ensure appropriate safeguards are in place for international transfers.</p>
+
+            <h2>9. Children's Privacy</h2>
+            <p>The Service is not intended for individuals under 18 years of age. We do not knowingly collect personal information from children. If we discover we have collected data from a child, we will delete it promptly.</p>
+
+            <h2>10. Cookies and Tracking</h2>
+            <p>We use essential cookies for authentication and session management. We do not use third-party advertising cookies or tracking pixels. You can manage cookie preferences through your browser settings.</p>
+
+            <h2>11. Third-Party Links</h2>
+            <p>The Service may contain links to third-party websites. We are not responsible for the privacy practices of these sites. We encourage you to review their privacy policies.</p>
+
+            <h2>12. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of material changes by posting the updated policy and updating the "Last updated" date. Your continued use of the Service after changes constitutes acceptance of the revised policy.</p>
+
+            <h2>13. Contact Us</h2>
+            <p>For questions about this Privacy Policy or to exercise your data rights, contact us at:</p>
+            <p><strong>Axal Global Inc.</strong><br>
+            Email: <a href="mailto:privacy@edge77.com">privacy@edge77.com</a><br>
+            Web: <a href="https://edge77.com">edge77.com</a></p>
+        </div>
+    </div>
+</main>
+
+
+<!-- FOOTER -->
+<footer class="border-t border-black/5 py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Product</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/#features" class="text-sm text-ink-light hover:text-ink transition-colors">Features</a></li>
+                    <li><a href="/pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
+                    <li><a href="/#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
+                    <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Legal</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<div class="bg-white pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] font-bold text-ink/5 leading-none tracking-tighter select-none text-center">EDGE77</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const header = document.getElementById('header');
+    let lastScroll = 0, ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                if (y > lastScroll && y > 200) header.classList.add('hidden');
+                else header.classList.remove('hidden');
+                lastScroll = y; ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+    mobileToggle.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuIcon.setAttribute('d', menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+    });
+})();
+</script>
+</body>
+</html>

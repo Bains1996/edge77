@@ -1,6 +1,7 @@
 import os
 import smtplib
 import logging
+import asyncio
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone
@@ -282,6 +283,36 @@ def _send_via_brevo(to_email: str, subject: str, html_body: str) -> bool:
             return False
     except Exception as e:
         logger.error("[EDGE77 ENGINE] Brevo send failed for %s: %s", to_email, e)
+        return False
+
+
+async def _send_via_brevo_async(to_email: str, subject: str, html_body: str) -> bool:
+    import httpx
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "api-key": BREVO_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    payload = {
+        "sender": {"email": BREVO_FROM_EMAIL, "name": BREVO_FROM_NAME},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_body,
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, json=payload, headers=headers, timeout=30)
+        if resp.status_code in (200, 201):
+            logger.info("[EDGE77 ENGINE] Brevo email sent to %s (status=%d)", to_email, resp.status_code)
+            return True
+        else:
+            logger.error("[EDGE77 ENGINE] Brevo returned status %d for %s: %s", resp.status_code, to_email, resp.text[:200])
+            return False
+    except Exception as e:
+        logger.error("[EDGE77 ENGINE] Brevo async send failed for %s: %s", to_email, e)
         return False
 
 

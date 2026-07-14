@@ -123,28 +123,6 @@ async def process_invoice_background(
         result = evaluate_and_dispute(parsed.model_dump(), client_id)
         print(f"{LOG_PREFIX} STEP3 result: overcharge={result.overcharge}, fee={result.fee_earned}", file=sys.stderr, flush=True)
 
-        # 4. Update the original audit record with AI results
-        from v1_database.supabase_client import _rest_update, MOCK_MODE
-        try:
-            if MOCK_MODE:
-                print(f"{LOG_PREFIX} STEP4: Mock mode — skipping DB update", file=sys.stderr, flush=True)
-            else:
-                _rest_update("freight_audits", {
-                    "total_charge": parsed.total_charge,
-                    "currency": parsed.currency,
-                    "fuel_surcharge": parsed.fuel_surcharge,
-                    "base_freight_rate": parsed.base_freight_rate,
-                    "overcharge_amount": result.overcharge,
-                    "fee_earned": result.fee_earned,
-                    "status": result.status,
-                    "raw_text": extracted.raw_text[:5000] if extracted.raw_text else None,
-                    "ai_response": parsed.model_dump_json()[:5000] if hasattr(parsed, 'model_dump_json') else str(parsed)[:5000],
-                    "overcharge_detected": result.overcharge > 0,
-                }, {"tracking_id": f"eq.{tracking_id}", "client_id": f"eq.{client_id}"})
-                print(f"{LOG_PREFIX} STEP4: Audit record updated in DB", file=sys.stderr, flush=True)
-        except Exception as db_exc:
-            print(f"{LOG_PREFIX} STEP4: Failed to update audit record: {db_exc}", file=sys.stderr, flush=True)
-
         log.info(
             f"{LOG_PREFIX} Pipeline complete",
             tracking_id=tracking_id,
@@ -338,6 +316,61 @@ async def serve_dashboard():
         return FileResponse(str(dashboard), media_type="text/html")
     return HTMLResponse(
         content="<h1>EDGE77 Dashboard</h1><p>Dashboard not found. Place <code>public/dashboard.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/pricing", response_class=HTMLResponse, include_in_schema=False)
+async def serve_pricing():
+    page = PUBLIC_DIR / "pricing.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Pricing</h1><p>Pricing page not found. Place <code>public/pricing.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/terms", response_class=HTMLResponse, include_in_schema=False)
+async def serve_terms():
+    page = PUBLIC_DIR / "terms.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Terms of Service</h1><p>Terms page not found. Place <code>public/terms.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/privacy", response_class=HTMLResponse, include_in_schema=False)
+async def serve_privacy():
+    page = PUBLIC_DIR / "privacy.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Privacy Policy</h1><p>Privacy page not found. Place <code>public/privacy.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/login", response_class=HTMLResponse, include_in_schema=False)
+async def serve_login():
+    page = PUBLIC_DIR / "login.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Login</h1><p>Login page not found. Place <code>public/login.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/signup", response_class=HTMLResponse, include_in_schema=False)
+async def serve_signup():
+    page = PUBLIC_DIR / "signup.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Sign Up</h1><p>Signup page not found. Place <code>public/signup.html</code> in the project root.</p>",
         status_code=200,
     )
 

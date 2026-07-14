@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In — EDGE77</title>
+    <meta name="description" content="Log in to your EDGE77 freight audit dashboard.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        surface: '#fafafa',
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                        'accent-hover': '#1557b0',
+                        success: '#0d9f6e',
+                        error: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #fafafa; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+        .btn-primary { background: #1a73e8; color: #fff; font-weight: 500; border-radius: 100px; padding: 14px 32px; font-size: 15px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; width: 100%; }
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .input-field { width: 100%; background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 14px 16px; font-size: 15px; transition: all 0.2s ease; outline: none; }
+        .input-field:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+        .input-field::placeholder { color: #9e9e9e; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 10px; padding: 12px 16px; font-size: 13px; display: none; }
+        .error-msg.visible { display: block; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center px-6 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-10">
+                <a href="/" class="inline-flex items-center gap-2.5 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-ink flex items-center justify-center">
+                        <span class="text-white font-bold text-sm tracking-tight">E77</span>
+                    </div>
+                    <span class="text-ink font-bold text-xl tracking-tight">EDGE77</span>
+                </a>
+                <h1 class="text-2xl font-bold text-ink mb-2">Welcome back</h1>
+                <p class="text-sm text-ink-light">Log in to your freight audit dashboard</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMsg" class="error-msg mb-4"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-5" onsubmit="handleLogin(event)">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-ink mb-2">Email address</label>
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@company.com" class="input-field">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-ink mb-2">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password" class="input-field">
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="remember" class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent">
+                        <span class="text-sm text-ink-light">Remember me</span>
+                    </label>
+                    <a href="#" onclick="handleForgotPassword()" class="text-sm text-accent hover:text-accent-hover font-medium">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="loginBtn" class="btn-primary">
+                    <span id="loginText">Log in</span>
+                    <span id="loginSpinner" class="spinner hidden"></span>
+                </button>
+            </form>
+
+            <!-- Sign up link -->
+            <p class="mt-8 text-center text-sm text-ink-light">
+                Don't have an account?
+                <a href="/signup" class="text-accent hover:text-accent-hover font-medium">Start free audit</a>
+            </p>
+
+            <!-- Footer -->
+            <div class="mt-10 text-center">
+                <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ruarvrwswjhtgywkkjie.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YXJ2cndzd2podGd5d2traWplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYwNjA4MDAsImV4cCI6MjA0MTYzNjgwMH0.eNEFzO7vQnHjGo4EvYfGjKjYBfNvFnNcFqJfHq3pWkY';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const text = document.getElementById('loginText');
+            const spinner = document.getElementById('loginSpinner');
+            const errorEl = document.getElementById('errorMsg');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            errorEl.classList.remove('visible');
+            btn.disabled = true;
+            text.textContent = 'Logging in...';
+            spinner.classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                localStorage.setItem('edge77_user_id', data.user.id);
+                localStorage.setItem('edge77_user_email', data.user.email);
+                localStorage.setItem('edge77_access_token', data.session.access_token);
+                localStorage.setItem('edge77_api_token', data.session.access_token);
+
+                window.location.href = '/dashboard';
+            } catch (err) {
+                errorEl.textContent = err.message || 'Invalid email or password. Please try again.';
+                errorEl.classList.add('visible');
+                btn.disabled = false;
+                text.textContent = 'Log in';
+                spinner.classList.add('hidden');
+            }
+        }
+
+        async function handleForgotPassword() {
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                const errorEl = document.getElementById('errorMsg');
+                errorEl.textContent = 'Enter your email above, then click "Forgot password?"';
+                errorEl.classList.add('visible');
+                return;
+            }
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/dashboard',
+                });
+                if (error) throw error;
+                const errorEl = document.getElementById('errorMsg');
+                errorEl.style.background = '#f0fdf4';
+                errorEl.style.borderColor = '#bbf7d0';
+                errorEl.style.color = '#16a34a';
+                errorEl.textContent = 'Password reset email sent. Check your inbox.';
+                errorEl.classList.add('visible');
+            } catch (err) {
+                const errorEl = document.getElementById('errorMsg');
+                errorEl.textContent = err.message || 'Failed to send reset email.';
+                errorEl.classList.add('visible');
+            }
+        }
+
+        // Redirect if already logged in
+        (async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                localStorage.setItem('edge77_user_id', session.user.id);
+                localStorage.setItem('edge77_user_email', session.user.email);
+                localStorage.setItem('edge77_access_token', session.access_token);
+                localStorage.setItem('edge77_api_token', session.access_token);
+                window.location.href = '/dashboard';
+            }
+        })();
+    </script>
+</body>
+</html>

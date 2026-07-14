@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing — EDGE77</title>
+    <meta name="description" content="EDGE77 pricing: $0/mo Starter, $499/mo Growth, $2,999/mo Enterprise. Only pay when we save you money.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        surface: '#fafafa',
+                        'surface-dim': '#f0f0f0',
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                        'accent-hover': '#1557b0',
+                        success: '#0d9f6e',
+                        error: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+        }
+        .header.hidden { transform: translateY(-100%); }
+        .header.scrolled { background: rgba(250, 250, 250, 0.95); }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) rotateX(-40deg);
+            transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .char.visible {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+        }
+        .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .word.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        .pricing-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        .pricing-card.featured {
+            border-color: #1a73e8;
+            box-shadow: 0 4px 24px rgba(26, 115, 232, 0.12);
+        }
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 100px;
+            padding: 14px 32px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: #1557b0;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #1a1a1a;
+            font-weight: 500;
+            border-radius: 100px;
+            padding: 14px 32px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.25);
+        }
+
+        .dot-pattern {
+            background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 0; height: 1.5px;
+            background: #1a1a1a;
+            transition: width 0.2s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-menu.open { max-height: 400px; }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* Toggle */
+        .toggle-bg {
+            width: 44px; height: 24px;
+            background: #d4d4d4;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .toggle-bg.active { background: #1a73e8; }
+        .toggle-dot {
+            width: 20px; height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px; left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .toggle-bg.active .toggle-dot { transform: translateX(20px); }
+
+        /* FAQ */
+        .faq-item { border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+            padding-bottom: 24px;
+        }
+        .faq-item.open .faq-chevron { transform: rotate(180deg); }
+        .faq-chevron { transition: transform 0.3s ease; }
+
+        /* Comparison table */
+        .comparison-table th, .comparison-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .comparison-table th {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+        .comparison-table td {
+            font-size: 14px;
+            color: #6b6b6b;
+        }
+        .comparison-table tr:hover td {
+            background: rgba(26, 115, 232, 0.03);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/#features" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Features</a>
+                <a href="/#how-it-works" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">How It Works</a>
+                <a href="/pricing" class="nav-link text-sm text-ink hover:text-ink transition-colors">Pricing</a>
+                <a href="/#customers" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Customers</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-3">
+                <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
+            </div>
+
+            <button id="mobile-toggle" class="md:hidden p-2 -mr-2" aria-label="Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5">
+        <div class="px-6 py-4 space-y-1">
+            <a href="/#features" class="block py-2.5 text-sm text-ink-light">Features</a>
+            <a href="/#how-it-works" class="block py-2.5 text-sm text-ink-light">How It Works</a>
+            <a href="/pricing" class="block py-2.5 text-sm text-ink">Pricing</a>
+            <a href="/login" class="block py-2.5 text-sm text-ink-light">Log in</a>
+            <a href="/signup" class="block btn-primary text-sm text-center mt-2">Start Free</a>
+        </div>
+    </div>
+</header>
+
+
+<!-- ===== HERO ===== -->
+<section class="pt-32 pb-16 sm:pt-40 sm:pb-20">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+        <h1 id="hero-heading" class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-ink mb-6" style="perspective: 1000px;">
+        </h1>
+        <p id="hero-sub" class="text-lg sm:text-xl text-ink-light max-w-2xl mx-auto leading-relaxed">
+        </p>
+    </div>
+</section>
+
+
+<!-- ===== PRICING TOGGLE ===== -->
+<section class="pb-4">
+    <div class="flex items-center justify-center gap-4">
+        <span id="monthly-label" class="text-sm font-medium text-ink">Monthly</span>
+        <div id="pricing-toggle" class="toggle-bg" onclick="toggleBilling()">
+            <div class="toggle-dot"></div>
+        </div>
+        <span id="annual-label" class="text-sm font-medium text-ink-muted">Annual</span>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">Save 20%</span>
+    </div>
+</section>
+
+
+<!-- ===== PRICING CARDS ===== -->
+<section class="py-12 sm:py-16">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Starter -->
+            <div class="reveal reveal-delay-1 pricing-card">
+                <div class="text-sm font-semibold text-ink-muted mb-2">Starter</div>
+                <div class="flex items-baseline gap-1 mb-1">
+                    <span class="text-5xl font-bold text-ink" id="starter-price">$0</span>
+                    <span class="text-ink-muted">/mo</span>
+                </div>
+                <p class="text-sm text-ink-light mb-8">15% contingency. Pay only when we find overcharges.</p>
+                <a href="/signup" class="btn-secondary w-full justify-center mb-8">Get Started</a>
+                <div class="space-y-3 text-sm text-ink-light">
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Up to 50 invoices/month</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>AI-powered extraction</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Email support</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Basic reporting</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Standard processing</div>
+                </div>
+            </div>
+
+            <!-- Growth -->
+            <div class="reveal reveal-delay-2 pricing-card featured">
+                <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-accent">Growth</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent">Most Popular</span>
+                </div>
+                <div class="flex items-baseline gap-1 mb-1">
+                    <span class="text-5xl font-bold text-ink" id="growth-price">$499</span>
+                    <span class="text-ink-muted">/mo</span>
+                </div>
+                <p class="text-sm text-ink-light mb-8">12% contingency. For growing operations.</p>
+                <a href="/signup" class="btn-primary w-full justify-center mb-8">Start Free Trial</a>
+                <div class="space-y-3 text-sm text-ink-light">
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Up to 500 invoices/month</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>AI-powered extraction</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Priority support</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>API access</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Samsara integration</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Advanced analytics</div>
+                </div>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="reveal reveal-delay-3 pricing-card">
+                <div class="text-sm font-semibold text-ink-muted mb-2">Enterprise</div>
+                <div class="flex items-baseline gap-1 mb-1">
+                    <span class="text-5xl font-bold text-ink" id="enterprise-price">$2,999</span>
+                    <span class="text-ink-muted">/mo</span>
+                </div>
+                <p class="text-sm text-ink-light mb-8">10% contingency. Unlimited scale.</p>
+                <a href="mailto:sales@edge77.com" class="btn-secondary w-full justify-center mb-8">Contact Sales</a>
+                <div class="space-y-3 text-sm text-ink-light">
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Unlimited invoices</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>AI-powered extraction</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Dedicated support</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Custom contracts</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>SLA guarantee</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>SOC 2 compliance</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Simple pricing</p>
+            <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl font-bold tracking-tight text-ink">
+                Three steps to zero overcharges
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="reveal reveal-delay-1 text-center">
+                <div class="w-16 h-16 rounded-full bg-accent/8 flex items-center justify-center mx-auto mb-6">
+                    <span class="text-accent text-2xl font-bold">1</span>
+                </div>
+                <h3 class="text-lg font-semibold text-ink mb-3">Connect your carrier</h3>
+                <p class="text-sm text-ink-light leading-relaxed">Link your TMS, ERP, or email. We pull invoices automatically from 50+ carriers.</p>
+            </div>
+            <div class="reveal reveal-delay-2 text-center">
+                <div class="w-16 h-16 rounded-full bg-accent/8 flex items-center justify-center mx-auto mb-6">
+                    <span class="text-accent text-2xl font-bold">2</span>
+                </div>
+                <h3 class="text-lg font-semibold text-ink mb-3">AI audits every invoice</h3>
+                <p class="text-sm text-ink-light leading-relaxed">We cross-reference rates, contracts, tariffs, and accessorials. Every line item. Every time.</p>
+            </div>
+            <div class="reveal reveal-delay-3 text-center">
+                <div class="w-16 h-16 rounded-full bg-accent/8 flex items-center justify-center mx-auto mb-6">
+                    <span class="text-accent text-2xl font-bold">3</span>
+                </div>
+                <h3 class="text-lg font-semibold text-ink mb-3">Recover your money</h3>
+                <p class="text-sm text-ink-light leading-relaxed">We file disputes automatically and track recovery. You only pay a percentage of what we save you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== FEATURE COMPARISON ===== -->
+<section class="py-16 sm:py-20">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="reveal text-3xl sm:text-4xl font-bold tracking-tight text-ink">
+                Feature comparison
+            </h2>
+        </div>
+
+        <div class="reveal reveal-delay-1 overflow-x-auto rounded-2xl border border-black/8 bg-white">
+            <table class="comparison-table w-full">
+                <thead>
+                    <tr class="border-b border-black/8">
+                        <th class="text-ink-muted font-normal w-1/3">Feature</th>
+                        <th class="w-1/5">Starter</th>
+                        <th class="w-1/5">Growth</th>
+                        <th class="w-1/5">Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-medium text-ink">Monthly invoices</td>
+                        <td>50</td>
+                        <td>500</td>
+                        <td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Contingency fee</td>
+                        <td>15%</td>
+                        <td>12%</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">AI extraction accuracy</td>
+                        <td>99.7%</td>
+                        <td>99.7%</td>
+                        <td>99.7%</td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Carrier formats</td>
+                        <td>50+</td>
+                        <td>50+</td>
+                        <td>50+</td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Auto-dispute filing</td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">API access</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Samsara integration</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Custom contracts</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Advanced analytics</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Dedicated account manager</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">SLA guarantee</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">SOC 2 compliance</td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
+                        <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium text-ink">Priority support</td>
+                        <td>Email</td>
+                        <td>Priority</td>
+                        <td>Dedicated</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== FAQ ===== -->
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="reveal text-3xl sm:text-4xl font-bold tracking-tight text-ink">
+                Frequently asked questions
+            </h2>
+        </div>
+
+        <div class="space-y-0">
+            <div class="faq-item reveal">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">What does "contingency fee" mean?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    A contingency fee means we only get paid when we save you money. If we find $10,000 in overcharges on the Starter plan, we take 15% ($1,500) and you keep the rest ($8,500). If we find nothing, you pay nothing. Zero risk.
+                </div>
+            </div>
+
+            <div class="faq-item reveal reveal-delay-1">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">Is there a free trial?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    Yes. The Starter plan is completely free — $0/month with a 15% contingency fee. You can upgrade to Growth ($499/mo) or Enterprise ($2,999/mo) at any time for lower contingency rates and additional features.
+                </div>
+            </div>
+
+            <div class="faq-item reveal reveal-delay-2">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">How long does setup take?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    Most customers are fully onboarded within 24 hours. Connect your carrier data source (TMS, ERP, or email), upload your rate contracts, and we start auditing immediately. No hardware. No installations.
+                </div>
+            </div>
+
+            <div class="faq-item reveal reveal-delay-3">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">Can I switch plans later?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    Absolutely. Upgrade or downgrade at any time. When you upgrade, the lower contingency rate applies immediately. When you downgrade, it applies at your next billing cycle. No penalties.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">What carriers do you support?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    We support 50+ LTL and FTL carriers including FedEx Freight, XPO Logistics, UPS Freight, Estes, Old Dominion, Saia, and more. We handle PDFs, EDI, XML, and scanned documents with 99.7% extraction accuracy.
+                </div>
+            </div>
+
+            <div class="faq-item reveal reveal-delay-1">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">Is my data secure?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    Yes. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We're SOC 2 Type II compliant on the Enterprise plan and use role-based access controls across all tiers. Your data never leaves our secure infrastructure.
+                </div>
+            </div>
+
+            <div class="faq-item reveal reveal-delay-2">
+                <button class="w-full flex items-center justify-between py-6 text-left" onclick="toggleFaq(this)">
+                    <span class="text-base font-medium text-ink pr-4">How do disputes work?</span>
+                    <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
+                </button>
+                <div class="faq-answer text-sm text-ink-light leading-relaxed">
+                    When we find an overcharge, you review the finding in your dashboard and approve the dispute with one click. We generate a legal-grade dispute letter with supporting evidence and file it directly with the carrier. We track the entire recovery process and notify you when funds are recovered.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== CTA ===== -->
+<section class="py-24 sm:py-32 bg-white">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <div class="reveal dot-pattern rounded-3xl py-20 px-8 relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-4xl sm:text-5xl font-bold text-ink mb-5">
+                    Start recovering money today
+                </h2>
+                <p class="text-ink-light text-lg mb-10 max-w-xl mx-auto">
+                    Join 340+ shippers who recover millions in carrier overcharges — automatically.
+                </p>
+                <a href="/signup" class="btn-primary text-base px-10 py-4">
+                    Start Free Audit
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
+                <div class="mt-6 flex items-center justify-center gap-6 text-xs text-ink-muted">
+                    <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-success text-sm">check_circle</span>
+                        No credit card required
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-success text-sm">check_circle</span>
+                        Cancel anytime
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="border-t border-black/5 py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Product</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/#features" class="text-sm text-ink-light hover:text-ink transition-colors">Features</a></li>
+                    <li><a href="/pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
+                    <li><a href="/#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
+                    <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Legal</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ===== MASSIVE FOOTER WORDMARK ===== -->
+<div class="bg-white pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] font-bold text-ink/5 leading-none tracking-tighter select-none text-center">
+            EDGE77
+        </div>
+    </div>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+(function() {
+    'use strict';
+
+    // === CHARACTER-BY-CHARACTER HERO ANIMATION ===
+    const heroText = "Simple, transparent pricing";
+    const heroHeading = document.getElementById('hero-heading');
+    const heroSub = document.getElementById('hero-sub');
+
+    function splitTextToChars(text, container) {
+        container.innerHTML = '';
+        const words = text.split(' ');
+        words.forEach((word, wi) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.style.display = 'inline-block';
+            wordSpan.style.whiteSpace = 'nowrap';
+            word.split('').forEach((char, ci) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = char;
+                span.style.transitionDelay = `${(wi * 5 + ci) * 30}ms`;
+                wordSpan.appendChild(span);
+            });
+            container.appendChild(wordSpan);
+            if (wi < words.length - 1) {
+                container.appendChild(document.createTextNode(' '));
+            }
+        });
+    }
+
+    const heroSubText = "No subscriptions. No setup fees. Only pay when we save you money.";
+    function splitTextToWords(text, container) {
+        container.innerHTML = '';
+        text.split(' ').forEach((word, i) => {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = word;
+            span.style.transitionDelay = `${i * 40}ms`;
+            container.appendChild(span);
+            container.appendChild(document.createTextNode(' '));
+        });
+    }
+
+    setTimeout(() => {
+        splitTextToChars(heroText, heroHeading);
+        splitTextToWords(heroSubText, heroSub);
+        requestAnimationFrame(() => {
+            document.querySelectorAll('#hero-heading .char').forEach(c => c.classList.add('visible'));
+            document.querySelectorAll('#hero-sub .word').forEach(w => w.classList.add('visible'));
+        });
+    }, 300);
+
+
+    // === SCROLL-TRIGGERED REVEALS ===
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+
+
+    // === HEADER HIDE/SHOW ON SCROLL ===
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const currentScroll = window.scrollY;
+                if (currentScroll > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                if (currentScroll > lastScroll && currentScroll > 200) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+                lastScroll = currentScroll;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+
+    // === MOBILE MENU ===
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+
+    mobileToggle.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuIcon.setAttribute('d', menuOpen
+            ? 'M6 18L18 6M6 6l12 12'
+            : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+        );
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuOpen = false;
+            mobileMenu.classList.remove('open');
+            menuIcon.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+        });
+    });
+
+})();
+
+
+// === PRICING TOGGLE ===
+let isAnnual = false;
+const prices = {
+    starter: { monthly: 0, annual: 0 },
+    growth: { monthly: 499, annual: 399 },
+    enterprise: { monthly: 2999, annual: 2399 },
+};
+
+function toggleBilling() {
+    isAnnual = !isAnnual;
+    const toggle = document.getElementById('pricing-toggle');
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+
+    toggle.classList.toggle('active', isAnnual);
+    monthlyLabel.classList.toggle('text-ink', !isAnnual);
+    monthlyLabel.classList.toggle('text-ink-muted', isAnnual);
+    annualLabel.classList.toggle('text-ink', isAnnual);
+    annualLabel.classList.toggle('text-ink-muted', !isAnnual);
+
+    const fmt = n => n === 0 ? '$0' : '$' + n.toLocaleString();
+    document.getElementById('starter-price').textContent = fmt(prices.starter[isAnnual ? 'annual' : 'monthly']);
+    document.getElementById('growth-price').textContent = fmt(prices.growth[isAnnual ? 'annual' : 'monthly']);
+    document.getElementById('enterprise-price').textContent = fmt(prices.enterprise[isAnnual ? 'annual' : 'monthly']);
+}
+
+
+// === FAQ ACCORDION ===
+function toggleFaq(button) {
+    const item = button.parentElement;
+    const wasOpen = item.classList.contains('open');
+
+    // Close all others
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+    if (!wasOpen) {
+        item.classList.add('open');
+    }
+}
+
+</script>
+</body>
+</html>

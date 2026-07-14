@@ -136,7 +136,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     - Bearer token authentication
     """
 
-    SKIP_PATHS: set[str] = {"/", "/dashboard", "/health", "/health/live", "/health/ready", "/v1/samsara/callback", "/v1/billing/webhook"}
+    SKIP_PATHS: set[str] = {"/", "/dashboard", "/pricing", "/terms", "/privacy", "/login", "/signup", "/health", "/health/live", "/health/ready", "/v1/samsara/callback", "/v1/billing/webhook"}
 
     def __init__(
         self,
@@ -149,6 +149,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.hmac_secret = hmac_secret or HMAC_SECRET
         self.api_token = api_token or INTERNAL_API_TOKEN
         self.rate_limiter = rate_limiter or RateLimiter()
+        environment = os.getenv("ENVIRONMENT", "development")
+        if environment == "production" and not self.hmac_secret:
+            import sys
+            print("[EDGE77 ENGINE] WARNING: HMAC_SECRET not set in production mode. HMAC verification is disabled.", file=sys.stderr, flush=True)
 
     def _get_client_id(self, request: Request) -> str:
         """Extract a client identifier from the request for rate limiting."""

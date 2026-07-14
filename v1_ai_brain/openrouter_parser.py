@@ -10,7 +10,6 @@ from .prompts import INVOICE_EXTRACTION_PROMPT
 logger = logging.getLogger("edge77.engine")
 
 PRIMARY_MODEL = "anthropic/claude-3.5-sonnet"
-FALLBACK_MODEL = "openai/gpt-4o-mini"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 

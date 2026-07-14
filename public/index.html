@@ -227,46 +227,80 @@
             background-size: 24px 24px;
         }
 
-        /* Starfield */
-        .starfield {
-            background: #0a0a0a;
-            position: relative;
-            overflow: hidden;
-        }
-        .starfield::before {
-            content: '';
+        /* Floating shapes */
+        .floating-shape {
             position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.35), transparent),
-                radial-gradient(1px 1px at 75% 15%, rgba(255,255,255,0.25), transparent),
-                radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,0.4), transparent);
+            border-radius: 50%;
             pointer-events: none;
+            opacity: 0.5;
+        }
+        @keyframes float-1 {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-3deg); }
+        }
+        @keyframes float-2 {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-30px) rotate(10deg) scale(1.05); }
+        }
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(10px, -15px); }
+            50% { transform: translate(-5px, -25px); }
+            75% { transform: translate(-10px, -10px); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes scan-line {
+            0% { top: -2px; }
+            100% { top: calc(100% + 2px); }
+        }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes invoice-float {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-12px) rotate(1deg); }
+        }
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(26,115,232,0.15), 0 0 60px rgba(26,115,232,0.05); }
+            50% { box-shadow: 0 0 30px rgba(26,115,232,0.25), 0 0 80px rgba(26,115,232,0.1); }
+        }
+        @keyframes dash-move {
+            to { stroke-dashoffset: -20; }
+        }
+        @keyframes number-count {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Glow behind product */
-        .product-glow {
-            position: relative;
+        /* Gradient mesh background */
+        .gradient-mesh {
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(26,115,232,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(13,159,110,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(26,115,232,0.04) 0%, transparent 50%);
         }
-        .product-glow::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%;
-            height: 120%;
-            background: radial-gradient(ellipse at center, rgba(26, 115, 232, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+
+        /* Invoice card floating animation */
+        .invoice-card {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            animation: invoice-float 6s ease-in-out infinite;
         }
+        .invoice-card:nth-child(2) { animation-delay: -2s; }
+        .invoice-card:nth-child(3) { animation-delay: -4s; }
 
         /* Gradient text */
         .gradient-text {
@@ -274,6 +308,43 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        /* Animated gradient border */
+        .gradient-border {
+            position: relative;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #1a73e8, #0d9f6e, #1a73e8);
+            background-size: 200% 200%;
+            animation: gradient-shift 4s ease infinite;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        /* Glass morphism */
+        .glass {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Animated dot grid */
+        .dot-grid {
+            background-image: radial-gradient(circle, rgba(26,115,232,0.15) 1px, transparent 1px);
+            background-size: 32px 32px;
         }
 
         /* Smooth scroll */
@@ -399,13 +470,82 @@
 
 
 <!-- ===== HERO ===== -->
-<section class="relative min-h-screen flex items-center justify-center pt-16 pb-20 overflow-hidden">
-    <!-- Subtle background glow -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(26,115,232,0.06)_0%,transparent_70%)] pointer-events-none"></div>
+<section class="relative min-h-screen flex items-center justify-center pt-16 pb-20 gradient-mesh">
+    <!-- Floating shapes -->
+    <div class="floating-shape w-64 h-64 bg-accent/5 top-20 -left-20 z-0" style="animation: float-1 8s ease-in-out infinite;"></div>
+    <div class="floating-shape w-40 h-40 bg-success/5 top-40 right-10 z-0" style="animation: float-2 10s ease-in-out infinite; animation-delay: -3s;"></div>
+    <div class="floating-shape w-32 h-32 bg-accent/3 bottom-32 left-1/4 z-0" style="animation: float-3 12s ease-in-out infinite;"></div>
+    <div class="floating-shape w-20 h-20 bg-success/8 top-1/3 right-1/4 z-0" style="animation: float-1 7s ease-in-out infinite; animation-delay: -5s;"></div>
 
-    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+    <!-- Dot grid overlay -->
+    <div class="absolute inset-0 dot-grid opacity-30 pointer-events-none"></div>
+
+    <!-- Gradient orb -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(26,115,232,0.1)_0%,transparent_60%)] pointer-events-none" style="animation: glow-pulse 6s ease-in-out infinite;"></div>
+
+    <!-- Floating invoice cards (left side) -->
+    <div class="absolute left-8 lg:left-16 top-1/3 hidden lg:block z-20" style="animation: invoice-float 6s ease-in-out infinite;">
+        <div class="invoice-card w-56">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-accent text-sm">description</span>
+                </div>
+                <div>
+                    <div class="text-[10px] font-semibold text-ink">FedEx Freight</div>
+                    <div class="text-[9px] text-ink-muted">INV-2026-4821</div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-muted">Total</span>
+                <span class="text-sm font-bold text-ink">$4,281.50</span>
+            </div>
+            <div class="mt-2 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                <span class="text-[10px] text-error font-medium">Overcharge: $342.16</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating invoice cards (right side) -->
+    <div class="absolute right-8 lg:right-16 top-1/2 hidden lg:block z-20" style="animation: invoice-float 7s ease-in-out infinite; animation-delay: -2s;">
+        <div class="invoice-card w-52">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-success text-sm">verified_user</span>
+                </div>
+                <div>
+                    <div class="text-[10px] font-semibold text-ink">XPO Logistics</div>
+                    <div class="text-[9px] text-ink-muted">INV-2026-7293</div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-muted">Total</span>
+                <span class="text-sm font-bold text-ink">$2,156.00</span>
+            </div>
+            <div class="mt-2 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                <span class="text-[10px] text-success font-medium">Verified — no issues</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating scan indicator -->
+    <div class="absolute left-1/2 -translate-x-1/2 bottom-20 hidden lg:block z-20" style="animation: invoice-float 5s ease-in-out infinite; animation-delay: -1s;">
+        <div class="glass rounded-full px-5 py-2.5 flex items-center gap-3">
+            <div class="relative">
+                <span class="material-symbols-outlined text-accent text-lg">shield</span>
+                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success border-2 border-white" style="animation: pulse-ring 2s ease-out infinite;"></span>
+            </div>
+            <div>
+                <div class="text-[10px] font-semibold text-ink">Contract Compliance</div>
+                <div class="text-[9px] text-ink-muted">12 rules enforced</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative z-30 max-w-5xl mx-auto px-6 text-center">
         <!-- Badge -->
-        <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-black/8 bg-white mb-8">
+        <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-black/8 bg-white/80 backdrop-blur-sm mb-8">
             <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
             <span class="text-xs font-medium text-ink-muted">Now auditing 340+ enterprise shippers</span>
         </div>
@@ -420,9 +560,12 @@
 
         <!-- CTAs -->
         <div class="reveal reveal-delay-2 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <a href="/signup" class="btn-primary text-base px-8 py-4">
-                Start Free Audit
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            <a href="/signup" class="btn-primary text-base px-8 py-4 relative overflow-hidden group">
+                <span class="relative z-10 flex items-center gap-2">
+                    Start Free Audit
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </span>
+                <span class="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             </a>
             <a href="#how-it-works" class="btn-secondary text-base px-8 py-4">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -431,7 +574,7 @@
         </div>
 
         <!-- Stats -->
-        <div class="reveal reveal-delay-3 inline-flex flex-wrap items-center justify-center gap-8 sm:gap-14 px-8 sm:px-14 py-5 rounded-2xl border border-black/5 bg-white">
+        <div class="reveal reveal-delay-3 inline-flex flex-wrap items-center justify-center gap-8 sm:gap-14 px-8 sm:px-14 py-5 rounded-2xl border border-black/5 bg-white/80 backdrop-blur-sm">
             <div class="text-center">
                 <div class="text-2xl sm:text-3xl font-bold text-ink">$2.4B+</div>
                 <div class="text-xs text-ink-muted mt-1">Invoices Audited</div>
@@ -478,8 +621,12 @@
 
 
 <!-- ===== HOW IT WORKS ===== -->
-<section id="how-it-works" class="py-24 sm:py-32">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+<section id="how-it-works" class="py-24 sm:py-32 relative">
+    <!-- Background pattern -->
+    <div class="absolute inset-0 dot-grid opacity-20 pointer-events-none"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
         <div class="text-center mb-16 sm:mb-20">
             <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Process</p>
             <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-ink">
@@ -490,41 +637,64 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="reveal reveal-delay-1 product-card p-8">
-                <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-accent text-xl">upload_file</span>
-                </div>
-                <div class="text-xs font-bold text-accent mb-3 tracking-wider">01</div>
-                <h3 class="text-lg font-semibold text-ink mb-2">Forward Invoices</h3>
-                <p class="text-sm text-ink-light leading-relaxed">Send carrier PDFs to our secure gateway via email or API.</p>
+        <!-- Steps with connecting line -->
+        <div class="relative">
+            <!-- Connecting line (desktop) -->
+            <div class="hidden lg:block absolute top-24 left-[12.5%] right-[12.5%] h-px">
+                <div class="w-full h-full bg-gradient-to-r from-accent/30 via-accent/10 to-accent/30"></div>
+                <svg class="absolute inset-0 w-full h-4 -top-2" preserveAspectRatio="none">
+                    <line x1="0" y1="8" x2="100%" y2="8" stroke="rgba(26,115,232,0.3)" stroke-width="2" stroke-dasharray="8 4" style="animation: dash-move 1s linear infinite;"/>
+                </svg>
             </div>
 
-            <div class="reveal reveal-delay-2 product-card p-8">
-                <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-accent text-xl">psychology</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="reveal reveal-delay-1 product-card p-8 relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-accent text-2xl">upload_file</span>
+                    </div>
+                    <div class="text-xs font-bold text-accent mb-3 tracking-wider flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center text-[10px]">01</span>
+                        <div class="h-px flex-1 bg-accent/20"></div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-ink mb-2">Forward Invoices</h3>
+                    <p class="text-sm text-ink-light leading-relaxed">Send carrier PDFs to our secure gateway via email or API.</p>
                 </div>
-                <div class="text-xs font-bold text-accent mb-3 tracking-wider">02</div>
-                <h3 class="text-lg font-semibold text-ink mb-2">AI Extracts Data</h3>
-                <p class="text-sm text-ink-light leading-relaxed">Claude 3.5 Sonnet parses every line item with near-perfect accuracy.</p>
-            </div>
 
-            <div class="reveal reveal-delay-3 product-card p-8">
-                <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-accent text-xl">gpp_maybe</span>
+                <div class="reveal reveal-delay-2 product-card p-8 relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-accent text-2xl">psychology</span>
+                    </div>
+                    <div class="text-xs font-bold text-accent mb-3 tracking-wider flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center text-[10px]">02</span>
+                        <div class="h-px flex-1 bg-accent/20"></div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-ink mb-2">AI Extracts Data</h3>
+                    <p class="text-sm text-ink-light leading-relaxed">Claude 3.5 Sonnet parses every line item with near-perfect accuracy.</p>
                 </div>
-                <div class="text-xs font-bold text-accent mb-3 tracking-wider">03</div>
-                <h3 class="text-lg font-semibold text-ink mb-2">Detect Overcharges</h3>
-                <p class="text-sm text-ink-light leading-relaxed">Every charge is cross-referenced against your negotiated contract limits.</p>
-            </div>
 
-            <div class="reveal reveal-delay-4 product-card p-8">
-                <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-accent text-xl">payments</span>
+                <div class="reveal reveal-delay-3 product-card p-8 relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-accent text-2xl">gpp_maybe</span>
+                    </div>
+                    <div class="text-xs font-bold text-accent mb-3 tracking-wider flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center text-[10px]">03</span>
+                        <div class="h-px flex-1 bg-accent/20"></div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-ink mb-2">Detect Overcharges</h3>
+                    <p class="text-sm text-ink-light leading-relaxed">Every charge is cross-referenced against your negotiated contract limits.</p>
                 </div>
-                <div class="text-xs font-bold text-accent mb-3 tracking-wider">04</div>
-                <h3 class="text-lg font-semibold text-ink mb-2">Auto-Dispute & Recover</h3>
-                <p class="text-sm text-ink-light leading-relaxed">We file disputes and recover your money — no manual effort required.</p>
+
+                <div class="reveal reveal-delay-4 product-card p-8 relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-success text-2xl">payments</span>
+                    </div>
+                    <div class="text-xs font-bold text-success mb-3 tracking-wider flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center text-[10px]">04</span>
+                        <div class="h-px flex-1 bg-success/20"></div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-ink mb-2">Auto-Dispute & Recover</h3>
+                    <p class="text-sm text-ink-light leading-relaxed">We file disputes and recover your money — no manual effort required.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -532,8 +702,16 @@
 
 
 <!-- ===== PRODUCT DEMO (Dark Section) ===== -->
-<section class="py-24 sm:py-32 bg-ink">
-    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+<section class="py-24 sm:py-32 bg-ink relative overflow-hidden">
+    <!-- Background glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(26,115,232,0.12)_0%,transparent_60%)] pointer-events-none"></div>
+
+    <!-- Floating elements -->
+    <div class="absolute top-20 left-10 w-3 h-3 rounded-full bg-accent/30" style="animation: float-2 6s ease-in-out infinite;"></div>
+    <div class="absolute bottom-32 right-20 w-2 h-2 rounded-full bg-success/40" style="animation: float-1 8s ease-in-out infinite; animation-delay: -3s;"></div>
+    <div class="absolute top-1/3 right-10 w-4 h-4 rounded-full bg-accent/20" style="animation: float-3 7s ease-in-out infinite;"></div>
+
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 relative">
         <div class="text-center mb-16">
             <p class="reveal text-sm font-semibold text-white/40 tracking-widest uppercase mb-4">Product</p>
             <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
@@ -544,9 +722,12 @@
             </p>
         </div>
 
-        <!-- Dashboard mockup -->
-        <div class="scale-reveal reveal-delay-3 relative rounded-2xl overflow-hidden border border-white/10">
-            <div class="bg-[#0f1528] p-1">
+        <!-- Dashboard mockup with glow -->
+        <div class="scale-reveal reveal-delay-3 relative rounded-2xl overflow-hidden" style="animation: glow-pulse 4s ease-in-out infinite;">
+            <!-- Gradient border -->
+            <div class="absolute -inset-px rounded-2xl bg-gradient-to-r from-accent/40 via-success/20 to-accent/40 pointer-events-none"></div>
+
+            <div class="relative bg-[#0f1528] p-1 rounded-2xl">
                 <!-- Title bar -->
                 <div class="flex items-center gap-2 px-4 py-3">
                     <div class="flex gap-1.5">
@@ -557,33 +738,39 @@
                     <div class="flex-1 text-center text-xs text-white/30 font-mono">edge77.com/dashboard</div>
                 </div>
                 <!-- Dashboard content -->
-                <div class="bg-[#060913] rounded-t-lg p-6 sm:p-8">
+                <div class="relative bg-[#060913] rounded-t-lg p-6 sm:p-8 overflow-hidden">
+                    <!-- Scanning line animation -->
+                    <div class="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent pointer-events-none z-10" style="animation: scan-line 4s linear infinite;"></div>
+
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-white/5 rounded-xl p-4">
+                        <div class="bg-white/5 rounded-xl p-4 hover:bg-white/8 transition-colors duration-300">
                             <div class="text-[10px] uppercase tracking-wider text-white/30 mb-1">Total Audits</div>
-                            <div class="text-2xl font-bold text-white">1,247</div>
+                            <div class="text-2xl font-bold text-white" style="animation: number-count 0.6s ease-out;">1,247</div>
                         </div>
-                        <div class="bg-white/5 rounded-xl p-4">
+                        <div class="bg-white/5 rounded-xl p-4 hover:bg-white/8 transition-colors duration-300">
                             <div class="text-[10px] uppercase tracking-wider text-white/30 mb-1">Overcharges Found</div>
-                            <div class="text-2xl font-bold text-error">89</div>
+                            <div class="text-2xl font-bold text-error" style="animation: number-count 0.6s ease-out 0.1s both;">89</div>
                         </div>
-                        <div class="bg-white/5 rounded-xl p-4">
+                        <div class="bg-white/5 rounded-xl p-4 hover:bg-white/8 transition-colors duration-300">
                             <div class="text-[10px] uppercase tracking-wider text-white/30 mb-1">Total Recovered</div>
-                            <div class="text-2xl font-bold text-success">$127,450</div>
+                            <div class="text-2xl font-bold text-success" style="animation: number-count 0.6s ease-out 0.2s both;">$127,450</div>
                         </div>
-                        <div class="bg-white/5 rounded-xl p-4">
+                        <div class="bg-white/5 rounded-xl p-4 hover:bg-white/8 transition-colors duration-300">
                             <div class="text-[10px] uppercase tracking-wider text-white/30 mb-1">Fees Earned</div>
-                            <div class="text-2xl font-bold text-accent">$19,117</div>
+                            <div class="text-2xl font-bold text-accent" style="animation: number-count 0.6s ease-out 0.3s both;">$19,117</div>
                         </div>
                     </div>
                     <!-- Table mockup -->
                     <div class="bg-white/5 rounded-xl overflow-hidden">
                         <div class="px-5 py-3 border-b border-white/5 flex items-center justify-between">
                             <span class="text-xs font-semibold text-white">Recent Audits</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/40">Live</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/40 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+                                Live
+                            </span>
                         </div>
                         <div class="divide-y divide-white/5">
-                            <div class="px-5 py-3 flex items-center justify-between">
+                            <div class="px-5 py-3 flex items-center justify-between hover:bg-white/3 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <span class="font-mono text-xs text-white">TRK-2026-0891</span>
                                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">PENDING</span>
@@ -593,7 +780,7 @@
                                     <span class="text-[10px] text-white/30 ml-2">overcharge</span>
                                 </div>
                             </div>
-                            <div class="px-5 py-3 flex items-center justify-between">
+                            <div class="px-5 py-3 flex items-center justify-between hover:bg-white/3 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <span class="font-mono text-xs text-white">TRK-2026-0892</span>
                                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PASS</span>
@@ -602,7 +789,7 @@
                                     <span class="font-mono text-xs text-white/30">—</span>
                                 </div>
                             </div>
-                            <div class="px-5 py-3 flex items-center justify-between">
+                            <div class="px-5 py-3 flex items-center justify-between hover:bg-white/3 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <span class="font-mono text-xs text-white">TRK-2026-0893</span>
                                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">DISPUTED</span>
@@ -622,7 +809,8 @@
 
 
 <!-- ===== FEATURES ===== -->
-<section id="features" class="py-24 sm:py-32">
+<section id="features" class="py-24 sm:py-32 relative">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/8 to-transparent"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-16 sm:mb-20">
             <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Capabilities</p>
@@ -635,24 +823,27 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="reveal reveal-delay-1 product-card p-8 sm:p-10">
-                <div class="w-14 h-14 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
+            <div class="reveal reveal-delay-1 product-card p-8 sm:p-10 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/5 to-transparent rounded-bl-full pointer-events-none group-hover:from-accent/10 transition-all duration-500"></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <span class="material-symbols-outlined text-accent text-2xl">document_scanner</span>
                 </div>
                 <h3 class="text-xl font-semibold text-ink mb-3">Intelligent Parsing</h3>
                 <p class="text-sm text-ink-light leading-relaxed">99.7% extraction accuracy across 50+ carrier formats. Handles PDFs, EDI, XML, and scanned documents.</p>
             </div>
 
-            <div class="reveal reveal-delay-2 product-card p-8 sm:p-10">
-                <div class="w-14 h-14 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-accent text-2xl">verified_user</span>
+            <div class="reveal reveal-delay-2 product-card p-8 sm:p-10 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-success/5 to-transparent rounded-bl-full pointer-events-none group-hover:from-success/10 transition-all duration-500"></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <span class="material-symbols-outlined text-success text-2xl">verified_user</span>
                 </div>
                 <h3 class="text-xl font-semibold text-ink mb-3">Contract Compliance</h3>
                 <p class="text-sm text-ink-light leading-relaxed">Set your fuel caps, accessorials limits, and rate schedules. We enforce them against every invoice.</p>
             </div>
 
-            <div class="reveal reveal-delay-3 product-card p-8 sm:p-10">
-                <div class="w-14 h-14 rounded-2xl bg-accent/8 flex items-center justify-center mb-6">
+            <div class="reveal reveal-delay-3 product-card p-8 sm:p-10 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/5 to-transparent rounded-bl-full pointer-events-none group-hover:from-accent/10 transition-all duration-500"></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <span class="material-symbols-outlined text-accent text-2xl">balance</span>
                 </div>
                 <h3 class="text-xl font-semibold text-ink mb-3">Autonomous Disputes</h3>
@@ -813,9 +1004,16 @@
 
 
 <!-- ===== CTA ===== -->
-<section class="py-24 sm:py-32 bg-white">
-    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+<section class="py-24 sm:py-32 bg-white relative overflow-hidden">
+    <!-- Background elements -->
+    <div class="absolute inset-0 dot-grid opacity-15 pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(26,115,232,0.06)_0%,transparent_60%)] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
         <div class="reveal dot-pattern rounded-3xl py-20 px-8 relative overflow-hidden">
+            <!-- Animated gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/3 via-transparent to-success/3 pointer-events-none"></div>
+
             <div class="relative z-10">
                 <h2 class="text-4xl sm:text-5xl font-bold text-ink mb-5">
                     Stop leaving money on the table
@@ -823,9 +1021,12 @@
                 <p class="text-ink-light text-lg mb-10 max-w-xl mx-auto">
                     Join 340+ shippers who recover millions in carrier overcharges — automatically.
                 </p>
-                <a href="/signup" class="btn-primary text-base px-10 py-4">
-                    Start Free Audit
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                <a href="/signup" class="btn-primary text-base px-10 py-4 relative overflow-hidden group">
+                    <span class="relative z-10 flex items-center gap-2">
+                        Start Free Audit
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </a>
                 <div class="mt-6 flex items-center justify-center gap-6 text-xs text-ink-muted">
                     <span class="flex items-center gap-1.5">
@@ -859,10 +1060,7 @@
             <div>
                 <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">About</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Blog</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Careers</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
                 </ul>
             </div>
             <div>
@@ -870,16 +1068,12 @@
                 <ul class="space-y-2.5">
                     <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
                     <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Security</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">GDPR</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Documentation</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">API Reference</a></li>
-                    <li><a href="#" class="text-sm text-ink-light hover:text-ink transition-colors">Status</a></li>
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
                     <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
                 </ul>
             </div>
