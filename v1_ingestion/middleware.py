@@ -2,6 +2,7 @@ import hmac
 import hashlib
 import time
 import os
+import uuid
 from datetime import datetime, timezone
 from collections import defaultdict
 from typing import Any, Callable, Optional
@@ -160,8 +161,14 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: Callable) -> JSONResponse:
         """Process each incoming request through the auth pipeline."""
+        # Generate unique request ID for tracing
+        request_id = str(uuid.uuid4())[:12]
+        request.state.request_id = request_id
+
         if request.url.path in self.SKIP_PATHS:
-            return await call_next(request)
+            response = await call_next(request)
+            response.headers["X-Request-ID"] = request_id
+            return response
 
         client_id = self._get_client_id(request)
 
@@ -187,6 +194,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=401,
                 content={"error": "Missing or invalid Authorization header"},
+                headers={"X-Request-ID": request_id},
             )
 
         token = auth_header[7:]
@@ -200,12 +208,32 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     status_code=403,
                     content={"error": "Invalid or revoked API key"},
                 )
-            request.state.client_id = key_data["client_id"]
+            # Rate limit by API key hash, not just IP
+            api_key_client_id = key_data["client_id"]
+            if not self.rate_limiter.check(f"apikey:{api_key_client_id}"):
+                remaining = self.rate_limiter.get_remaining(f"apikey:{api_key_client_id}")
+                reset_seconds = self.rate_limiter.get_reset_seconds(f"apikey:{api_key_client_id}")
+                return JSONResponse(
+                    status_code=429,
+                    content={
+                        "error": "Rate limit exceeded",
+                        "detail": f"Maximum {self.rate_limiter.max_requests} requests per {self.rate_limiter.window_seconds}s",
+                        "retry_after_seconds": round(reset_seconds, 1),
+                    },
+                    headers={
+                        "X-RateLimit-Limit": str(self.rate_limiter.max_requests),
+                        "X-RateLimit-Remaining": str(remaining),
+                        "Retry-After": str(int(reset_seconds)),
+                        "X-Request-ID": request_id,
+                    },
+                )
+            request.state.client_id = api_key_client_id
             request.state.auth_type = "api_key"
             response = await call_next(request)
-            remaining = self.rate_limiter.get_remaining(client_id)
+            remaining = self.rate_limiter.get_remaining(f"apikey:{api_key_client_id}")
             response.headers["X-RateLimit-Limit"] = str(self.rate_limiter.max_requests)
             response.headers["X-RateLimit-Remaining"] = str(remaining)
+            response.headers["X-Request-ID"] = request_id
             return response
 
         # Fall back to internal token auth
@@ -213,12 +241,14 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=500,
                 content={"error": "INTERNAL_API_TOKEN not configured"},
+                headers={"X-Request-ID": request_id},
             )
 
         if not hmac.compare_digest(token, self.api_token):
             return JSONResponse(
                 status_code=403,
                 content={"error": "Invalid API token"},
+                headers={"X-Request-ID": request_id},
             )
 
         timestamp = request.headers.get("X-Timestamp", "")
@@ -226,6 +256,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=400,
                 content={"error": "Missing X-Timestamp header"},
+                headers={"X-Request-ID": request_id},
             )
 
         if not validate_timestamp(timestamp):
@@ -235,6 +266,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     "error": "Request timestamp expired or invalid",
                     "detail": "Timestamp must be within the last 5 minutes",
                 },
+                headers={"X-Request-ID": request_id},
             )
 
         if self.hmac_secret:
@@ -243,6 +275,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 return JSONResponse(
                     status_code=401,
                     content={"error": "Missing X-Signature header"},
+                    headers={"X-Request-ID": request_id},
                 )
 
             body = await request.body()
@@ -250,6 +283,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 return JSONResponse(
                     status_code=403,
                     content={"error": "Invalid HMAC signature"},
+                    headers={"X-Request-ID": request_id},
                 )
 
         request.state.auth_type = "internal_token"
@@ -257,4 +291,5 @@ class AuthMiddleware(BaseHTTPMiddleware):
         remaining = self.rate_limiter.get_remaining(client_id)
         response.headers["X-RateLimit-Limit"] = str(self.rate_limiter.max_requests)
         response.headers["X-RateLimit-Remaining"] = str(remaining)
+        response.headers["X-Request-ID"] = request_id
         return response

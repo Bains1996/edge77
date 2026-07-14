@@ -173,6 +173,27 @@ async def parse_invoice(extracted_text: str) -> FreightInvoiceSchema:
     return await _parse(extracted_text)
 
 
+BACKGROUND_TASK_TIMEOUT = int(os.getenv("BACKGROUND_TASK_TIMEOUT", "120"))
+
+
+async def _process_with_timeout(
+    pdf_bytes: bytes,
+    client_id: str,
+    tracking_id: str,
+    pdf_hash: str,
+) -> None:
+    """Wrapper that enforces a timeout on the background pipeline."""
+    import asyncio
+    try:
+        await asyncio.wait_for(
+            process_invoice_background(pdf_bytes, client_id, tracking_id, pdf_hash),
+            timeout=BACKGROUND_TASK_TIMEOUT,
+        )
+    except asyncio.TimeoutError:
+        log.error(f"{LOG_PREFIX} Background pipeline timed out after {BACKGROUND_TASK_TIMEOUT}s", tracking_id=tracking_id)
+        update_audit_status_by_tracking(client_id, tracking_id, "PIPELINE_TIMEOUT")
+
+
 def update_audit_status_by_tracking(client_id: str, tracking_id: str, status: str) -> None:
     """Find an audit record by tracking_id and update its status."""
     from v1_database.supabase_client import MOCK_AUDITS, MOCK_MODE, _rest_select
@@ -215,12 +236,12 @@ def _verify_token(authorization: Optional[str]) -> str:
             raise HTTPException(status_code=403, detail="Invalid or revoked API key")
         return key_data["client_id"]
 
-    # Fall back to internal token
+    # Fall back to internal token (admin access)
     if not INTERNAL_API_TOKEN:
         raise HTTPException(status_code=500, detail="INTERNAL_API_TOKEN not configured")
     if not hmac.compare_digest(token, INTERNAL_API_TOKEN):
         raise HTTPException(status_code=403, detail="Invalid API token")
-    return token
+    return "__admin__"
 
 
 # ---------------------------------------------------------------------------
@@ -241,12 +262,14 @@ async def lifespan(app: FastAPI):
 # App factory
 # ---------------------------------------------------------------------------
 
+_is_production = os.getenv("ENVIRONMENT", "development") == "production"
+
 app = FastAPI(
     title="EDGE77 Freight Auditor Gateway",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs",
-    openapi_url="/openapi.json",
+    docs_url=None if _is_production else "/docs",
+    openapi_url=None if _is_production else "/openapi.json",
 )
 
 # --- Middleware (order matters: last added = first executed) ---
@@ -254,6 +277,10 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://edge77-yyqrijv53a-uc.a.run.app",
+        "https://edge77.axalglobal.com",
+        "https://edge77-364995933969.us-central1.run.app",
+    ] if _is_production else [
         "https://edge77-yyqrijv53a-uc.a.run.app",
         "https://edge77.axalglobal.com",
         "https://edge77-364995933969.us-central1.run.app",
@@ -405,7 +432,7 @@ async def ingest_invoice(
     })
 
     background_tasks.add_task(
-        process_invoice_background,
+        _process_with_timeout,
         pdf_bytes=pdf_bytes,
         client_id=x_client_id,
         tracking_id=tracking_id,

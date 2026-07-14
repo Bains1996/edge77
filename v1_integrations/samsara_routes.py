@@ -7,6 +7,7 @@ Handles:
 - Fleet data endpoints
 """
 
+import hmac
 import os
 import time
 from typing import Optional
@@ -45,9 +46,9 @@ def _verify_samsara_auth(authorization: Optional[str], client_id: str) -> None:
 
     token = authorization[7:]
 
-    # Internal token = admin access
+    # Internal token = admin access (constant-time comparison)
     internal_token = os.getenv("INTERNAL_API_TOKEN", "")
-    if internal_token and token == internal_token:
+    if internal_token and hmac.compare_digest(token, internal_token):
         return
 
     # Per-client API key
