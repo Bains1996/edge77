@@ -305,9 +305,11 @@ app.add_middleware(
     level=LOG_LEVEL,
 )
 
-# --- Samsara integration routes ---
+# --- Integration routes ---
 from v1_integrations.samsara_routes import router as samsara_router
+from v1_integrations.stripe_routes import router as stripe_router
 app.include_router(samsara_router)
+app.include_router(stripe_router)
 
 
 # ---------------------------------------------------------------------------
@@ -712,13 +714,16 @@ async def list_api_keys(
     _verify_token(authorization)
 
     if not MOCK_MODE:
-        from v1_database.supabase_client import _rest_select
-        rows = _rest_select("client_api_keys", {
-            "select": "id,key_prefix,name,active,created_at,last_used_at",
-            "client_id": f"eq.{client_id}",
-            "order": "created_at.desc",
-        })
-        return {"client_id": client_id, "keys": rows}
+        try:
+            from v1_database.supabase_client import _rest_select
+            rows = _rest_select("client_api_keys", {
+                "select": "id,key_prefix,name,active,created_at,last_used_at",
+                "client_id": f"eq.{client_id}",
+                "order": "created_at.desc",
+            })
+            return {"client_id": client_id, "keys": rows}
+        except Exception:
+            return {"client_id": client_id, "keys": []}
 
     return {"client_id": client_id, "keys": []}
 
