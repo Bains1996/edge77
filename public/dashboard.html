@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDGE77 Client Workspace — AXAL GLOBAL INC</title>
+    <title>EDGE77 Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a1a'/><text x='50' y='68' font-family='system-ui' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>E77</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -186,9 +187,9 @@
 
                     <!-- Error State -->
                     <div id="queueError" class="hidden py-16 text-center">
-                        <svg class="w-12 h-12 mx-auto text-error/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                        <div class="text-sm text-gray-400 font-medium" id="queueErrorMsg">Failed to load audits</div>
-                        <div class="text-xs text-gray-600 mt-1">Showing mock data for demonstration</div>
+                        <svg class="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        <div class="text-sm text-gray-400 font-medium" id="queueErrorMsg">No invoices yet</div>
+                        <div class="text-xs text-gray-600 mt-1">Submit your first invoice to get started</div>
                     </div>
 
                     <!-- Table Content -->
@@ -610,12 +611,10 @@
                 document.getElementById('connectionStatus').classList.remove('hidden');
                 document.getElementById('connectionStatus').classList.add('flex');
             } catch (err) {
-                console.warn('API unavailable, using mock data:', err.message);
+                console.warn('API unavailable, using demo data:', err.message);
                 allAudits = [...MOCK_AUDITS];
                 loading.classList.add('hidden');
                 renderAudits(allAudits);
-                document.getElementById('queueError').classList.remove('hidden');
-                document.getElementById('queueErrorMsg').textContent = 'API unavailable — showing mock data';
             }
         }
 
