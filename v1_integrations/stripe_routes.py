@@ -14,7 +14,8 @@ import json
 import hmac
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, Request, HTTPException, Header
+import sentry_sdk
+from fastapi import APIRouter, Request, HTTPException, Header, Query
 from pydantic import BaseModel
 
 from v1_integrations.stripe_client import (
@@ -35,6 +36,23 @@ router = APIRouter(prefix="/v1/billing", tags=["billing"])
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://edge77-364995933969.us-central1.run.app")
 INTERNAL_API_TOKEN = os.getenv("INTERNAL_API_TOKEN", "")
+
+# Billing-specific rate limiter (10 req/min per client)
+_billing_rate_limits: dict[str, list[float]] = {}
+BILLING_RATE_LIMIT = 10
+BILLING_RATE_WINDOW = 60
+
+
+def _check_billing_rate_limit(client_id: str) -> bool:
+    """Check if client is within billing rate limit."""
+    import time
+    now = time.monotonic()
+    cutoff = now - BILLING_RATE_WINDOW
+    _billing_rate_limits[client_id] = [t for t in _billing_rate_limits.get(client_id, []) if t > cutoff]
+    if len(_billing_rate_limits.get(client_id, [])) >= BILLING_RATE_LIMIT:
+        return False
+    _billing_rate_limits.setdefault(client_id, []).append(now)
+    return True
 
 
 def _verify_billing_auth(authorization: Optional[str] = None) -> str:
@@ -80,7 +98,11 @@ class UsageRequest(BaseModel):
 @router.post("/checkout")
 async def create_checkout(req: CheckoutRequest, authorization: Optional[str] = Header(None)):
     """Create a Stripe Checkout session for self-serve subscription signup."""
-    _verify_billing_auth(authorization)
+    caller = _verify_billing_auth(authorization)
+    if caller != "__admin__" and caller != req.client_id:
+        raise HTTPException(status_code=403, detail="Cannot create checkout for another client")
+    if caller != "__admin__" and not _check_billing_rate_limit(caller):
+        raise HTTPException(status_code=429, detail="Too many billing requests. Please try again later.")
     tier_config = PRICING_TIERS.get(req.tier)
     if not tier_config:
         raise HTTPException(400, f"Unknown tier: {req.tier}")
@@ -91,32 +113,51 @@ async def create_checkout(req: CheckoutRequest, authorization: Optional[str] = H
 
     stripe = StripeClient()
 
-    # Get or create Stripe customer
-    customer_data = get_stripe_customer(req.client_id)
-    stripe_customer_id = None
+    try:
+        # Get or create Stripe customer
+        customer_data = get_stripe_customer(req.client_id)
+        stripe_customer_id = None
 
-    if customer_data:
-        stripe_customer_id = customer_data.get("stripe_customer_id")
-    else:
-        # Create new customer — email will be set from client data
-        customer = await stripe.create_customer(
-            email=f"{req.client_id}@edge77.placeholder",
-            metadata={"client_id": req.client_id, "source": "checkout"},
+        if customer_data:
+            stripe_customer_id = customer_data.get("stripe_customer_id")
+        else:
+            # Create new customer — use billing email or client_id as fallback
+            customer_email = f"{req.client_id}@edge77.placeholder"
+            try:
+                from v1_database.supabase_client import _rest_select
+                client_rows = _rest_select("client_profiles", {
+                    "select": "email",
+                    "client_id": f"eq.{req.client_id}",
+                    "limit": 1,
+                })
+                if client_rows and client_rows[0].get("email"):
+                    customer_email = client_rows[0]["email"]
+            except Exception:
+                pass
+
+            customer = await stripe.create_customer(
+                email=customer_email,
+                metadata={"client_id": req.client_id, "source": "checkout"},
+            )
+            stripe_customer_id = customer["id"]
+            store_stripe_customer(req.client_id, stripe_customer_id, "", req.tier)
+
+        success_url = req.success_url or f"{FRONTEND_URL}/dashboard?upgraded=true"
+        cancel_url = req.cancel_url or f"{FRONTEND_URL}/pricing"
+
+        session = await stripe.create_checkout_session(
+            customer_id=stripe_customer_id,
+            price_id=price_id,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            trial_days=14,
+            metadata={"client_id": req.client_id, "tier": req.tier},
         )
-        stripe_customer_id = customer["id"]
-        store_stripe_customer(req.client_id, stripe_customer_id, "", req.tier)
-
-    success_url = req.success_url or f"{FRONTEND_URL}/dashboard?upgraded=true"
-    cancel_url = req.cancel_url or f"{FRONTEND_URL}/pricing"
-
-    session = await stripe.create_checkout_session(
-        customer_id=stripe_customer_id,
-        price_id=price_id,
-        success_url=success_url,
-        cancel_url=cancel_url,
-        trial_days=14,
-        metadata={"client_id": req.client_id, "tier": req.tier},
-    )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        log.error("checkout_session_failed", client_id=req.client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to create checkout session")
 
     log.info(
         "checkout_session_created",
@@ -134,7 +175,11 @@ async def create_checkout(req: CheckoutRequest, authorization: Optional[str] = H
 @router.post("/portal")
 async def create_portal(req: PortalRequest, authorization: Optional[str] = Header(None)):
     """Create a Stripe Customer Portal session for managing billing."""
-    _verify_billing_auth(authorization)
+    caller = _verify_billing_auth(authorization)
+    if caller != "__admin__" and caller != req.client_id:
+        raise HTTPException(status_code=403, detail="Cannot access another client's billing")
+    if caller != "__admin__" and not _check_billing_rate_limit(caller):
+        raise HTTPException(status_code=429, detail="Too many billing requests. Please try again later.")
     customer_data = get_stripe_customer(req.client_id)
     if not customer_data:
         raise HTTPException(404, "No billing account found. Subscribe first.")
@@ -142,10 +187,14 @@ async def create_portal(req: PortalRequest, authorization: Optional[str] = Heade
     stripe = StripeClient()
     return_url = req.return_url or f"{FRONTEND_URL}/dashboard"
 
-    session = await stripe.create_billing_portal(
-        customer_id=customer_data["stripe_customer_id"],
-        return_url=return_url,
-    )
+    try:
+        session = await stripe.create_billing_portal(
+            customer_id=customer_data["stripe_customer_id"],
+            return_url=return_url,
+        )
+    except Exception as exc:
+        log.error("portal_session_failed", client_id=req.client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to create portal session")
 
     return {"portal_url": session.get("url")}
 
@@ -153,7 +202,9 @@ async def create_portal(req: PortalRequest, authorization: Optional[str] = Heade
 @router.post("/usage")
 async def report_usage(req: UsageRequest, authorization: Optional[str] = Header(None)):
     """Report usage for metered billing (called after each audit)."""
-    _verify_billing_auth(authorization)
+    caller = _verify_billing_auth(authorization)
+    if caller != "__admin__" and caller != req.client_id:
+        raise HTTPException(status_code=403, detail="Cannot report usage for another client")
     customer_data = get_stripe_customer(req.client_id)
     if not customer_data:
         return {"status": "skipped", "reason": "no_billing_account"}
@@ -162,8 +213,21 @@ async def report_usage(req: UsageRequest, authorization: Optional[str] = Header(
     if not sub_data or sub_data.get("status") != "active":
         return {"status": "skipped", "reason": "no_active_subscription"}
 
-    # Log usage event
+    # Log usage event locally
     log_usage_event(req.client_id, req.event_type, req.quantity)
+
+    # Report to Stripe for metered billing
+    stripe_sub_id = sub_data.get("stripe_subscription_id")
+    if stripe_sub_id:
+        try:
+            stripe = StripeClient()
+            sub = await stripe.get_subscription(stripe_sub_id)
+            items = sub.get("items", {}).get("data", [])
+            if items:
+                item_id = items[0]["id"]
+                await stripe.report_usage(item_id, req.quantity)
+        except Exception as exc:
+            log.error("stripe_usage_report_failed", client_id=req.client_id, error=str(exc))
 
     log.info(
         "usage_reported",
@@ -182,7 +246,9 @@ async def report_usage(req: UsageRequest, authorization: Optional[str] = Header(
 @router.get("/subscription")
 async def get_subscription_status(client_id: str, authorization: Optional[str] = Header(None)):
     """Get current subscription status for a client."""
-    _verify_billing_auth(authorization)
+    caller = _verify_billing_auth(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot view another client's subscription")
     sub_data = get_subscription(client_id)
 
     if not sub_data:
@@ -205,9 +271,15 @@ async def get_subscription_status(client_id: str, authorization: Optional[str] =
 
 
 @router.get("/invoices")
-async def list_invoices(client_id: str, limit: int = 25, authorization: Optional[str] = Header(None)):
+async def list_invoices(
+    client_id: str,
+    limit: int = Query(25, ge=1, le=100, description="Max invoices to return"),
+    authorization: Optional[str] = Header(None),
+):
     """List invoices for a client."""
-    _verify_billing_auth(authorization)
+    caller = _verify_billing_auth(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot view another client's invoices")
     customer_data = get_stripe_customer(client_id)
     if not customer_data:
         return {"invoices": []}
@@ -240,13 +312,16 @@ async def stripe_webhook(request: Request):
     payload = await request.body()
     sig_header = request.headers.get("stripe-signature", "")
 
-    if STRIPE_WEBHOOK_SECRET:
-        verified = StripeClient.verify_webhook_signature(
-            payload, sig_header, STRIPE_WEBHOOK_SECRET
-        )
-        if not verified:
-            log.warning("stripe_webhook_signature_invalid")
-            raise HTTPException(400, "Invalid signature")
+    if not STRIPE_WEBHOOK_SECRET:
+        log.error("stripe_webhook_no_secret", msg="STRIPE_WEBHOOK_SECRET not configured — rejecting webhook")
+        raise HTTPException(500, "Webhook secret not configured")
+
+    verified = StripeClient.verify_webhook_signature(
+        payload, sig_header, STRIPE_WEBHOOK_SECRET
+    )
+    if not verified:
+        log.warning("stripe_webhook_signature_invalid")
+        raise HTTPException(400, "Invalid signature")
 
     try:
         event = json.loads(payload)
@@ -317,6 +392,16 @@ async def _handle_subscription_deleted(data: dict) -> None:
     sub_id = data.get("id")
     client_id = data.get("metadata", {}).get("client_id")
     log.info("subscription_cancelled", subscription_id=sub_id, client_id=client_id)
+    if client_id:
+        try:
+            store_subscription(
+                client_id=client_id,
+                stripe_subscription_id=sub_id,
+                tier=data.get("metadata", {}).get("tier", "starter"),
+                status="cancelled",
+            )
+        except Exception as exc:
+            log.error("subscription_cancel_persist_failed", client_id=client_id, error=str(exc))
 
 
 def _ts_to_iso(ts: Optional[int]) -> Optional[str]:

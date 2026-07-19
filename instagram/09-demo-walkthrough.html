@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1920px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(180deg, #0a0a0a 0%, #0f172a 100%); color: white; display: flex; flex-direction: column; align-items: center; padding: 80px; overflow: hidden; }
+.logo { font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-bottom: 48px; align-self: flex-start; }
+.logo span { color: #3b82f6; }
+h1 { font-size: 56px; font-weight: 800; line-height: 1.15; margin-bottom: 48px; align-self: flex-start; }
+h1 em { font-style: normal; color: #3b82f6; }
+.screen { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 40px; margin-bottom: 40px; }
+.screen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.screen-title { font-size: 20px; font-weight: 700; }
+.screen-badge { background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+.invoice-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 18px; }
+.invoice-row:last-child { border-bottom: none; }
+.invoice-row .label { color: #94a3b8; }
+.invoice-row .value { font-weight: 700; }
+.invoice-row .error { color: #ef4444; }
+.invoice-row .fixed { color: #22c55e; }
+.timeline { width: 100%; margin-bottom: 40px; }
+.timeline-item { display: flex; gap: 24px; margin-bottom: 24px; }
+.timeline-dot { width: 48px; height: 48px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.timeline-content h3 { font-size: 20px; font-weight: 700; }
+.timeline-content p { font-size: 16px; color: #94a3b8; }
+.cta { background: #3b82f6; color: white; padding: 20px 48px; border-radius: 12px; font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-top: auto; width: 100%; text-align: center; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<h1>Watch EDGE77 <em>Audit an Invoice</em></h1>
+<div class="screen">
+  <div class="screen-header">
+    <div class="screen-title">📄 Invoice #INV-2024-8847</div>
+    <div class="screen-badge">✓ AUDITED</div>
+  </div>
+  <div class="invoice-row"><span class="label">Carrier</span><span class="value">XPO Logistics</span></div>
+  <div class="invoice-row"><span class="label">Original Amount</span><span class="value">$4,287.50</span></div>
+  <div class="invoice-row"><span class="label">Freight Class Error</span><span class="value error">-$680.00</span></div>
+  <div class="invoice-row"><span class="label">DIM Weight Overcharge</span><span class="value error">-$342.00</span></div>
+  <div class="invoice-row"><span class="label">Invalid Liftgate Fee</span><span class="value error">-$85.00</span></div>
+  <div class="invoice-row"><span class="label">Corrected Amount</span><span class="value fixed">$3,180.50</span></div>
+</div>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-dot">1</div>
+    <div class="timeline-content"><h3>Upload</h3><p>Paste PDF or forward email</p></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">2</div>
+    <div class="timeline-content"><h3>AI Scans</h3><p>Every line item checked in seconds</p></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">3</div>
+    <div class="timeline-content"><h3>Savings Found</h3><p>$1,107.00 recovered automatically</p></div>
+  </div>
+</div>
+<div class="cta">Try It Free →</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0a; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px; overflow: hidden; }
+.logo { font-size: 28px; font-weight: 800; position: absolute; top: 60px; left: 80px; }
+.logo span { color: #3b82f6; }
+.badge { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 10px 24px; border-radius: 100px; font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; }
+h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; max-width: 800px; }
+h1 em { font-style: normal; color: #3b82f6; }
+.sub { font-size: 22px; color: #94a3b8; max-width: 700px; line-height: 1.5; margin-bottom: 48px; }
+.pricing { display: flex; gap: 24px; margin-bottom: 48px; }
+.plan { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 32px; width: 240px; text-align: center; }
+.plan-name { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; margin-bottom: 12px; }
+.plan-price { font-size: 40px; font-weight: 900; margin-bottom: 4px; }
+.plan-price span { font-size: 18px; font-weight: 400; color: #94a3b8; }
+.plan-fee { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+.plan-features { text-align: left; }
+.plan-features li { font-size: 14px; color: #cbd5e1; padding: 6px 0; list-style: none; }
+.plan-features li::before { content: "✓ "; color: #22c55e; font-weight: 700; }
+.plan.featured { border-color: #3b82f6; background: rgba(59, 130, 246, 0.08); }
+.plan.featured .plan-name { color: #3b82f6; }
+.cta { background: #3b82f6; color: white; padding: 18px 44px; border-radius: 12px; font-size: 20px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<div class="badge">Pricing Breakdown</div>
+<h1>Pay Only When <em>We Save You Money</em></h1>
+<p class="sub">No upfront costs. No long-term contracts. We earn when you save.</p>
+<div class="pricing">
+  <div class="plan">
+    <div class="plan-name">Starter</div>
+    <div class="plan-price">$0<span>/mo</span></div>
+    <div class="plan-fee">+ 15% contingency</div>
+    <ul class="plan-features"><li>AI invoice audit</li><li>Basic reporting</li><li>Email support</li></ul>
+  </div>
+  <div class="plan featured">
+    <div class="plan-name">Growth</div>
+    <div class="plan-price">$499<span>/mo</span></div>
+    <div class="plan-fee">+ 12% contingency</div>
+    <ul class="plan-features"><li>Everything in Starter</li><li>Automated disputes</li><li>API access</li><li>Priority support</li></ul>
+  </div>
+  <div class="plan">
+    <div class="plan-name">Enterprise</div>
+    <div class="plan-price">$2,999<span>/mo</span></div>
+    <div class="plan-fee">+ 10% contingency</div>
+    <ul class="plan-features"><li>Everything in Growth</li><li>Custom integrations</li><li>Dedicated account mgr</li><li>SLA guarantee</li></ul>
+  </div>
+</div>
+<div class="cta">Start Free →</div>
+</body>
+</html>

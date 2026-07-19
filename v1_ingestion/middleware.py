@@ -82,6 +82,11 @@ class RateLimiter:
         self.window_seconds = window_seconds
         self._requests: dict[str, list[float]] = defaultdict(list)
 
+    @classmethod
+    def auth_limiter(cls) -> "RateLimiter":
+        """Create a stricter rate limiter for auth endpoints (5 req/min)."""
+        return cls(max_requests=5, window_seconds=60)
+
     def _cleanup(self, client_id: str, now: float) -> None:
         """Remove expired timestamps for a client."""
         cutoff = now - self.window_seconds
@@ -126,6 +131,52 @@ class RateLimiter:
         return max(0.0, remaining)
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security headers to all responses."""
+
+    CSP_POLICY = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com https://unpkg.com; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; "
+        "connect-src 'self' https://*.supabase.co https://openrouter.ai https://api.stripe.com; "
+        "frame-src 'self' https://js.stripe.com; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'"
+    )
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Content-Security-Policy"] = self.CSP_POLICY
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if request.url.scheme == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
+
+
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    """Reject requests exceeding a maximum body size."""
+
+    def __init__(self, app, max_body_bytes: int = 10 * 1024 * 1024):
+        super().__init__(app)
+        self.max_body_bytes = max_body_bytes
+
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > self.max_body_bytes:
+            return JSONResponse(
+                status_code=413,
+                content={"error": "Request body too large", "max_bytes": self.max_body_bytes},
+            )
+        return await call_next(request)
+
+
 class AuthMiddleware(BaseHTTPMiddleware):
     """FastAPI/Starlette middleware for HMAC auth, timestamp validation, and rate limiting.
 
@@ -136,7 +187,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     - Bearer token authentication
     """
 
-    SKIP_PATHS: set[str] = {"/", "/dashboard", "/pricing", "/terms", "/privacy", "/login", "/signup", "/health", "/health/live", "/health/ready", "/v1/samsara/callback", "/v1/billing/webhook"}
+    SKIP_PATHS: set[str] = {"/", "/dashboard", "/pricing", "/terms", "/privacy", "/login", "/signup", "/partners", "/demo", "/api/demo", "/blog", "/linktree", "/health", "/health/live", "/health/ready", "/v1/samsara/callback", "/v1/billing/webhook", "/v1/auth/register"}
 
     def __init__(
         self,
@@ -169,7 +220,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         request_id = str(uuid.uuid4())[:12]
         request.state.request_id = request_id
 
-        if request.url.path in self.SKIP_PATHS:
+        if request.url.path in self.SKIP_PATHS or request.url.path.startswith("/public/"):
             response = await call_next(request)
             response.headers["X-Request-ID"] = request_id
             return response

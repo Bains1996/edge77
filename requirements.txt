@@ -12,3 +12,6 @@ boto3==1.34.144
 structlog==26.1.0
 httpx==0.27.0
 stripe==10.12.0
+sentry-sdk[fastapi]>=2.0.0
+pytesseract==0.3.13
+pdf2image==1.17.0

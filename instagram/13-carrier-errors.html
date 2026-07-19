@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: white; padding: 80px; overflow: hidden; }
+.logo { font-size: 28px; font-weight: 800; margin-bottom: 32px; }
+.logo span { color: #3b82f6; }
+h1 { font-size: 44px; font-weight: 800; line-height: 1.2; margin-bottom: 48px; }
+h1 em { font-style: normal; color: #ef4444; }
+.errors { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+.error { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 16px; padding: 28px; }
+.error-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.error-pct { font-size: 28px; font-weight: 800; color: #ef4444; }
+.error-name { font-size: 18px; font-weight: 700; }
+.error-desc { font-size: 15px; color: #94a3b8; line-height: 1.4; }
+.cta { background: #3b82f6; color: white; padding: 16px 40px; border-radius: 12px; font-size: 18px; font-weight: 700; }
+.footer { position: absolute; bottom: 60px; left: 80px; right: 80px; display: flex; justify-content: space-between; align-items: center; }
+.save { color: #64748b; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<h1>This Month's <em>Top Carrier Errors</em></h1>
+<div class="errors">
+  <div class="error">
+    <div class="error-header"><div class="error-pct">34%</div><div class="error-name">Freight Class</div></div>
+    <div class="error-desc">Carriers upgrading NMFC class to charge higher rates</div>
+  </div>
+  <div class="error">
+    <div class="error-header"><div class="error-pct">28%</div><div class="error-name">DIM Weight</div></div>
+    <div class="error-desc">Incorrect dimensional weight calculations</div>
+  </div>
+  <div class="error">
+    <div class="error-header"><div class="error-pct">22%</div><div class="error-name">Accessorials</div></div>
+    <div class="error-desc">Charging for liftgate, delivery app't not used</div>
+  </div>
+  <div class="error">
+    <div class="error-header"><div class="error-pct">11%</div><div class="error-name">Duplicates</div></div>
+    <div class="error-desc">Same invoice charged multiple times</div>
+  </div>
+</div>
+<div class="footer">
+  <div class="save">Save this post 🔖</div>
+  <div class="cta">Catch These Errors →</div>
+</div>
+</body>
+</html>

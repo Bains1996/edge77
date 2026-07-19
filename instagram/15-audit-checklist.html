@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0a; color: white; padding: 80px; overflow: hidden; }
+.logo { font-size: 28px; font-weight: 800; margin-bottom: 40px; }
+.logo span { color: #3b82f6; }
+h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 48px; }
+h1 em { font-style: normal; color: #22c55e; }
+.checklist { display: flex; flex-direction: column; gap: 16px; }
+.item { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px 24px; }
+.check { width: 36px; height: 36px; background: #22c55e; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.item-text { font-size: 19px; font-weight: 600; }
+.footer { position: absolute; bottom: 60px; left: 80px; right: 80px; display: flex; justify-content: space-between; align-items: center; }
+.save { color: #64748b; font-size: 16px; }
+.cta { background: #3b82f6; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<h1>Freight Audit <em>Checklist</em></h1>
+<div class="checklist">
+  <div class="item"><div class="check">✓</div><div class="item-text">Verify freight class matches NMFC code</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Check DIM weight calculation (L×W×H ÷ 139)</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Review all accessorial charges</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Match BOL weight to invoice weight</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Verify carrier rate against contract</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Check for duplicate invoice numbers</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Confirm fuel surcharge percentages</div></div>
+  <div class="item"><div class="check">✓</div><div class="item-text">Validate insurance/valuation charges</div></div>
+</div>
+<div class="footer">
+  <div class="save">Save this checklist 🔖</div>
+  <div class="cta">Let AI Do This →</div>
+</div>
+</body>
+</html>

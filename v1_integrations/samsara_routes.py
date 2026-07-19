@@ -85,7 +85,11 @@ async def samsara_auth(
         redirect_uri=samsara_redirect_uri,
     )
 
-    auth_url, state, code_verifier = client.generate_auth_url()
+    try:
+        auth_url, state, code_verifier = client.generate_auth_url()
+    except Exception as exc:
+        log.error("samsara_auth_url_failed", client_id=client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to generate Samsara auth URL")
 
     _oauth_states[state] = {
         "client_id": client_id,
@@ -225,7 +229,11 @@ async def get_fleet(
         raise HTTPException(status_code=404, detail="Samsara not connected for this client")
 
     integration = SamsaraIntegration(client)
-    summary = await integration.get_client_fleet_summary(client_id)
+    try:
+        summary = await integration.get_client_fleet_summary(client_id)
+    except Exception as exc:
+        log.error("samsara_fleet_failed", client_id=client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to fetch fleet data")
 
     return JSONResponse(summary)
 
@@ -242,7 +250,11 @@ async def get_vehicles(
     if not client:
         raise HTTPException(status_code=404, detail="Samsara not connected for this client")
 
-    vehicles = await client.get_vehicles()
+    try:
+        vehicles = await client.get_vehicles()
+    except Exception as exc:
+        log.error("samsara_vehicles_failed", client_id=client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to fetch vehicles")
     return JSONResponse({"vehicles": vehicles})
 
 
@@ -258,7 +270,11 @@ async def get_drivers(
     if not client:
         raise HTTPException(status_code=404, detail="Samsara not connected for this client")
 
-    drivers = await client.get_drivers()
+    try:
+        drivers = await client.get_drivers()
+    except Exception as exc:
+        log.error("samsara_drivers_failed", client_id=client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to fetch drivers")
     return JSONResponse({"drivers": drivers})
 
 
@@ -280,11 +296,15 @@ async def get_trips(
     start = datetime.fromisoformat(start_time) if start_time else None
     end = datetime.fromisoformat(end_time) if end_time else None
 
-    trips = await client.get_trips(
-        vehicle_id=vehicle_id,
-        start_time=start,
-        end_time=end,
-    )
+    try:
+        trips = await client.get_trips(
+            vehicle_id=vehicle_id,
+            start_time=start,
+            end_time=end,
+        )
+    except Exception as exc:
+        log.error("samsara_trips_failed", client_id=client_id, error=str(exc))
+        raise HTTPException(status_code=502, detail="Failed to fetch trips")
 
     return JSONResponse({"trips": trips})
 

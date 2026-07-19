@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDGE77 — AI-Powered Freight Audit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a1a2e;
+    background: #ffffff;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 816px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #0f172a;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: #6366f1; }
+
+  .tagline {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 span { color: #6366f1; }
+
+  .hero p {
+    font-size: 15px;
+    color: #64748b;
+  }
+
+  /* Stats Row */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 36px;
+    padding: 20px 0;
+    background: #f8fafc;
+    border-radius: 10px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #6366f1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Section */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .section-title span {
+    color: #6366f1;
+  }
+
+  /* How It Works */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .step {
+    text-align: center;
+    padding: 16px 8px;
+    background: #f8fafc;
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .step-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+
+  .step-desc {
+    font-size: 10px;
+    color: #64748b;
+  }
+
+  .step-arrow {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #cbd5e1;
+    font-size: 14px;
+    z-index: 1;
+  }
+
+  /* Pricing Table */
+  .pricing {
+    margin-bottom: 32px;
+  }
+
+  .pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .pricing-table th {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pricing-table th:last-child {
+    text-align: center;
+  }
+
+  .pricing-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .pricing-table td:last-child {
+    text-align: center;
+    font-weight: 700;
+    color: #6366f1;
+  }
+
+  .pricing-table tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .pricing-table .plan-name {
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .pricing-table .plan-price {
+    color: #6366f1;
+    font-weight: 700;
+  }
+
+  /* Trust Badges */
+  .trust {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-bottom: 32px;
+    padding: 16px 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  .badge-icon {
+    width: 18px;
+    height: 18px;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  /* CTA */
+  .cta {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .cta-box {
+    display: inline-block;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .cta-box .cta-label {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .cta-box .cta-sub {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .footer strong { color: #475569; }
+
+  /* Print Styles */
+  @media print {
+    body { background: #fff; }
+    .page { padding: 24px 36px; max-width: 100%; }
+    .cta-box { border: 1px solid #0f172a; }
+  }
+
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">EDGE<span>77</span></div>
+    <div class="tagline">AI-Powered Freight Audit.<br>Zero Upfront Cost.</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Stop Overpaying for <span>Freight</span></h1>
+    <p>EDGE77 uses AI to audit every carrier invoice, catch overcharges, and recover your money — automatically.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">$2.4B+</div>
+      <div class="stat-label">Invoices Audited</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">99.7%</div>
+      <div class="stat-label">Accuracy</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">15%</div>
+      <div class="stat-label">Contingency</div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="section-title">How It Works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-icon">&#128194;</div>
+      <div class="step-title">Upload</div>
+      <div class="step-desc">Connect your TMS or upload invoices</div>
+      <div class="step-arrow">&#8594;</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-icon">&#129302;</div>
+      <div class="step-title">AI Extracts</div>
+      <div class="step-desc">Line-item data parsed in seconds</div>
+      <div class="step-arrow">&#8594;</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-icon">&#128269;</div>
+      <div class="step-title">Detect Overcharges</div>
+      <div class="step-desc">Rates, fees, and accessorials verified</div>
+      <div class="step-arrow">&#8594;</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-icon">&#9989;</div>
+      <div class="step-title">Auto-Dispute &amp; Recover</div>
+      <div class="step-desc">We fight — you get paid</div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="pricing">
+    <div class="section-title">Pricing <span>Comparison</span></div>
+    <table class="pricing-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Starter</th>
+          <th>Growth</th>
+          <th>Enterprise</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="plan-price">Monthly Fee</td>
+          <td class="plan-price">$0/mo</td>
+          <td class="plan-price">$499/mo</td>
+          <td class="plan-price">$2,999/mo</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Recovery Rate</td>
+          <td>15%</td>
+          <td>12%</td>
+          <td>10%</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Invoice Volume</td>
+          <td>Up to 100/mo</td>
+          <td>Up to 500/mo</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Dedicated Account Manager</td>
+          <td>&mdash;</td>
+          <td>&#10003;</td>
+          <td>&#10003;</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Custom Integrations</td>
+          <td>&mdash;</td>
+          <td>&mdash;</td>
+          <td>&#10003;</td>
+        </tr>
+        <tr>
+          <td class="plan-name">SLA Guarantee</td>
+          <td>&mdash;</td>
+          <td>48hr</td>
+          <td>24hr</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Trust Badges -->
+  <div class="trust">
+    <div class="badge">
+      <div class="badge-icon">&#10003;</div>
+      SOC 2 Certified
+    </div>
+    <div class="badge">
+      <div class="badge-icon">&#128274;</div>
+      256-bit Encryption
+    </div>
+    <div class="badge">
+      <div class="badge-icon">&#128179;</div>
+      PCI DSS Compliant
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-box">
+      <div class="cta-label">Book a Demo &rarr; sales@edge77.com</div>
+      <div class="cta-sub">No commitment. See your potential recovery in 15 minutes.</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <strong>Axal Global Inc.</strong> &middot; sales@edge77.com &middot; edge77.com/demo
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f172a 100%); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px; overflow: hidden; }
+.logo { font-size: 28px; font-weight: 800; margin-bottom: 40px; }
+.logo span { color: #3b82f6; }
+h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 24px; max-width: 800px; }
+h1 em { font-style: normal; color: #22c55e; }
+.sub { font-size: 22px; color: #94a3b8; margin-bottom: 48px; max-width: 700px; line-height: 1.5; }
+.comparison { display: flex; gap: 40px; width: 100%; max-width: 900px; margin-bottom: 48px; }
+.col { flex: 1; border-radius: 20px; padding: 32px; text-align: center; }
+.col.manual { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15); }
+.col.ai { background: rgba(34, 197, 94, 0.06); border: 1px solid rgba(34, 197, 94, 0.15); }
+.col h3 { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+.col.manual h3 { color: #ef4444; }
+.col.ai h3 { color: #22c55e; }
+.col-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 16px; }
+.col-item:last-child { border-bottom: none; }
+.col-item .label { color: #94a3b8; }
+.col.manual .col-item .val { color: #ef4444; font-weight: 700; }
+.col.ai .col-item .val { color: #22c55e; font-weight: 700; }
+.cta { background: #3b82f6; color: white; padding: 18px 44px; border-radius: 12px; font-size: 20px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<h1>Manual Audit <em>vs</em> AI Audit</h1>
+<p class="sub">Why AI wins every time</p>
+<div class="comparison">
+  <div class="col manual">
+    <h3>Manual Audit</h3>
+    <div class="col-item"><span class="label">Time per invoice</span><span class="val">30+ min</span></div>
+    <div class="col-item"><span class="label">Errors caught</span><span class="val">60-70%</span></div>
+    <div class="col-item"><span class="label">Cost per audit</span><span class="val">$15-25</span></div>
+    <div class="col-item"><span class="label">Dispute filing</span><span class="val">Manual</span></div>
+    <div class="col-item"><span class="label">Consistency</span><span class="val">Variable</span></div>
+  </div>
+  <div class="col ai">
+    <h3>EDGE77 AI</h3>
+    <div class="col-item"><span class="label">Time per invoice</span><span class="val">30 sec</span></div>
+    <div class="col-item"><span class="label">Errors caught</span><span class="val">99%+</span></div>
+    <div class="col-item"><span class="label">Cost per audit</span><span class="val">$0-2</span></div>
+    <div class="col-item"><span class="label">Dispute filing</span><span class="val">Automatic</span></div>
+    <div class="col-item"><span class="label">Consistency</span><span class="val">Always</span></div>
+  </div>
+</div>
+<div class="cta">Switch to AI →</div>
+</body>
+</html>

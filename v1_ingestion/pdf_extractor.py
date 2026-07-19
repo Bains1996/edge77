@@ -148,6 +148,40 @@ def _extract_with_pypdf(pdf_bytes: bytes) -> ExtractedContent:
         raise RuntimeError(f"pypdf failed: {e}") from e
 
 
+def _extract_with_ocr(pdf_bytes: bytes) -> ExtractedContent:
+    """OCR extraction using Tesseract for scanned/image-based PDFs."""
+    try:
+        import pytesseract
+        from pdf2image import convert_from_bytes
+
+        images = convert_from_bytes(pdf_bytes, dpi=300)
+        text_parts: list[str] = []
+
+        for i, image in enumerate(images):
+            page_text = pytesseract.image_to_string(image, lang="eng")
+            if page_text.strip():
+                text_parts.append(page_text)
+
+        return ExtractedContent(
+            raw_text="\n".join(text_parts).strip(),
+            tables=[],
+            page_count=len(images),
+            extraction_method="tesseract_ocr",
+            success=True,
+        )
+    except ImportError:
+        logger.warning(
+            f"{EDGE77_PREFIX} pytesseract or pdf2image not installed — OCR unavailable"
+        )
+        return ExtractedContent(
+            extraction_method="ocr",
+            success=False,
+            error=f"{EDGE77_PREFIX} OCR libraries not installed",
+        )
+    except Exception as e:
+        raise RuntimeError(f"OCR extraction failed: {e}") from e
+
+
 def extract_text(pdf_bytes: bytes) -> ExtractedContent:
     """Main entry point — extract text and tables from a PDF.
 
@@ -169,7 +203,9 @@ def extract_text(pdf_bytes: bytes) -> ExtractedContent:
             f"{EDGE77_PREFIX} pdfplumber extracted {content.page_count} pages, "
             f"{len(content.tables)} tables"
         )
-        return content
+        if content.raw_text.strip():
+            return content
+        logger.warning(f"{EDGE77_PREFIX} pdfplumber returned empty text — trying OCR")
     except Exception as plum_err:
         logger.warning(f"{EDGE77_PREFIX} pdfplumber failed, falling back to pypdf: {plum_err}")
 
@@ -178,11 +214,25 @@ def extract_text(pdf_bytes: bytes) -> ExtractedContent:
         logger.info(
             f"{EDGE77_PREFIX} pypdf extracted {content.page_count} pages (fallback)"
         )
-        return content
+        if content.raw_text.strip():
+            return content
+        logger.warning(f"{EDGE77_PREFIX} pypdf returned empty text — trying OCR")
     except Exception as pypdf_err:
-        logger.error(f"{EDGE77_PREFIX} Both extractors failed: {pypdf_err}")
-        return ExtractedContent(
-            extraction_method="none",
-            success=False,
-            error=f"{EDGE77_PREFIX} All extractors failed: {pypdf_err}",
-        )
+        logger.warning(f"{EDGE77_PREFIX} pypdf failed: {pypdf_err}")
+
+    try:
+        content = _extract_with_ocr(pdf_bytes)
+        if content.success and content.raw_text.strip():
+            logger.info(
+                f"{EDGE77_PREFIX} OCR extracted {content.page_count} pages"
+            )
+            return content
+        logger.warning(f"{EDGE77_PREFIX} OCR returned no text")
+    except Exception as ocr_err:
+        logger.warning(f"{EDGE77_PREFIX} OCR failed: {ocr_err}")
+
+    return ExtractedContent(
+        extraction_method="none",
+        success=False,
+        error=f"{EDGE77_PREFIX} All extractors failed (pdfplumber, pypdf, OCR)",
+    )

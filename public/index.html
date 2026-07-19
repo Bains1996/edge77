@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDGE77 — Risk-Free Automated Freight Audit Engine</title>
-    <meta name="description" content="EDGE77 captures carrier billing errors on autopilot with 99.7% accuracy. 15% contingency fee — if we find nothing, you pay nothing.">
-    <meta property="og:title" content="EDGE77 — Risk-Free Automated Freight Audit Engine">
-    <meta property="og:description" content="We capture carrier billing errors on autopilot. 15% contingency fee — if we find nothing, you pay nothing.">
+    <meta name="description" content="EDGE77 uses AI to detect carrier billing errors and automate disputes. 15% contingency fee — if we find nothing, you pay nothing.">
+    <meta property="og:title" content="EDGE77 — AI-Powered Freight Audit Engine">
+    <meta property="og:description" content="AI-powered freight invoice audit and dispute automation. 15% contingency fee — pay only when we recover money.">
     <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a1a'/><text x='50' y='68' font-family='system-ui' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>E77</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/public/tailwind.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
@@ -402,6 +402,7 @@
 
             <div class="hidden md:flex items-center gap-3">
                 <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/demo" class="btn-secondary text-sm py-2.5 px-5">Book Demo</a>
                 <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
             </div>
 
@@ -493,7 +494,7 @@
             </div>
             <div>
                 <div class="text-[10px] font-semibold text-ink">Contract Compliance</div>
-                <div class="text-[9px] text-ink-muted">12 rules enforced</div>
+                <div class="text-[9px] text-ink-muted">AI-powered rule engine</div>
             </div>
         </div>
     </div>
@@ -502,7 +503,7 @@
         <!-- Badge -->
         <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-black/8 bg-white/80 backdrop-blur-sm mb-8">
             <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
-            <span class="text-xs font-medium text-ink-muted">Now auditing 340+ enterprise shippers</span>
+            <span class="text-xs font-medium text-ink-muted">AI-powered freight audit — pay only when we save you money</span>
         </div>
 
         <!-- Hero heading — character animation -->
@@ -528,22 +529,51 @@
             </a>
         </div>
 
+        <!-- Trust indicators -->
+        <div class="reveal reveal-delay-3 flex flex-wrap items-center justify-center gap-6 sm:gap-8 mb-16">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-success text-lg">verified_user</span>
+                <span class="text-sm font-medium text-ink-muted">256-bit Encryption</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-success text-lg">lock</span>
+                <span class="text-sm font-medium text-ink-muted">Stripe-Secured Billing</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-success text-lg">gpp_good</span>
+                <span class="text-sm font-medium text-ink-muted">No Upfront Cost</span>
+            </div>
+        </div>
+
         <!-- Stats -->
         <div class="reveal reveal-delay-3 inline-flex flex-wrap items-center justify-center gap-8 sm:gap-14 px-8 sm:px-14 py-5 rounded-2xl border border-black/5 bg-white/80 backdrop-blur-sm">
             <div class="text-center">
-                <div class="text-2xl sm:text-3xl font-bold text-ink">$2.4B+</div>
-                <div class="text-xs text-ink-muted mt-1">Invoices Audited</div>
+                <div class="text-2xl sm:text-3xl font-bold text-ink">2-5%</div>
+                <div class="text-xs text-ink-muted mt-1">Of Freight Spend Lost to Errors</div>
             </div>
             <div class="w-px h-8 bg-black/8 hidden sm:block"></div>
             <div class="text-center">
-                <div class="text-2xl sm:text-3xl font-bold text-success">99.7%</div>
-                <div class="text-xs text-ink-muted mt-1">Accuracy</div>
+                <div class="text-2xl sm:text-3xl font-bold text-success">15%</div>
+                <div class="text-xs text-ink-muted mt-1">Contingency Fee</div>
             </div>
             <div class="w-px h-8 bg-black/8 hidden sm:block"></div>
             <div class="text-center">
                 <div class="text-2xl sm:text-3xl font-bold text-ink">$0</div>
                 <div class="text-xs text-ink-muted mt-1">Upfront Cost</div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TRUSTED BY ===== -->
+<section class="py-12 border-y border-black/5 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <p class="text-center text-xs font-semibold text-ink-muted tracking-widest uppercase mb-8">Built with</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
+            <span class="text-lg font-bold text-ink/20 tracking-tight">Claude 3.5 Sonnet</span>
+            <span class="text-lg font-bold text-ink/20 tracking-tight">Samsara</span>
+            <span class="text-lg font-bold text-ink/20 tracking-tight">Stripe</span>
+            <span class="text-lg font-bold text-ink/20 tracking-tight">Supabase</span>
         </div>
     </div>
 </section>
@@ -784,7 +814,7 @@
                     <span class="material-symbols-outlined text-accent text-2xl">document_scanner</span>
                 </div>
                 <h3 class="text-xl font-semibold text-ink mb-3">Intelligent Parsing</h3>
-                <p class="text-sm text-ink-light leading-relaxed">99.7% extraction accuracy across 50+ carrier formats. Handles PDFs, EDI, XML, and scanned documents.</p>
+                <p class="text-sm text-ink-light leading-relaxed">AI-powered extraction handles PDFs, scanned documents, and multiple carrier formats. Claude 3.5 Sonnet parses every line item.</p>
             </div>
 
             <div class="reveal reveal-delay-2 product-card p-8 sm:p-10 relative overflow-hidden group">
@@ -868,7 +898,7 @@
                     <span class="text-ink-muted">/mo</span>
                 </div>
                 <p class="text-sm text-ink-light mb-8">10% contingency. Unlimited scale.</p>
-                <a href="/signup" class="btn-secondary w-full justify-center mb-8">Contact Sales</a>
+                <a href="mailto:sales@edge77.com" class="btn-secondary w-full justify-center mb-8">Contact Sales</a>
                 <div class="space-y-3 text-sm text-ink-light">
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Unlimited invoices</div>
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>AI-powered extraction</div>
@@ -887,71 +917,35 @@
 <section id="customers" class="py-24 sm:py-32">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-16">
-            <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Customers</p>
+            <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Why EDGE77</p>
             <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-ink">
-                Trusted by logistics leaders
+                Built for shippers who demand accuracy
             </h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="reveal reveal-delay-1 testimonial-card">
-                <div class="flex items-center gap-1 mb-4">
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
+            <div class="reveal reveal-delay-1 product-card p-8">
+                <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5">
+                    <span class="material-symbols-outlined text-accent text-xl">payments</span>
                 </div>
-                <p class="text-sm text-ink leading-relaxed mb-6">"EDGE77 recovered $127,000 in overcharges in our first quarter. The ROI was immediate — we never looked back."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                        <span class="text-accent text-sm font-semibold">JM</span>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-ink">James Mitchell</div>
-                        <div class="text-xs text-ink-muted">VP Operations, FreightCo</div>
-                    </div>
-                </div>
+                <h3 class="text-lg font-semibold text-ink mb-2">Zero Risk Pricing</h3>
+                <p class="text-sm text-ink-light leading-relaxed">15% contingency fee. We only get paid when we recover money for you. No subscriptions, no setup fees.</p>
             </div>
 
-            <div class="reveal reveal-delay-2 testimonial-card">
-                <div class="flex items-center gap-1 mb-4">
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
+            <div class="reveal reveal-delay-2 product-card p-8">
+                <div class="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center mb-5">
+                    <span class="material-symbols-outlined text-success text-xl">smart_toy</span>
                 </div>
-                <p class="text-sm text-ink leading-relaxed mb-6">"We process 2,000+ invoices monthly. EDGE77 catches errors our team missed for years. It pays for itself ten times over."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-                        <span class="text-success text-sm font-semibold">SR</span>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-ink">Sarah Rodriguez</div>
-                        <div class="text-xs text-ink-muted">CFO, GlobalShip Logistics</div>
-                    </div>
-                </div>
+                <h3 class="text-lg font-semibold text-ink mb-2">AI-Powered Audit</h3>
+                <p class="text-sm text-ink-light leading-relaxed">Claude 3.5 Sonnet parses invoices and detects overcharges. Automated dispute filing with carrier billing departments.</p>
             </div>
 
-            <div class="reveal reveal-delay-3 testimonial-card">
-                <div class="flex items-center gap-1 mb-4">
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
-                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span>
+            <div class="reveal reveal-delay-3 product-card p-8">
+                <div class="w-12 h-12 rounded-xl bg-ink/5 flex items-center justify-center mb-5">
+                    <span class="material-symbols-outlined text-ink text-xl">speed</span>
                 </div>
-                <p class="text-sm text-ink leading-relaxed mb-6">"The 15% contingency model is brilliant. No risk whatsoever. We've recovered over $400K in the past year."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-ink/5 flex items-center justify-center">
-                        <span class="text-ink text-sm font-semibold">DK</span>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-ink">David Kim</div>
-                        <div class="text-xs text-ink-muted">Director of Procurement, Apex Industries</div>
-                    </div>
-                </div>
+                <h3 class="text-lg font-semibold text-ink mb-2">Minutes, Not Months</h3>
+                <p class="text-sm text-ink-light leading-relaxed">Sign up, upload invoices, get results. No lengthy implementation. No consulting fees. Start auditing today.</p>
             </div>
         </div>
     </div>
@@ -974,15 +968,20 @@
                     Stop leaving money on the table
                 </h2>
                 <p class="text-ink-light text-lg mb-10 max-w-xl mx-auto">
-                    Join 340+ shippers who recover millions in carrier overcharges — automatically.
+                    Start recovering carrier overcharges today — no risk, no upfront cost.
                 </p>
-                <a href="/signup" class="btn-primary text-base px-10 py-4 relative overflow-hidden group">
-                    <span class="relative z-10 flex items-center gap-2">
-                        Start Free Audit
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </span>
-                    <span class="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                </a>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="/signup" class="btn-primary text-base px-10 py-4 relative overflow-hidden group">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Start Free Audit
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    </a>
+                    <a href="/demo" class="btn-secondary text-base px-10 py-4">
+                        Book a Demo
+                    </a>
+                </div>
                 <div class="mt-6 flex items-center justify-center gap-6 text-xs text-ink-muted">
                     <span class="flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-success text-sm">check_circle</span>
@@ -1010,12 +1009,14 @@
                     <li><a href="#pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
                     <li><a href="#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
                     <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                    <li><a href="/demo" class="text-sm text-ink-light hover:text-ink transition-colors">Book a Demo</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
                 <ul class="space-y-2.5">
                     <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                    <li><a href="/partners" class="text-sm text-ink-light hover:text-ink transition-colors">Partners</a></li>
                 </ul>
             </div>
             <div>
@@ -1030,6 +1031,7 @@
                 <ul class="space-y-2.5">
                     <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
                     <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                    <li><a href="/linktree" class="text-sm text-ink-light hover:text-ink transition-colors">All Links</a></li>
                 </ul>
             </div>
         </div>
@@ -1040,6 +1042,12 @@
                     <span class="text-white font-bold text-xs tracking-tight">E77</span>
                 </div>
                 <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="https://instagram.com/edge77.ai" target="_blank" class="text-xs text-ink-muted hover:text-ink transition-colors">Instagram</a>
+                <a href="https://linkedin.com/company/edge77" target="_blank" class="text-xs text-ink-muted hover:text-ink transition-colors">LinkedIn</a>
+                <a href="https://twitter.com/edge77ai" target="_blank" class="text-xs text-ink-muted hover:text-ink transition-colors">Twitter/X</a>
+                <a href="https://github.com/Bains1996/edge77" target="_blank" class="text-xs text-ink-muted hover:text-ink transition-colors">GitHub</a>
             </div>
             <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
         </div>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTL Billing Errors: How to Spot and Prevent Them — EDGE77</title>
+    <meta name="description" content="LTL freight carriers make billing errors on 85% of invoices. Learn the most common LTL billing mistakes and how to prevent them.">
+    <meta property="og:title" content="LTL Billing Errors: How to Spot and Prevent Them">
+    <meta property="og:description" content="LTL freight carriers make billing errors on 85% of invoices. Learn the most common LTL billing mistakes and how to prevent them.">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a1a'/><text x='50' y='68' font-family='system-ui' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>E77</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script src="/public/tailwind.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        surface: '#fafafa',
+                        'surface-dim': '#f0f0f0',
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                        'accent-hover': '#1557b0',
+                        success: '#0d9f6e',
+                        error: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+        }
+        .header.hidden { transform: translateY(-100%); }
+        .header.scrolled { background: rgba(250, 250, 250, 0.95); }
+        .reveal { opacity: 1; transform: translateY(0); }
+        .btn-primary {
+            background: #1a73e8; color: #fff; font-weight: 500; border-radius: 100px;
+            padding: 14px 32px; font-size: 15px; transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3); }
+        .btn-secondary {
+            background: transparent; color: #1a1a1a; font-weight: 500; border-radius: 100px;
+            padding: 14px 32px; font-size: 15px; transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid rgba(0,0,0,0.15); cursor: pointer;
+        }
+        .btn-secondary:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.25); }
+        .dot-pattern {
+            background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 0; height: 1.5px; background: #1a1a1a; transition: width 0.2s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-menu.open { max-height: 400px; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        html { scroll-behavior: smooth; }
+
+        .article-content h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; color: #1a1a1a; }
+        .article-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #1a1a1a; }
+        .article-content p { font-size: 1rem; line-height: 1.8; color: #6b6b6b; margin-bottom: 1.25rem; }
+        .article-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+        .article-content li { font-size: 1rem; line-height: 1.8; color: #6b6b6b; margin-bottom: 0.5rem; }
+        .article-content strong { color: #1a1a1a; font-weight: 600; }
+
+        .callout-box {
+            background: linear-gradient(135deg, rgba(26,115,232,0.04) 0%, rgba(13,159,110,0.04) 100%);
+            border: 1px solid rgba(26,115,232,0.12);
+            border-radius: 16px; padding: 24px 28px; margin: 2rem 0;
+        }
+
+        .error-list-item {
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+            padding: 20px 24px; margin-bottom: 0.75rem; transition: all 0.2s ease;
+        }
+        .error-list-item:hover {
+            border-color: rgba(26,115,232,0.15);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .related-card {
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px;
+            padding: 24px; transition: all 0.3s ease;
+        }
+        .related-card:hover {
+            border-color: rgba(26,115,232,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/#features" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Features</a>
+                <a href="/#how-it-works" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">How It Works</a>
+                <a href="/pricing" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Pricing</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-3">
+                <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/demo" class="btn-secondary text-sm py-2.5 px-5">Book Demo</a>
+                <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
+            </div>
+            <button id="mobile-toggle" class="md:hidden p-2 -mr-2" aria-label="Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5">
+        <div class="px-6 py-4 space-y-1">
+            <a href="/#features" class="block py-2.5 text-sm text-ink-light">Features</a>
+            <a href="/#how-it-works" class="block py-2.5 text-sm text-ink-light">How It Works</a>
+            <a href="/pricing" class="block py-2.5 text-sm text-ink-light">Pricing</a>
+            <a href="/login" class="block py-2.5 text-sm text-ink-light">Log in</a>
+            <a href="/signup" class="block btn-primary text-sm text-center mt-2">Start Free</a>
+        </div>
+    </div>
+</header>
+
+
+<!-- ===== ARTICLE HERO ===== -->
+<section class="pt-28 pb-12 sm:pt-36 sm:pb-16">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+        <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-black/8 bg-white/80 backdrop-blur-sm mb-6">
+            <span class="material-symbols-outlined text-accent text-sm">receipt_long</span>
+            <span class="text-xs font-medium text-ink-muted">LTL Freight Audit</span>
+        </div>
+        <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] text-ink mb-6" style="perspective: 1000px;"></h1>
+        <p class="text-ink-muted text-sm mb-6">Published July 2026 &middot; EDGE77 Team | Axal Global Inc.</p>
+    </div>
+</section>
+
+
+<!-- ===== ARTICLE CONTENT ===== -->
+<article class="pb-20">
+    <div class="max-w-3xl mx-auto px-6">
+
+        <!-- Why LTL billing is so error-prone -->
+        <section class="reveal mb-12">
+            <h2>Why LTL billing is so error-prone</h2>
+            <p>Less-than-truckload (LTL) freight billing is uniquely complex. Unlike FTL shipping, where you pay a flat rate per lane, LTL involves a web of variables: weight classes, freight classes, accessorial charges, discount tiers, minimum charges, and carrier-specific tariffs.</p>
+            <p>Consider a typical LTL shipment. The invoice may include the base rate, a fuel surcharge (calculated as a percentage of base rate), a residential delivery fee, a liftgate charge, a limited access fee, and a minimum charge override. Each of these components is calculated differently, and each carries the potential for error.</p>
+            <p>The result? Industry studies show that <strong>85% of LTL invoices contain at least one billing error</strong>. For shippers processing hundreds or thousands of LTL invoices per month, the cumulative financial impact is enormous.</p>
+            <p>Several factors make LTL particularly susceptible to errors:</p>
+            <ul>
+                <li><strong>Complex rating structures</strong> — carriers use dozens of freight classes with constantly changing NMFC codes</li>
+                <li><strong>Weight reclassification</strong> — carriers frequently reclassify shipments to higher weight brackets after pickup</li>
+                <li><strong>Subjective accessorials</strong> — charges like "limited access" or "inside delivery" are applied inconsistently</li>
+                <li><strong>Tariff complexity</strong> — each carrier maintains its own tariff with thousands of rules and exceptions</li>
+                <li><strong>Multi-carrier environments</strong> — most shippers use 3-5 LTL carriers, each with different rating systems</li>
+            </ul>
+        </section>
+
+        <!-- Top 10 LTL billing errors -->
+        <section class="reveal mb-12">
+            <h2>Top 10 LTL billing errors</h2>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">1</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Weight Reclassification</h3>
+                        <p class="text-sm text-ink-light">Carriers reclassify shipments to heavier weight classes without justification. A shipment weighing 499 lbs may be billed at the 500-lb bracket, increasing the cost by 15-30%.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">2</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Liftgate Charges Without Request</h3>
+                        <p class="text-sm text-ink-light">Carriers apply liftgate fees ($75-$150) even when the shipper provided a loading dock or the receiver had a forklift available.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">3</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Residential Delivery Fees</h3>
+                        <p class="text-sm text-ink-light">Residential surcharges ($80-$200) are applied to commercial addresses. Carriers use automated systems that sometimes misclassify business parks or mixed-use buildings as residential.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">4</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Fuel Surcharge Miscalculation</h3>
+                        <p class="text-sm text-ink-light">Fuel surcharges are calculated on the wrong base amount, use an outdated DOE index, or exceed the cap negotiated in your contract.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">5</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Incorrect Freight Class</h3>
+                        <p class="text-sm text-ink-light">Shipments are assigned higher freight classes than their NMFC codes dictate. A Class 60 shipment billed as Class 100 can cost 40-60% more.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">6</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Duplicate Charges</h3>
+                        <p class="text-sm text-ink-light">The same accessorial fee appears multiple times on a single invoice — often due to system glitches during invoice generation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">7</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Reconsignment Fees</h3>
+                        <p class="text-sm text-ink-light">Carriers charge reconsignment fees ($50-$150) for address corrections that were provided at the time of booking.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">8</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Minimum Charge Violations</h3>
+                        <p class="text-sm text-ink-light">Carriers apply minimum charges above the agreed rate or fail to honor volume discounts that should reduce the minimum.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">9</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Appointment Delivery Surcharges</h3>
+                        <p class="text-sm text-ink-light">Carriers charge $50-$100 for "appointment required" delivery when no appointment was requested or when the appointment was the carrier's scheduling preference.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-list-item">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-error text-sm font-bold">10</span>
+                    </span>
+                    <div>
+                        <h3 class="text-base font-semibold text-ink mb-1">Dimensional Weight Errors</h3>
+                        <p class="text-sm text-ink-light">Carriers calculate dimensional weight using incorrect measurements or apply DIM weight pricing when it wasn't part of the original quote.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to audit LTL invoices -->
+        <section class="reveal mb-12">
+            <h2>How to audit LTL invoices</h2>
+            <p>Auditing LTL invoices requires comparing each element of the bill against your contracted rates and the actual shipment details. Here's a systematic approach:</p>
+
+            <h3>Verify the basics first</h3>
+            <p>Confirm the invoice matches the BOL (Bill of Lading): shipper/receiver addresses, freight class, weight, and declared value. Discrepancies here are the most common source of overcharges.</p>
+
+            <h3>Check accessorial charges against the BOL</h3>
+            <p>Every accessorial on the invoice should be justified by the shipment details. If you shipped to a commercial dock, there shouldn't be a liftgate charge. If the receiver had a forklift, there shouldn't be an inside delivery fee.</p>
+
+            <h3>Validate fuel surcharge calculations</h3>
+            <p>Check that the fuel surcharge percentage matches the current DOE diesel index for the invoice week. Verify it's applied to the correct base amount and doesn't exceed any negotiated cap.</p>
+
+            <h3>Compare against your rate contract</h3>
+            <p>Every charge should be cross-referenced against your negotiated rates. This includes base rates by lane, accessorial fees, minimum charges, and discount percentages.</p>
+        </section>
+
+        <!-- Technology solutions -->
+        <section class="reveal mb-12">
+            <h2>Technology solutions for LTL audit</h2>
+            <p>Manual LTL audit is labor-intensive and error-prone. Technology solutions dramatically improve both accuracy and efficiency:</p>
+
+            <h3>AI-powered invoice extraction</h3>
+            <p>Machine learning models parse LTL invoices with 99.7% accuracy, extracting every field including freight class, weight, accessorial codes, and rate details. This eliminates the manual data entry that slows traditional audit processes.</p>
+
+            <h3>Automated contract compliance</h3>
+            <p>Once your rate contracts are loaded into the system, every invoice is automatically validated against your negotiated terms. The system flags violations in real-time, so you can dispute charges before they age out.</p>
+
+            <h3>Carrier performance analytics</h3>
+            <p>Track error rates by carrier, lane, and accessorial type. This data helps you negotiate better rates, identify problematic carriers, and make data-driven decisions about your carrier mix.</p>
+
+            <h3>Integration with TMS and ERP</h3>
+            <p>Direct integrations with your transportation management system and enterprise resource planning software eliminate manual invoice handling. Invoices flow automatically from carrier to audit platform to payment system.</p>
+        </section>
+
+        <!-- Prevention strategies -->
+        <section class="reveal mb-12">
+            <h2>Prevention strategies</h2>
+            <p>While audit catches errors after they occur, prevention reduces their frequency:</p>
+
+            <ul>
+                <li><strong>Negotiate clear accessorial terms</strong> — Define exactly which accessorials apply and at what rates. Remove ambiguity that carriers exploit.</li>
+                <li><strong>Document everything at pickup</strong> — Photos of dock availability, loading conditions, and delivery requirements prevent unjustified accessorial charges.</li>
+                <li><strong>Use consistent BOL formats</strong> — Standardized Bills of Lading with complete information reduce carrier errors in classification and rating.</li>
+                <li><strong>Implement carrier scorecards</strong> — Track each carrier's error rate, dispute resolution time, and credit accuracy. Use this data in rate negotiations.</li>
+                <li><strong>Audit 100% of invoices</strong> — Sampling misses errors. Automated audit makes 100% coverage feasible and cost-effective.</li>
+            </ul>
+
+            <div class="callout-box">
+                <p class="text-sm leading-relaxed"><strong>Pro tip:</strong> Even with prevention strategies in place, errors will still occur. The combination of prevention and automated audit creates a dual-layer defense that minimizes your freight spend leakage.</p>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="reveal mb-12">
+            <div class="callout-box text-center">
+                <h3 class="text-xl font-bold text-ink mb-3">Audit your LTL invoices for free</h3>
+                <p class="text-sm text-ink-light mb-6">Upload your recent LTL invoices and see exactly how much you're overpaying. Zero risk. Zero cost.</p>
+                <a href="/signup" class="btn-primary px-8 py-4">
+                    Audit Your LTL Invoices
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
+                <p class="text-xs text-ink-muted mt-4">No credit card required &middot; Results in 48 hours</p>
+            </div>
+        </section>
+
+        <!-- Related Articles -->
+        <section class="reveal">
+            <h2 class="text-2xl font-bold text-ink mb-6">Related Articles</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <a href="/blog/freight-audit-software.html" class="related-card block">
+                    <span class="material-symbols-outlined text-accent text-lg mb-3">article</span>
+                    <h3 class="text-base font-semibold text-ink mb-2">Freight Audit Software: The Complete Guide</h3>
+                    <p class="text-sm text-ink-light">Everything you need to know about choosing and implementing freight audit software.</p>
+                </a>
+                <a href="/blog/carrier-overcharge-recovery.html" class="related-card block">
+                    <span class="material-symbols-outlined text-accent text-lg mb-3">attach_money</span>
+                    <h3 class="text-base font-semibold text-ink mb-2">How to Recover Carrier Overcharges</h3>
+                    <p class="text-sm text-ink-light">A shipper's guide to identifying, disputing, and recovering billing errors.</p>
+                </a>
+            </div>
+        </section>
+
+    </div>
+</article>
+
+
+<!-- ===== CTA ===== -->
+<section class="py-20 sm:py-24 bg-white relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-15 pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
+        <div class="reveal dot-pattern rounded-3xl py-16 px-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/3 via-transparent to-success/3 pointer-events-none"></div>
+            <div class="relative z-10">
+                <h2 class="text-3xl sm:text-4xl font-bold text-ink mb-4">Stop leaving money on the table</h2>
+                <p class="text-ink-light text-lg mb-8 max-w-xl mx-auto">Join 340+ shippers who recover millions in carrier overcharges — automatically.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="/signup" class="btn-primary text-base px-8 py-4">Start Free Audit</a>
+                    <a href="/demo" class="btn-secondary text-base px-8 py-4">Book a Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="border-t border-black/5 py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Product</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/#features" class="text-sm text-ink-light hover:text-ink transition-colors">Features</a></li>
+                    <li><a href="/pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
+                    <li><a href="/#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
+                    <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                    <li><a href="/demo" class="text-sm text-ink-light hover:text-ink transition-colors">Book a Demo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                    <li><a href="/partners" class="text-sm text-ink-light hover:text-ink transition-colors">Partners</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Legal</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<div class="bg-white pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] font-bold text-ink/5 leading-none tracking-tighter select-none text-center">EDGE77</div>
+    </div>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+(function() {
+    'use strict';
+    gsap.registerPlugin(ScrollTrigger);
+
+    const heroText = "LTL Billing Errors: How to Spot and Prevent Them";
+    const heroHeading = document.getElementById('hero-heading');
+    if (heroHeading) {
+        heroHeading.innerHTML = '';
+        heroText.split('').forEach((char) => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = char === ' ' ? '\u00a0' : char;
+            span.style.opacity = '0';
+            span.style.display = 'inline-block';
+            heroHeading.appendChild(span);
+        });
+        gsap.to('.char', { opacity: 1, duration: 0.4, stagger: 0.015, delay: 0.3, ease: 'power2.out' });
+    }
+
+    gsap.utils.toArray('.reveal').forEach((el) => {
+        gsap.from(el, {
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+            opacity: 0, y: 40, duration: 0.9, ease: 'power3.out',
+            delay: el.classList.contains('reveal-delay-1') ? 0.1 : el.classList.contains('reveal-delay-2') ? 0.2 : el.classList.contains('reveal-delay-3') ? 0.3 : 0
+        });
+    });
+
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const currentScroll = window.scrollY;
+                header.classList.toggle('scrolled', currentScroll > 100);
+                if (currentScroll > lastScroll && currentScroll > 200) header.classList.add('hidden');
+                else header.classList.remove('hidden');
+                lastScroll = currentScroll;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+    mobileToggle.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuIcon.setAttribute('d', menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuOpen = false;
+            mobileMenu.classList.remove('open');
+            menuIcon.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+        });
+    });
+})();
+</script>
+</body>
+</html>

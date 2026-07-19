@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0a; color: white; padding: 80px; overflow: hidden; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+.logo { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+.logo span { color: #3b82f6; }
+.slide-num { color: #3b82f6; font-size: 18px; font-weight: 600; }
+h1 { font-size: 52px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+h1 em { font-style: normal; color: #ef4444; }
+.sub { font-size: 22px; color: #94a3b8; margin-bottom: 56px; }
+.errors { display: flex; flex-direction: column; gap: 24px; }
+.error { display: flex; align-items: flex-start; gap: 24px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 16px; padding: 28px 32px; }
+.error-num { background: #ef4444; color: white; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; flex-shrink: 0; }
+.error-text h3 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.error-text p { font-size: 16px; color: #94a3b8; }
+.footer { position: absolute; bottom: 60px; left: 80px; right: 80px; display: flex; justify-content: space-between; align-items: center; }
+.swipe { color: #64748b; font-size: 18px; }
+.cta { background: #3b82f6; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">EDGE<span>77</span></div>
+  <div class="slide-num">1 / 5</div>
+</div>
+<h1>5 LTL Billing Errors<br><em>Costing You Thousands</em></h1>
+<p class="sub">These errors happen on nearly every freight invoice. Most shippers never catch them.</p>
+<div class="errors">
+  <div class="error">
+    <div class="error-num">1</div>
+    <div class="error-text"><h3>Freight Class Manipulation</h3><p>Carriers upgrade your NMFC class to charge more</p></div>
+  </div>
+  <div class="error">
+    <div class="error-num">2</div>
+    <div class="error-text"><h3>DIM Weight Inflation</h3><p>Incorrect dimensional weight calculations</p></div>
+  </div>
+  <div class="error">
+    <div class="error-num">3</div>
+    <div class="error-text"><h3>Accessorial Abuse</h3><p>Charging for services not rendered</p></div>
+  </div>
+</div>
+<div class="footer">
+  <div class="swipe">Swipe to see all 5 →</div>
+  <div class="cta">Fix Your Invoices →</div>
+</div>
+</body>
+</html>

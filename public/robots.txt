@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /health
+
+Sitemap: https://edge77-364995933969.us-central1.run.app/sitemap.xml

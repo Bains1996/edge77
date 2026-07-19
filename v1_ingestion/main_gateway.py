@@ -18,14 +18,28 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+
+SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=os.getenv("ENVIRONMENT", "development"),
+        traces_sample_rate=0.1,
+        profiles_sample_rate=0.1,
+        integrations=[FastApiIntegration()],
+    )
+
 import structlog
 from fastapi import FastAPI, UploadFile, File, Header, Query, BackgroundTasks, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from v1_monitoring.logger import setup_logging, get_logger, RequestLoggingMiddleware
-from v1_ingestion.middleware import AuthMiddleware, RateLimiter
+from v1_ingestion.middleware import AuthMiddleware, RateLimiter, SecurityHeadersMiddleware, RequestSizeLimitMiddleware
 from v1_database.supabase_client import (
     save_audit_record,
     check_duplicate,
@@ -123,6 +137,13 @@ async def process_invoice_background(
         result = evaluate_and_dispute(parsed.model_dump(), client_id)
         print(f"{LOG_PREFIX} STEP3 result: overcharge={result.overcharge}, fee={result.fee_earned}", file=sys.stderr, flush=True)
 
+        # 4. Log usage for Stripe metered billing
+        try:
+            from v1_integrations.stripe_client import log_usage_event
+            log_usage_event(client_id, "invoice_audited", 1)
+        except Exception as usage_err:
+            print(f"{LOG_PREFIX} Usage logging failed (non-critical): {usage_err}", file=sys.stderr, flush=True)
+
         log.info(
             f"{LOG_PREFIX} Pipeline complete",
             tracking_id=tracking_id,
@@ -139,6 +160,7 @@ async def process_invoice_background(
             exc_info=True,
         )
         print(f"{LOG_PREFIX} PIPELINE FAILED: {exc}", file=sys.stderr, flush=True)
+        sentry_sdk.capture_exception(exc)
         try:
             update_audit_status_by_tracking(client_id, tracking_id, "PIPELINE_FAILED")
         except Exception:
@@ -231,6 +253,8 @@ async def lifespan(app: FastAPI):
     log.info(f"{LOG_PREFIX} Gateway starting — mode={'MOCK' if MOCK_MODE else 'PRODUCTION'}")
     log.info(f"{LOG_PREFIX} Rate limit: {RATE_LIMIT_PER_MINUTE} req/min")
     log.info(f"{LOG_PREFIX} Max PDF size: {MAX_PDF_SIZE_MB}MB")
+    if SENTRY_DSN:
+        log.info(f"{LOG_PREFIX} Sentry error tracking enabled")
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
     yield
     log.info(f"{LOG_PREFIX} Gateway shutting down")
@@ -250,6 +274,17 @@ app = FastAPI(
     openapi_url=None if _is_production else "/openapi.json",
 )
 
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Capture unhandled exceptions in Sentry and return a safe error response."""
+    sentry_sdk.capture_exception(exc)
+    log.error(f"{LOG_PREFIX} Unhandled exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": "An unexpected error occurred"},
+    )
+
 # --- Middleware (order matters: last added = first executed) ---
 
 app.add_middleware(
@@ -266,12 +301,21 @@ app.add_middleware(
         "http://localhost:8080",
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["X-RateLimit-Limit", "X-RateLimit-Remaining", "Retry-After"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Client-Id", "X-Timestamp", "X-Signature", "X-Request-ID"],
+    expose_headers=["X-RateLimit-Limit", "X-RateLimit-Remaining", "Retry-After", "X-Request-ID"],
 )
 
 rate_limiter = RateLimiter(max_requests=RATE_LIMIT_PER_MINUTE, window_seconds=60)
+
+app.add_middleware(
+    SecurityHeadersMiddleware,
+)
+
+app.add_middleware(
+    RequestSizeLimitMiddleware,
+    max_body_bytes=10 * 1024 * 1024,  # 10MB global limit
+)
 
 app.add_middleware(
     AuthMiddleware,
@@ -375,6 +419,75 @@ async def serve_signup():
     )
 
 
+@app.get("/partners", response_class=HTMLResponse, include_in_schema=False)
+async def serve_partners():
+    page = PUBLIC_DIR / "partners.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Partners</h1><p>Partners page not found. Place <code>public/partners.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/linktree", response_class=HTMLResponse, include_in_schema=False)
+async def serve_linktree():
+    page = PUBLIC_DIR / "linktree.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77</h1><p>Link page not found.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/demo", response_class=HTMLResponse, include_in_schema=False)
+async def serve_demo():
+    page = PUBLIC_DIR / "demo.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Demo</h1><p>Demo page not found. Place <code>public/demo.html</code> in the project root.</p>",
+        status_code=200,
+    )
+
+
+@app.get("/blog", response_class=HTMLResponse, include_in_schema=False)
+async def serve_blog_index():
+    page = PUBLIC_DIR / "blog" / "index.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    return HTMLResponse(
+        content="<h1>EDGE77 Blog</h1><p>Blog index not found.</p>",
+        status_code=200,
+    )
+
+
+class DemoRequest(BaseModel):
+    full_name: str
+    email: str
+    company: str
+    invoice_volume: str
+    phone: str = ""
+
+
+@app.post("/api/demo", include_in_schema=False)
+async def submit_demo_request(req: DemoRequest):
+    try:
+        from v1_database.supabase_client import _rest_insert
+        _rest_insert("demo_requests", {
+            "full_name": req.full_name,
+            "email": req.email,
+            "company": req.company,
+            "invoice_volume": req.invoice_volume,
+            "phone": req.phone,
+        })
+        return {"status": "ok", "message": "Demo request submitted"}
+    except Exception as exc:
+        log.warning(f"{LOG_PREFIX} Demo request insert failed: {exc}")
+        return {"status": "ok", "message": "Demo request received"}
+
+
 # ---------------------------------------------------------------------------
 # Health
 # ---------------------------------------------------------------------------
@@ -384,6 +497,7 @@ async def health_check():
     checks = {
         "supabase": "skip",
         "openrouter": "skip",
+        "stripe": "skip",
     }
 
     if not MOCK_MODE:
@@ -396,9 +510,33 @@ async def health_check():
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "")
     if api_key:
-        checks["openrouter"] = "configured"
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=5) as client:
+                resp = await client.get(
+                    "https://openrouter.ai/api/v1/models",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                )
+                checks["openrouter"] = "ok" if resp.status_code == 200 else f"error: HTTP {resp.status_code}"
+        except Exception as e:
+            checks["openrouter"] = f"error: {str(e)[:80]}"
     else:
         checks["openrouter"] = "not_configured"
+
+    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+    if stripe_key:
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=5) as client:
+                resp = await client.get(
+                    "https://api.stripe.com/v1/balance",
+                    headers={"Authorization": f"Bearer {stripe_key}"},
+                )
+                checks["stripe"] = "ok" if resp.status_code == 200 else f"error: HTTP {resp.status_code}"
+        except Exception as e:
+            checks["stripe"] = f"error: {str(e)[:80]}"
+    else:
+        checks["stripe"] = "not_configured"
 
     unhealthy = [k for k, v in checks.items() if v.startswith("error")]
 
@@ -498,9 +636,9 @@ async def get_invoice_status(
     tracking_id: str,
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
 
-    from v1_database.supabase_client import MOCK_AUDITS, _rest_select
+    from v1_database.supabase_client import MOCK_AUDITS, MOCK_MODE, _rest_select
 
     if MOCK_MODE:
         record = next(
@@ -522,6 +660,9 @@ async def get_invoice_status(
     if not record:
         raise HTTPException(status_code=404, detail=f"No audit found for tracking_id={tracking_id}")
 
+    if caller != "__admin__" and caller != record.get("client_id"):
+        raise HTTPException(status_code=403, detail="Cannot access another client's audit")
+
     return record
 
 
@@ -537,9 +678,15 @@ async def list_client_audits(
     offset: int = Query(0, ge=0),
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot access another client's data")
 
-    audits = get_client_audits(client_id, status_filter=status, limit=limit, offset=offset)
+    try:
+        audits = get_client_audits(client_id, status_filter=status, limit=limit, offset=offset)
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} Audits fetch failed: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to fetch audits")
 
     log.info(
         f"{LOG_PREFIX} Fetched audits",
@@ -566,9 +713,15 @@ async def client_stats(
     client_id: str,
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot access another client's data")
 
-    stats = get_client_stats(client_id)
+    try:
+        stats = get_client_stats(client_id)
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} Stats fetch failed: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to fetch stats")
 
     log.info(f"{LOG_PREFIX} Fetched stats", client_id=client_id, stats=stats)
 
@@ -587,8 +740,14 @@ async def get_contract(
     client_id: str,
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
-    contract = get_client_contract(client_id)
+    caller = _verify_token(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot access another client's data")
+    try:
+        contract = get_client_contract(client_id)
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} Contract fetch failed: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to fetch contract")
     log.info(f"{LOG_PREFIX} Fetched contract", client_id=client_id)
     return {
         "client_id": client_id,
@@ -606,7 +765,9 @@ async def update_contract(
     request: Request,
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot update another client's contract")
 
     try:
         body = await request.json()
@@ -685,9 +846,15 @@ async def approve_audit(
     audit_id: int,
     authorization: Optional[str] = Header(None),
 ):
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__" and caller != client_id:
+        raise HTTPException(status_code=403, detail="Cannot approve another client's audit")
 
-    record = update_audit_status(audit_id, "APPROVED")
+    try:
+        record = update_audit_status(audit_id, "APPROVED")
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} Audit approve failed: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to approve audit")
     if not record:
         raise HTTPException(status_code=404, detail=f"Audit {audit_id} not found")
 
@@ -701,6 +868,74 @@ async def approve_audit(
 
 
 # ---------------------------------------------------------------------------
+# Auth: Self-serve registration (auto-generate API key)
+# ---------------------------------------------------------------------------
+
+class RegisterRequest(BaseModel):
+    user_id: str
+    email: str
+    full_name: str = ""
+    company: str = ""
+
+
+@app.post("/v1/auth/register", include_in_schema=False)
+async def register_user(req: RegisterRequest):
+    """Auto-generate an API key for a newly signed-up user.
+    Called from the frontend after successful Supabase signup/login.
+    Creates client_api_keys, client_contracts, and client_profiles records.
+    """
+    from v1_database.api_keys import generate_api_key
+
+    client_id = req.user_id
+
+    try:
+        result = generate_api_key(client_id, name="default")
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} API key generation failed during register: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to generate API key")
+
+    if not MOCK_MODE:
+        try:
+            from v1_database.supabase_client import _rest_select, _rest_insert
+
+            existing = _rest_select("client_contracts", {
+                "select": "client_id",
+                "client_id": f"eq.{client_id}",
+                "limit": 1,
+            })
+            if not existing:
+                _rest_insert("client_contracts", {
+                    "client_id": client_id,
+                    "max_allowed_fuel": 0.0,
+                    "dispute_mode": "MANUAL_GATE",
+                })
+
+            existing_profile = _rest_select("client_profiles", {
+                "select": "client_id",
+                "client_id": f"eq.{client_id}",
+                "limit": 1,
+            })
+            if not existing_profile:
+                _rest_insert("client_profiles", {
+                    "client_id": client_id,
+                    "email": req.email,
+                    "full_name": req.full_name,
+                    "company": req.company,
+                })
+        except Exception as exc:
+            log.warning(f"{LOG_PREFIX} Failed to create profile/contract during register: {exc}")
+
+    log.info(f"{LOG_PREFIX} User registered", client_id=client_id, email=req.email)
+
+    return {
+        "status": "success",
+        "client_id": client_id,
+        "api_key": result["api_key"],
+        "message": "Store this key securely — it will not be shown again",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Admin: API Key Management
 # ---------------------------------------------------------------------------
 
@@ -710,7 +945,9 @@ async def create_api_key(
     authorization: Optional[str] = Header(None),
 ):
     """Generate a new per-client API key. Requires internal token auth."""
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__":
+        raise HTTPException(status_code=403, detail="Admin access required")
 
     try:
         body = await request.json()
@@ -724,7 +961,11 @@ async def create_api_key(
         raise HTTPException(status_code=422, detail="client_id is required")
 
     from v1_database.api_keys import generate_api_key
-    result = generate_api_key(client_id, name)
+    try:
+        result = generate_api_key(client_id, name)
+    except Exception as exc:
+        log.error(f"{LOG_PREFIX} API key generation failed: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to generate API key")
 
     log.info(f"{LOG_PREFIX} API key generated", client_id=client_id, key_prefix=result["key_prefix"])
 
@@ -744,7 +985,9 @@ async def list_api_keys(
     authorization: Optional[str] = Header(None),
 ):
     """List API keys for a client. Requires internal token auth."""
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__":
+        raise HTTPException(status_code=403, detail="Admin access required")
 
     if not MOCK_MODE:
         try:
@@ -767,11 +1010,17 @@ async def revoke_api_key(
     authorization: Optional[str] = Header(None),
 ):
     """Revoke (deactivate) an API key. Requires internal token auth."""
-    _verify_token(authorization)
+    caller = _verify_token(authorization)
+    if caller != "__admin__":
+        raise HTTPException(status_code=403, detail="Admin access required")
 
     if not MOCK_MODE:
-        from v1_database.supabase_client import _rest_update
-        _rest_update("client_api_keys", {"active": False}, {"id": f"eq.{key_id}"})
+        try:
+            from v1_database.supabase_client import _rest_update
+            _rest_update("client_api_keys", {"active": False}, {"id": f"eq.{key_id}"})
+        except Exception as exc:
+            log.error(f"{LOG_PREFIX} API key revoke failed: {exc}")
+            raise HTTPException(status_code=500, detail="Failed to revoke API key")
         log.info(f"{LOG_PREFIX} API key revoked", key_id=key_id)
         return {"status": "success", "message": "Key revoked"}
 

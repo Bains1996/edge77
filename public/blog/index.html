@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDGE77 Blog — Freight Audit, Carrier Billing & Logistics Insights</title>
+    <meta name="description" content="Insights on freight audit, carrier billing, and logistics cost recovery. Expert guides on LTL billing errors, carrier overcharge recovery, and audit software.">
+    <meta property="og:title" content="EDGE77 Blog — Freight Audit, Carrier Billing & Logistics Insights">
+    <meta property="og:description" content="Expert guides on freight audit software, carrier overcharge recovery, and LTL billing errors.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a1a'/><text x='50' y='68' font-family='system-ui' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>E77</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script src="/public/tailwind.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        surface: '#fafafa',
+                        'surface-dim': '#f0f0f0',
+                        ink: '#1a1a1a',
+                        'ink-light': '#6b6b6b',
+                        'ink-muted': '#9e9e9e',
+                        accent: '#1a73e8',
+                        'accent-hover': '#1557b0',
+                        success: '#0d9f6e',
+                        error: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+        }
+        .header.hidden { transform: translateY(-100%); }
+        .header.scrolled { background: rgba(250, 250, 250, 0.95); }
+
+        .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scale-reveal {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .product-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .product-card:hover {
+            border-color: rgba(26, 115, 232, 0.2);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 100px;
+            padding: 14px 32px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: #1557b0;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #1a1a1a;
+            font-weight: 500;
+            border-radius: 100px;
+            padding: 14px 32px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.25);
+        }
+
+        .dot-pattern {
+            background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(circle, rgba(26,115,232,0.15) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .gradient-mesh {
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(26,115,232,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(13,159,110,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(26,115,232,0.04) 0%, transparent 50%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d9f6e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: #1a1a1a;
+            transition: width 0.2s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .mobile-menu.open { max-height: 400px; }
+
+        .blog-card-tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            padding: 4px 12px;
+            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/#features" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Features</a>
+                <a href="/#how-it-works" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">How It Works</a>
+                <a href="/#pricing" class="nav-link text-sm text-ink-light hover:text-ink transition-colors">Pricing</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-3">
+                <a href="/login" class="text-sm text-ink-light hover:text-ink transition-colors font-medium px-4 py-2">Log in</a>
+                <a href="/demo" class="btn-secondary text-sm py-2.5 px-5">Book Demo</a>
+                <a href="/signup" class="btn-primary text-sm py-2.5 px-6">Start Free</a>
+            </div>
+
+            <button id="mobile-toggle" class="md:hidden p-2 -mr-2" aria-label="Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5">
+        <div class="px-6 py-4 space-y-1">
+            <a href="/#features" class="block py-2.5 text-sm text-ink-light">Features</a>
+            <a href="/#how-it-works" class="block py-2.5 text-sm text-ink-light">How It Works</a>
+            <a href="/#pricing" class="block py-2.5 text-sm text-ink-light">Pricing</a>
+            <a href="/login" class="block py-2.5 text-sm text-ink-light">Log in</a>
+            <a href="/signup" class="block btn-primary text-sm text-center mt-2">Start Free</a>
+        </div>
+    </div>
+</header>
+
+
+<!-- ===== HERO ===== -->
+<section class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 gradient-mesh">
+    <div class="absolute inset-0 dot-grid opacity-20 pointer-events-none"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
+
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
+        <p class="reveal text-sm font-semibold text-accent tracking-widest uppercase mb-4">Blog</p>
+        <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-ink mb-6">
+            EDGE77 Blog
+        </h1>
+        <p class="reveal reveal-delay-2 text-lg sm:text-xl text-ink-light max-w-2xl mx-auto leading-relaxed">
+            Insights on freight audit, carrier billing, and logistics cost recovery.
+        </p>
+    </div>
+</section>
+
+
+<!-- ===== BLOG POSTS ===== -->
+<section class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Post 1: Freight Audit Software Guide -->
+            <a href="/public/blog/freight-audit-software.html" class="reveal reveal-delay-1 product-card group block">
+                <div class="relative h-48 bg-gradient-to-br from-accent/5 via-accent/10 to-surface-dim flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 dot-grid opacity-40"></div>
+                    <div class="relative z-10 w-16 h-16 rounded-2xl bg-white/90 border border-black/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-accent text-2xl">document_scanner</span>
+                    </div>
+                </div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="blog-card-tag bg-accent/10 text-accent">Guide</span>
+                        <span class="text-xs text-ink-muted">July 19, 2026</span>
+                    </div>
+                    <h2 class="text-xl font-semibold text-ink mb-3 leading-snug group-hover:text-accent transition-colors duration-300">
+                        Freight Audit Software: The Complete Guide for 2026
+                    </h2>
+                    <p class="text-sm text-ink-light leading-relaxed mb-5">
+                        Learn how freight audit software saves shippers 2-5% on shipping costs. Compare features, pricing, and ROI.
+                    </p>
+                    <div class="flex items-center gap-1.5 text-sm font-medium text-accent">
+                        Read more
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Post 2: Carrier Overcharge Recovery -->
+            <a href="/public/blog/carrier-overcharge-recovery.html" class="reveal reveal-delay-2 product-card group block">
+                <div class="relative h-48 bg-gradient-to-br from-success/5 via-success/10 to-surface-dim flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 dot-grid opacity-40"></div>
+                    <div class="relative z-10 w-16 h-16 rounded-2xl bg-white/90 border border-black/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-success text-2xl">balance</span>
+                    </div>
+                </div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="blog-card-tag bg-success/10 text-success">Recovery</span>
+                        <span class="text-xs text-ink-muted">July 19, 2026</span>
+                    </div>
+                    <h2 class="text-xl font-semibold text-ink mb-3 leading-snug group-hover:text-accent transition-colors duration-300">
+                        How to Recover Carrier Overcharges: A Shipper's Guide
+                    </h2>
+                    <p class="text-sm text-ink-light leading-relaxed mb-5">
+                        Carrier overcharges cost shippers billions annually. Learn how to identify, dispute, and recover billing errors.
+                    </p>
+                    <div class="flex items-center gap-1.5 text-sm font-medium text-accent">
+                        Read more
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Post 3: LTL Billing Errors -->
+            <a href="/public/blog/ltl-billing-errors.html" class="reveal reveal-delay-3 product-card group block">
+                <div class="relative h-48 bg-gradient-to-br from-amber-500/5 via-amber-500/10 to-surface-dim flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 dot-grid opacity-40"></div>
+                    <div class="relative z-10 w-16 h-16 rounded-2xl bg-white/90 border border-black/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-amber-600 text-2xl">warning</span>
+                    </div>
+                </div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="blog-card-tag bg-amber-500/10 text-amber-600">LTL</span>
+                        <span class="text-xs text-ink-muted">July 19, 2026</span>
+                    </div>
+                    <h2 class="text-xl font-semibold text-ink mb-3 leading-snug group-hover:text-accent transition-colors duration-300">
+                        LTL Billing Errors: How to Spot and Prevent Them
+                    </h2>
+                    <p class="text-sm text-ink-light leading-relaxed mb-5">
+                        LTL freight carriers make billing errors on 85% of invoices. Learn the most common LTL billing mistakes.
+                    </p>
+                    <div class="flex items-center gap-1.5 text-sm font-medium text-accent">
+                        Read more
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== CTA ===== -->
+<section class="py-24 sm:py-32 bg-white relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-15 pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(26,115,232,0.06)_0%,transparent_60%)] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
+        <div class="reveal dot-pattern rounded-3xl py-20 px-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/3 via-transparent to-success/3 pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <h2 class="text-4xl sm:text-5xl font-bold text-ink mb-5">
+                    Ready to recover your overcharges?
+                </h2>
+                <p class="text-ink-light text-lg mb-10 max-w-xl mx-auto">
+                    Join 340+ shippers who recover millions in carrier overcharges — automatically.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="/signup" class="btn-primary text-base px-10 py-4 relative overflow-hidden group">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Start Free Audit
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    </a>
+                    <a href="/demo" class="btn-secondary text-base px-10 py-4">
+                        Book a Demo
+                    </a>
+                </div>
+                <div class="mt-6 flex items-center justify-center gap-6 text-xs text-ink-muted">
+                    <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-success text-sm">check_circle</span>
+                        No credit card required
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-success text-sm">check_circle</span>
+                        Cancel anytime
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="border-t border-black/5 py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Product</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/#features" class="text-sm text-ink-light hover:text-ink transition-colors">Features</a></li>
+                    <li><a href="/#pricing" class="text-sm text-ink-light hover:text-ink transition-colors">Pricing</a></li>
+                    <li><a href="/#how-it-works" class="text-sm text-ink-light hover:text-ink transition-colors">How It Works</a></li>
+                    <li><a href="/dashboard" class="text-sm text-ink-light hover:text-ink transition-colors">Dashboard</a></li>
+                    <li><a href="/demo" class="text-sm text-ink-light hover:text-ink transition-colors">Book a Demo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Company</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">Contact</a></li>
+                    <li><a href="/partners" class="text-sm text-ink-light hover:text-ink transition-colors">Partners</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Legal</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/terms" class="text-sm text-ink-light hover:text-ink transition-colors">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-sm text-ink-light hover:text-ink transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-ink mb-4">Support</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="/health" class="text-sm text-ink-light hover:text-ink transition-colors">System Status</a></li>
+                    <li><a href="mailto:support@edge77.com" class="text-sm text-ink-light hover:text-ink transition-colors">support@edge77.com</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+                    <span class="text-white font-bold text-xs tracking-tight">E77</span>
+                </div>
+                <span class="text-ink font-semibold text-lg tracking-tight">EDGE77</span>
+            </div>
+            <p class="text-xs text-ink-muted">&copy; 2026 Axal Global Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== MASSIVE FOOTER WORDMARK ===== -->
+<div class="bg-white pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] font-bold text-ink/5 leading-none tracking-tighter select-none text-center">
+            EDGE77
+        </div>
+    </div>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+(function() {
+    'use strict';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.reveal').forEach((el, i) => {
+        gsap.from(el, {
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 40,
+            duration: 0.9,
+            ease: 'power3.out',
+            delay: el.classList.contains('reveal-delay-1') ? 0.1 :
+                    el.classList.contains('reveal-delay-2') ? 0.2 :
+                    el.classList.contains('reveal-delay-3') ? 0.3 :
+                    el.classList.contains('reveal-delay-4') ? 0.4 :
+                    el.classList.contains('reveal-delay-5') ? 0.5 : 0
+        });
+    });
+
+    gsap.utils.toArray('.scale-reveal').forEach(el => {
+        gsap.from(el, {
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+                toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+    });
+
+    // Header hide/show on scroll
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const currentScroll = window.scrollY;
+                if (currentScroll > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                if (currentScroll > lastScroll && currentScroll > 200) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+                lastScroll = currentScroll;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    // Mobile menu
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+
+    mobileToggle.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuIcon.setAttribute('d', menuOpen
+            ? 'M6 18L18 6M6 6l12 12'
+            : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+        );
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuOpen = false;
+            mobileMenu.classList.remove('open');
+            menuIcon.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+        });
+    });
+
+    // Smooth anchor scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offset = 80;
+                const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        });
+    });
+
+})();
+</script>
+</body>
+</html>

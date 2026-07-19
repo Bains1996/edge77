@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1080px; height: 1080px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0a; color: white; padding: 80px; overflow: hidden; }
+.logo { font-size: 28px; font-weight: 800; margin-bottom: 48px; }
+.logo span { color: #3b82f6; }
+h1 { font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 48px; }
+h1 em { font-style: normal; color: #3b82f6; }
+.steps { display: flex; flex-direction: column; gap: 20px; }
+.step { display: flex; align-items: center; gap: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px 28px; }
+.step-num { background: #3b82f6; color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; flex-shrink: 0; }
+.step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.step-content p { font-size: 16px; color: #94a3b8; }
+.footer { position: absolute; bottom: 60px; left: 80px; right: 80px; display: flex; justify-content: space-between; align-items: center; }
+.cta { background: #3b82f6; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 18px; }
+.save { color: #64748b; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="logo">EDGE<span>77</span></div>
+<h1>How to Read a <em>Freight Bill</em> in 60 Seconds</h1>
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content"><h3>Check the NMFC Code</h3><p>Verify freight class matches your actual product</p></div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content"><h3>Verify DIM Weight</h3><p>Compare carrier's calc vs actual: L×W×H ÷ 139</p></div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content"><h3>Review Accessorials</h3><p>Was liftgate actually used? Was there a delivery appointment?</p></div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content"><h3>Match BOL to Invoice</h3><p>Weight, class, and accessorial codes must match</p></div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content"><h3>Check for Duplicates</h3><p>Same invoice number charged twice? It happens more than you think.</p></div>
+  </div>
+</div>
+<div class="footer">
+  <div class="save">Save this for later 🔖</div>
+  <div class="cta">Auto-Audit Free →</div>
+</div>
+</body>
+</html>

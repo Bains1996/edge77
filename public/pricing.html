@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/public/tailwind.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
@@ -336,7 +336,7 @@
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Dedicated support</div>
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Custom contracts</div>
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>SLA guarantee</div>
-                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>SOC 2 compliance</div>
+                    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-success text-lg">check</span>Custom audit rules</div>
                 </div>
             </div>
 
@@ -360,7 +360,7 @@
                     <span class="text-accent text-2xl font-bold">1</span>
                 </div>
                 <h3 class="text-lg font-semibold text-ink mb-3">Connect your carrier</h3>
-                <p class="text-sm text-ink-light leading-relaxed">Link your TMS, ERP, or email. We pull invoices automatically from 50+ carriers.</p>
+                <p class="text-sm text-ink-light leading-relaxed">Upload PDF invoices or connect your TMS/ERP. We accept carrier invoices in any format.</p>
             </div>
             <div class="reveal reveal-delay-2 text-center">
                 <div class="w-16 h-16 rounded-full bg-accent/8 flex items-center justify-center mx-auto mb-6">
@@ -415,15 +415,15 @@
                     </tr>
                     <tr>
                         <td class="font-medium text-ink">AI extraction accuracy</td>
-                        <td>99.7%</td>
-                        <td>99.7%</td>
-                        <td>99.7%</td>
+                        <td>AI-powered</td>
+                        <td>AI-powered</td>
+                        <td>AI-powered</td>
                     </tr>
                     <tr>
                         <td class="font-medium text-ink">Carrier formats</td>
-                        <td>50+</td>
-                        <td>50+</td>
-                        <td>50+</td>
+                        <td>PDF, scanned</td>
+                        <td>PDF, scanned</td>
+                        <td>PDF, scanned</td>
                     </tr>
                     <tr>
                         <td class="font-medium text-ink">Auto-dispute filing</td>
@@ -468,7 +468,7 @@
                         <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
                     </tr>
                     <tr>
-                        <td class="font-medium text-ink">SOC 2 compliance</td>
+                        <td class="font-medium text-ink">Custom audit rules</td>
                         <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
                         <td><span class="material-symbols-outlined text-ink-muted text-lg">close</span></td>
                         <td><span class="material-symbols-outlined text-success text-lg">check</span></td>
@@ -542,7 +542,7 @@
                     <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
                 </button>
                 <div class="faq-answer text-sm text-ink-light leading-relaxed">
-                    We support 50+ LTL and FTL carriers including FedEx Freight, XPO Logistics, UPS Freight, Estes, Old Dominion, Saia, and more. We handle PDFs, EDI, XML, and scanned documents with 99.7% extraction accuracy.
+                    We accept PDF invoices from LTL and FTL carriers including FedEx Freight, XPO Logistics, Estes, Old Dominion, Saia, and more. We handle scanned documents using AI-powered OCR extraction.
                 </div>
             </div>
 
@@ -552,7 +552,7 @@
                     <span class="material-symbols-outlined faq-chevron text-ink-muted text-xl flex-shrink-0">expand_more</span>
                 </button>
                 <div class="faq-answer text-sm text-ink-light leading-relaxed">
-                    Yes. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We're SOC 2 Type II compliant on the Enterprise plan and use role-based access controls across all tiers. Your data never leaves our secure infrastructure.
+                    Yes. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We use role-based access controls and audit logging across all tiers. Your data never leaves our secure infrastructure.
                 </div>
             </div>
 
@@ -579,7 +579,7 @@
                     Start recovering money today
                 </h2>
                 <p class="text-ink-light text-lg mb-10 max-w-xl mx-auto">
-                    Join 340+ shippers who recover millions in carrier overcharges — automatically.
+                    Recover carrier overcharges automatically — AI-powered, zero risk.
                 </p>
                 <a href="/signup" class="btn-primary text-base px-10 py-4">
                     Start Free Audit
@@ -660,8 +660,6 @@
 
 
 <!-- ===== SCRIPTS ===== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 (function() {
     'use strict';
