@@ -1,0 +1,60 @@
+{
+  "app_name": "EDGE77 — Freight Invoice Audit & Recovery",
+  "app_type": "Integration (API-based)",
+  "short_description": "Automatically audit every carrier invoice for overcharges, duplicate payments, and billing errors using AI. Works with Samsara fleet data to cross-reference mileage and fuel data against carrier charges.",
+  "long_description": "EDGE77 connects to Samsara to automatically import fleet mileage, fuel usage, and trip data. When a carrier invoice arrives, EDGE77 cross-references the charged mileage and fuel surcharge against your Samsara GPS data to detect overbilling.\n\nHow it works:\n1. Choose invoices to audit (or enable auto-ingestion)\n2. EDGE77 extracts 19+ fields from each invoice using AI\n3. Data is cross-referenced against your Samsara fleet data and contracted rates\n4. Overcharges are flagged with detailed findings\n5. Approve disputes and send carrier-ready dispute letters\n\nThe result: automated recovery of 2-5% of total freight spend without manual effort.",
+
+  "key_features": [
+    "AI invoice extraction with OCR for scanned documents",
+    "Contract rate validation against 19+ data points per invoice",
+    "Samsara fleet data integration for mileage and fuel verification",
+    "Automated dispute letter generation per overcharge",
+    "Real-time dashboard with audit analytics",
+    "Contingency-based pricing — free to start"
+  ],
+
+  "integration_type": "REST API + OAuth 2.0",
+  "integration_benefits": [
+    "Import fleet mileage data from Samsara to verify carrier distance charges",
+    "Cross-reference fuel usage data against fuel surcharge line items",
+    "Match vehicle assignments to specific shipments for accurate auditing",
+    "Automated data sync — no manual data entry required"
+  ],
+
+  "supported_verticals": [
+    "Freight & Logistics",
+    "Trucking & Fleet Management",
+    "Supply Chain & Distribution",
+    "Manufacturing & Retail (private fleets)",
+    "Third-Party Logistics (3PL)"
+  ],
+
+  "pricing": "Free tier available. Subscription plans start at $0/month (contingency-based). Visit https://edge77-364995933969.us-central1.run.app/pricing",
+
+  "support_email": "axalglobalinc@gmail.com",
+  "website_url": "https://edge77-364995933969.us-central1.run.app",
+  "privacy_url": "https://edge77-364995933969.us-central1.run.app/privacy",
+  "status": "Active — Production Ready",
+
+  "company": {
+    "name": "AXAL Global Inc.",
+    "description": "AI-powered freight invoice audit platform",
+    "website": "https://edge77-364995933969.us-central1.run.app",
+    "email": "axalglobalinc@gmail.com"
+  },
+
+  "oauth_config": {
+    "redirect_uris": [
+      "https://edge77-364995933969.us-central1.run.app/v1/samsara/callback",
+      "http://localhost:8080/v1/samsara/callback"
+    ],
+    "scopes": [
+      "read:fleet",
+      "read:vehicles",
+      "read:routes"
+    ]
+  },
+
+  "category": "Freight Audit & Payment",
+  "tags": ["freight audit", "invoice audit", "fuel surcharge", "carrier overcharge", "freight bill", "logistics", "supply chain", "3PL", "fleet management"]
+}

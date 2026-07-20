@@ -1,0 +1,105 @@
+{
+  "product_name": "EDGE77",
+  "tagline": "AI-Powered Freight Invoice Audit & Recovery",
+  "website_url": "https://edge77-364995933969.us-central1.run.app",
+  "category": "Freight Audit & Payment",
+  "subcategory": "Logistics & Supply Chain Software",
+
+  "pricing_model": "Usage-based + Subscription",
+  "pricing_tiers": [
+    {
+      "name": "Starter",
+      "price": "$0/month",
+      "description": "15% contingency fee on recovered overcharges. No monthly fee."
+    },
+    {
+      "name": "Growth",
+      "price": "$499/month",
+      "description": "12% contingency fee + priority support + advanced analytics."
+    },
+    {
+      "name": "Enterprise",
+      "price": "$2,999/month",
+      "description": "10% contingency fee + dedicated account manager + custom integrations."
+    }
+  ],
+
+  "short_description": "EDGE77 is an AI-powered freight invoice audit platform that automatically detects billing errors, duplicate payments, and overcharges on carrier invoices. Stop leaving money on the table — every invoice, every time.",
+
+  "long_description": "EDGE77 transforms freight invoice auditing from a manual, reactive process into an automated, proactive system. Our AI engine extracts invoice data with high accuracy, cross-references it against your contracted rates, and flags every discrepancy — from fuel surcharge overbilling to duplicate payments.\n\nKey capabilities:\n• Automated invoice ingestion — upload PDFs, our AI extracts 19+ fields per invoice\n• Contract rate validation — catches overcharges on base rates, fuel surcharges, accessorials, insurance, and taxes\n• Contingency-based pricing — you only pay when we find and recover money for you\n• Audit trail and dispute letters — every finding documented with carrier-ready dispute letters\n• Dashboard and analytics — real-time visibility into audit results, savings, and carrier performance\n\nWhether you're a 3PL managing 500 invoices a month or a large shipper with thousands, EDGE77 scales to find every overcharge automatically.",
+
+  "key_features": [
+    {
+      "title": "AI-Powered Invoice Extraction",
+      "description": "Upload any PDF invoice. Our AI extracts 19+ data points including base rate, fuel surcharge, accessorial charges, weight, freight class, and more. Handles scanned documents via OCR."
+    },
+    {
+      "title": "Automated Contract Rate Validation",
+      "description": "Every invoice is automatically checked against your contracted rates. Detects fuel surcharge overcharges, accessorial markups, incorrect base rates, and insurance overbilling."
+    },
+    {
+      "title": "Contingency-Based Pricing",
+      "description": "Start free. No monthly commitment. We earn a percentage of what we recover — aligning our incentives with yours."
+    },
+    {
+      "title": "Automated Dispute Generation",
+      "description": "Every overcharge detected generates a carrier-ready dispute letter with findings documented in detail. Approve and send with one click."
+    },
+    {
+      "title": "Real-Time Dashboard",
+      "description": "Track total audits, overcharges found, fees earned, and dispute status — all from a single dashboard. See carrier performance trends over time."
+    },
+    {
+      "title": "Multi-Carrier Support",
+      "description": "Works with any carrier invoice. Supports LTL, truckload, and parcel billing. No carrier-specific setup required."
+    }
+  ],
+
+  "benefits": [
+    "Recover 2-5% of total freight spend automatically",
+    "Zero upfront cost — pay only from recovered overcharges",
+    "Reduce manual audit effort by 90%",
+    "Catch errors carriers miss: fuel surcharge, accessorials, minimum charges",
+    "Carrier-ready dispute documentation saves hours per claim",
+    "Free tier available for small shippers and 3PLs"
+  ],
+
+  "target_audience": [
+    "Logistics Managers",
+    "Supply Chain Directors",
+    "Freight Brokers / 3PLs",
+    "Shipping & Receiving Managers",
+    "Accounts Payable (Freight Bill Auditors)",
+    "Fleet Managers (private fleets)"
+  ],
+
+  "competitors": ["Cass Information Systems", "CTSI-Global", "RateLinx", "Intelligent Audit", "Trax Technologies", "nVision Global"],
+
+  "differentiators": [
+    "Free tier with contingency-only pricing (competitors charge monthly minimums)",
+    "AI-powered extraction (competitors use manual or rules-based approaches)",
+    "Modern cloud-native platform (competitors are legacy on-premise)",
+    "Self-serve signup and onboarding (no sales call required to start)",
+    "API-first architecture for easy integration with TMS and ERP systems"
+  ],
+
+  "integrations": [
+    {"name": "Samsara", "type": "API", "status": "available"},
+    {"name": "REST API", "type": "API", "status": "available"}
+  ],
+
+  "screenshots": [
+    {"title": "Dashboard", "url": "https://edge77-364995933969.us-central1.run.app/dashboard", "description": "Real-time audit dashboard showing total audits, overcharges found, and fees earned."},
+    {"title": "Pricing", "url": "https://edge77-364995933969.us-central1.run.app/pricing", "description": "Transparent pricing with free starter tier."}
+  ],
+
+  "company_name": "AXAL Global Inc.",
+  "company_description": "AXAL Global Inc. is a logistics technology company specializing in AI-powered freight audit and payment solutions. We help shippers and 3PLs recover billing errors automatically.",
+  "founded_year": 2024,
+  "headquarters": "United States",
+  "employees": "1-10",
+  "social_links": {
+    "twitter": "https://x.com/edge77ai",
+    "instagram": "https://instagram.com/edge77ai"
+  }
+}

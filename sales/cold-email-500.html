@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDGE77 Cold Email Campaign — 3-Part Follow-Up Sequence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f6f8; padding: 40px 20px; color: #1a1a2e; }
+  .container { max-width: 680px; margin: 0 auto; }
+  .email-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 48px; overflow: hidden; border: 1px solid #e8ecef; }
+  .email-header { background: #0f172a; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .email-header-left { display: flex; flex-direction: column; gap: 4px; }
+  .email-header .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
+  .email-header .timing { font-size: 13px; font-weight: 500; color: #e2e8f0; }
+  .email-header .badge { background: #6366f1; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+  .email-subject { padding: 20px 32px 12px; border-bottom: 1px solid #e8ecef; display: flex; align-items: center; gap: 12px; }
+  .email-subject .subject-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; white-space: nowrap; }
+  .email-subject .subject-text { font-size: 16px; font-weight: 700; color: #0f172a; }
+  .email-body { padding: 28px 32px; font-size: 15px; line-height: 1.7; color: #334155; }
+  .email-body p { margin-bottom: 16px; }
+  .email-body p:last-child { margin-bottom: 0; }
+  .placeholder { display: inline-block; background: #f1f5f9; color: #6366f1; font-weight: 600; padding: 0 6px; border-radius: 4px; font-size: 13px; }
+  .cta-block { margin: 24px 0 20px; text-align: center; }
+  .cta-button { display: inline-block; background: #0f172a; color: #fff !important; text-decoration: none; font-weight: 700; font-size: 15px; padding: 14px 36px; border-radius: 8px; letter-spacing: -0.2px; }
+  .cta-button:hover { background: #1e293b; }
+  .cta-sub { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+  .email-footer { padding: 16px 32px; border-top: 1px solid #e8ecef; font-size: 12px; color: #94a3b8; }
+  .email-footer strong { color: #475569; }
+  .email-footer .unsubscribe { color: #94a3b8; }
+  .divider { text-align: center; padding: 24px 0; font-size: 13px; font-weight: 600; color: #94a3b8; letter-spacing: 1px; }
+  .note { background: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #713f12; margin-bottom: 24px; }
+  .note strong { color: #422006; }
+  .use-instructions { background: #fff; border: 2px dashed #6366f1; border-radius: 12px; padding: 28px 32px; margin-bottom: 48px; }
+  .use-instructions h2 { font-size: 18px; color: #0f172a; margin-bottom: 12px; }
+  .use-instructions ol { padding-left: 20px; font-size: 14px; color: #334155; line-height: 2; }
+  .use-instructions code { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 13px; color: #6366f1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- INSTRUCTIONS -->
+  <div class="use-instructions">
+    <h2>&#9881; How to Use This Campaign</h2>
+    <ol>
+      <li>Import each email into your sending platform (Outreach, SalesLoft, HubSpot, MailChimp, etc.).</li>
+      <li>Replace all <code>[NAME]</code>, <code>[COMPANY]</code>, <code>[SENDER_NAME]</code>, <code>[SENDER_TITLE]</code>, <code>[SENDER_EMAIL]</code>, and <code>[SENDER_PHONE]</code> placeholders.</li>
+      <li>Set Email 2 to send 3 business days after Email 1 if no reply.</li>
+      <li>Set Email 3 to send 5 business days after Email 2 if no reply.</li>
+      <li>Track opens, clicks, and replies. Move to warm follow-up sequence on reply.</li>
+      <li>Always include an unsubscribe link in compliance with CAN-SPAM / CASL / GDPR.</li>
+    </ol>
+  </div>
+
+  <!-- ============ EMAIL 1 ============ -->
+  <div class="email-card">
+    <div class="email-header">
+      <div class="email-header-left">
+        <span class="label">Email 1 &middot; Day 0</span>
+        <span class="timing">Send Tuesday&ndash;Thursday, 8:00&ndash;10:00 AM recipient local time</span>
+      </div>
+      <span class="badge">Cold Outreach</span>
+    </div>
+    <div class="email-subject">
+      <span class="subject-label">Subject:</span>
+      <span class="subject-text">We found overcharges in your freight bills</span>
+    </div>
+    <div class="email-body" style="padding:24px 0 0 0;">
+
+      <!-- Inline version for direct copy-paste -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff;">
+        <tr>
+          <td style="padding:24px 32px 12px; font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;">
+
+            <p style="margin:0 0 16px;"><span class="placeholder">[NAME]</span>, quick question:</p>
+
+            <p style="margin:0 0 16px;">When was the last time someone actually audited <span class="placeholder">[COMPANY]</span>'s carrier invoices line by line against your contracted rates?</p>
+
+            <p style="margin:0 0 16px;">If the answer is <strong>"I don't know"</strong> or <strong>"never"</strong>, you're probably leaving 2&ndash;5% of your freight spend on the table. Industry data shows 85% of freight invoices contain billing errors &mdash; fuel surcharge overcharges, wrong freight classes, duplicate payments.</p>
+
+            <p style="margin:0 0 16px;"><strong>EDGE77</strong> is an AI-powered freight audit platform that catches every overcharge automatically. We extract every line item, cross-reference it against your contracts, and generate carrier-ready dispute letters &mdash; all without your team lifting a finger.</p>
+
+            <p style="margin:0 0 20px;"><strong>Pricing:</strong> $0/month starter plan. 15% contingency &mdash; we only get paid when we recover money for you. Zero risk.</p>
+
+            <div class="cta-block" style="text-align:center; margin:0 0 8px;">
+              <a href="https://edge77.com/free-audit?ref=email1" class="cta-button" style="display:inline-block; background:#0f172a; color:#ffffff !important; text-decoration:none; font-weight:700; font-size:15px; padding:14px 36px; border-radius:8px;">Run My Free Audit</a>
+              <div class="cta-sub" style="font-size:12px; color:#94a3b8; margin-top:8px;">See your potential recovery in 2 minutes &mdash; no commitment</div>
+            </div>
+
+            <p style="margin:0 0 6px;">Talk soon,</p>
+            <p style="margin:0 0 4px; font-weight:600; color:#0f172a;"><span class="placeholder">[SENDER_NAME]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;"><span class="placeholder">[SENDER_TITLE]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;">EDGE77 &middot; AI Freight Invoice Audit</p>
+            <p style="margin:0; font-size:13px; color:#6366f1;"><span class="placeholder">[SENDER_EMAIL]</span> &middot; <span class="placeholder">[SENDER_PHONE]</span></p>
+
+          </td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="email-footer">
+      <strong>EDGE77</strong> &middot; <a href="#" style="color:#94a3b8;">Unsubscribe</a> &middot; <span class="placeholder">[COMPANY]</span>, <span class="placeholder">[CITY]</span>, <span class="placeholder">[STATE]</span>
+    </div>
+  </div>
+
+  <div class="divider">&bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull;</div>
+
+  <!-- ============ EMAIL 2 ============ -->
+  <div class="email-card">
+    <div class="email-header">
+      <div class="email-header-left">
+        <span class="label">Email 2 &middot; Day 3 (Follow-Up)</span>
+        <span class="timing">Send 3 business days after Email 1 if no reply</span>
+      </div>
+      <span class="badge">Social Proof</span>
+    </div>
+    <div class="email-subject">
+      <span class="subject-label">Subject:</span>
+      <span class="subject-text">$127K recovered in one quarter &mdash; and they paid $0 upfront</span>
+    </div>
+    <div class="email-body" style="padding:24px 0 0 0;">
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff;">
+        <tr>
+          <td style="padding:24px 32px 12px; font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;">
+
+            <p style="margin:0 0 16px;"><span class="placeholder">[NAME]</span>, following up on my note from the other day.</p>
+
+            <p style="margin:0 0 16px;">One of our clients &mdash; a mid-market 3PL processing ~4,000 invoices per quarter &mdash; came to us thinking their billing was clean. <strong>EDGE77 found $127,000 in overcharges in Q1 alone.</strong></p>
+
+            <p style="margin:0 0 16px;">Duplicate charges. Incorrect freight class assignments. Fuel surcharge overbilling. Carrier tariff violations they didn't know existed.</p>
+
+            <p style="margin:0 0 16px;">They didn't change carriers. They didn't hire more staff. They just turned on EDGE77.</p>
+
+            <p style="margin:0 0 16px;">And the best part? <strong>They paid $0 upfront.</strong> Our 15% contingency meant they recovered six figures before we saw a dime.</p>
+
+            <p style="margin:0 0 20px;">Here's what EDGE77 catches that manual audits miss:</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px; font-size:14px; line-height:1.6; color:#334155;">
+              <tr><td style="padding:4px 0;">&bull; <strong>Duplicate invoicing</strong> &mdash; same shipment billed twice</td></tr>
+              <tr><td style="padding:4px 0;">&bull; <strong>Freight class errors</strong> &mdash; carriers assigning higher classes (higher rates)</td></tr>
+              <tr><td style="padding:4px 0;">&bull; <strong>Fuel surcharge overcharges</strong> &mdash; wrong base rates applied</td></tr>
+              <tr><td style="padding:4px 0;">&bull; <strong>Accessorial overcharges</strong> &mdash; liftgate, residential, detention fees</td></tr>
+              <tr><td style="padding:4px 0;">&bull; <strong>Weight discrepancies</strong> &mdash; billed weight vs. actual weight</td></tr>
+              <tr><td style="padding:4px 0;">&bull; <strong>Contract rate violations</strong> &mdash; rates that don't match your negotiated terms</td></tr>
+            </table>
+
+            <p style="margin:0 0 20px;">SOC 2 compliant with 256-bit encryption. Samsara integration available. API-first architecture.</p>
+
+            <div class="cta-block" style="text-align:center; margin:0 0 8px;">
+              <a href="https://edge77.com/demo?ref=email2" class="cta-button" style="display:inline-block; background:#0f172a; color:#ffffff !important; text-decoration:none; font-weight:700; font-size:15px; padding:14px 36px; border-radius:8px;">Book a 15-Minute Demo</a>
+              <div class="cta-sub" style="font-size:12px; color:#94a3b8; margin-top:8px;">We'll show you exactly what EDGE77 would find in your invoices</div>
+            </div>
+
+            <p style="margin:0 0 6px;">Best,</p>
+            <p style="margin:0 0 4px; font-weight:600; color:#0f172a;"><span class="placeholder">[SENDER_NAME]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;"><span class="placeholder">[SENDER_TITLE]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;">EDGE77 &middot; AI Freight Invoice Audit</p>
+            <p style="margin:0; font-size:13px; color:#6366f1;"><span class="placeholder">[SENDER_EMAIL]</span> &middot; <span class="placeholder">[SENDER_PHONE]</span></p>
+
+          </td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="email-footer">
+      <strong>EDGE77</strong> &middot; <a href="#" style="color:#94a3b8;">Unsubscribe</a> &middot; <span class="placeholder">[COMPANY]</span>, <span class="placeholder">[CITY]</span>, <span class="placeholder">[STATE]</span>
+    </div>
+  </div>
+
+  <div class="divider">&bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull;</div>
+
+  <!-- ============ EMAIL 3 ============ -->
+  <div class="email-card">
+    <div class="email-header">
+      <div class="email-header-left">
+        <span class="label">Email 3 &middot; Day 8 (Final Follow-Up)</span>
+        <span class="timing">Send 5 business days after Email 2 if no reply</span>
+      </div>
+      <span class="badge">Urgency / Break-Up</span>
+    </div>
+    <div class="email-subject">
+      <span class="subject-label">Subject:</span>
+      <span class="subject-text">Last call: <span class="placeholder">[COMPANY]</span> is leaving money on the table</span>
+    </div>
+    <div class="email-body" style="padding:24px 0 0 0;">
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff;">
+        <tr>
+          <td style="padding:24px 32px 12px; font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;">
+
+            <p style="margin:0 0 16px;"><span class="placeholder">[NAME]</span>, I've reached out a couple of times about auditing <span class="placeholder">[COMPANY]</span>'s freight invoices. I get it &mdash; you're busy, and you've heard pitches before.</p>
+
+            <p style="margin:0 0 16px;">So here's my last ask, and I'll keep it short.</p>
+
+            <p style="margin:0 0 16px;">I'll send you a <strong>free, no-obligation recovery estimate</strong> for <span class="placeholder">[COMPANY]</span>. We'll analyze a sample of your carrier invoices, flag the overcharges, and show you exactly how much we can recover.</p>
+
+            <p style="margin:0 0 16px;">No demo. No sales call. Just the numbers.</p>
+
+            <p style="margin:0 0 20px;">If the number is meaningful, we can talk. If it's not, I'll close your file and never email you again. Fair?</p>
+
+            <p style="margin:0 0 6px;">Quick math: If <span class="placeholder">[COMPANY]</span> spends even <strong>$500K/year</strong> on freight, a conservative 2% error rate means <strong>$10,000/year</strong> in overcharges you're leaving on the table. Our <strong>$0/month starter plan with 15% contingency</strong> means you keep 85% of every dollar recovered.</p>
+
+            <p style="margin:0 0 24px;">Reply <strong>"yes"</strong> and I'll start your free recovery estimate today.</p>
+
+            <div class="cta-block" style="text-align:center; margin:0 0 8px;">
+              <a href="https://edge77.com/free-audit?ref=email3" class="cta-button" style="display:inline-block; background:#0f172a; color:#ffffff !important; text-decoration:none; font-weight:700; font-size:15px; padding:14px 36px; border-radius:8px;">Get My Free Recovery Estimate</a>
+              <div class="cta-sub" style="font-size:12px; color:#94a3b8; margin-top:8px;">2-minute setup &mdash; no commitment, no credit card</div>
+            </div>
+
+            <p style="margin:0 0 6px;">Best,</p>
+            <p style="margin:0 0 4px; font-weight:600; color:#0f172a;"><span class="placeholder">[SENDER_NAME]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;"><span class="placeholder">[SENDER_TITLE]</span></p>
+            <p style="margin:0 0 2px; font-size:13px; color:#64748b;">EDGE77 &middot; AI Freight Invoice Audit</p>
+            <p style="margin:0; font-size:13px; color:#6366f1;"><span class="placeholder">[SENDER_EMAIL]</span> &middot; <span class="placeholder">[SENDER_PHONE]</span></p>
+
+          </td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="email-footer">
+      <strong>EDGE77</strong> &middot; <a href="#" style="color:#94a3b8;">Unsubscribe</a> &middot; <span class="placeholder">[COMPANY]</span>, <span class="placeholder">[CITY]</span>, <span class="placeholder">[STATE]</span>
+    </div>
+  </div>
+
+  <!-- ============ INLINE CSS VERSIONS (Copy-Paste Ready) ============ -->
+  <div class="use-instructions" style="margin-top:48px;">
+    <h2>&#9981; Quick-Copy Versions</h2>
+    <p style="font-size:14px; color:#334155; margin-bottom:16px;">Each email below has inline CSS only &mdash; safe to paste directly into Gmail, Outlook, or any email client.</p>
+  </div>
+
+  <!-- Email 1 Inline -->
+  <div class="email-card">
+    <div class="email-header" style="background:#0f172a; color:#fff; padding:16px 20px;">
+      <span style="font-size:13px; font-weight:600;">Email 1 &mdash; Inline CSS Version (Copy-Paste Ready)</span>
+    </div>
+    <div style="padding:0;">
+<pre style="font-size:12px; line-height:1.5; overflow-x:auto; padding:16px; background:#f8fafc; margin:0; color:#0f172a; white-space:pre-wrap; word-wrap:break-word;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;/head&gt;
+&lt;body style="margin:0; padding:0; background:#f4f6f8;"&gt;
+&lt;table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f6f8;"&gt;
+&lt;tr&gt;&lt;td align="center" style="padding:20px;"&gt;
+&lt;table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;"&gt;
+
+  &lt;!-- Header --&gt;
+  &lt;tr&gt;
+    &lt;td style="background:#0f172a; padding:16px 24px;"&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; color:#ffffff;"&gt;EDGE77&lt;/td&gt;
+          &lt;td align="right" style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;"&gt;Freight Audit&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Subject --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px 8px; border-bottom:1px solid #e8ecef;"&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;"&gt;Subject: &lt;/span&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:700; color:#0f172a;"&gt;We found overcharges in your freight bills&lt;/span&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Body --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:24px; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;"&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;[NAME], quick question:&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;When was the last time someone actually audited [COMPANY]'s carrier invoices line by line against your contracted rates?&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;If the answer is &lt;strong&gt;"I don't know"&lt;/strong&gt; or &lt;strong&gt;"never"&lt;/strong&gt;, you're probably leaving 2–5% of your freight spend on the table. Industry data shows 85% of freight invoices contain billing errors — fuel surcharge overcharges, wrong freight classes, duplicate payments.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;&lt;strong&gt;EDGE77&lt;/strong&gt; is an AI-powered freight audit platform that catches every overcharge automatically. We extract every line item, cross-reference it against your contracts, and generate carrier-ready dispute letters — all without your team lifting a finger.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 20px;"&gt;&lt;strong&gt;Pricing:&lt;/strong&gt; $0/month starter plan. 15% contingency — we only get paid when we recover money for you. Zero risk.&lt;/p&gt;
+
+      &lt;!-- CTA --&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td align="center" style="padding:0 0 16px;"&gt;
+            &lt;table cellpadding="0" cellspacing="0" border="0"&gt;
+              &lt;tr&gt;
+                &lt;td align="center" style="background:#0f172a; border-radius:8px;"&gt;
+                  &lt;a href="https://edge77.com/free-audit?ref=email1" style="display:inline-block; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; font-weight:700; color:#ffffff !important; text-decoration:none; padding:14px 36px; border-radius:8px;"&gt;Run My Free Audit&lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;p style="margin:8px 0 0; font-size:12px; color:#94a3b8;"&gt;See your potential recovery in 2 minutes — no commitment&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+
+      &lt;p style="margin:0 0 4px;"&gt;Talk soon,&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-weight:600; color:#0f172a;"&gt;[SENDER_NAME]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;[SENDER_TITLE]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;EDGE77 · AI Freight Invoice Audit&lt;/p&gt;
+      &lt;p style="margin:0; font-size:13px; color:#6366f1;"&gt;[SENDER_EMAIL] · [SENDER_PHONE]&lt;/p&gt;
+
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Footer --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px; border-top:1px solid #e8ecef; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:12px; color:#94a3b8;"&gt;
+      &lt;strong style="color:#475569;"&gt;EDGE77&lt;/strong&gt; · &lt;a href="#" style="color:#94a3b8;"&gt;Unsubscribe&lt;/a&gt; · [COMPANY], [CITY], [STATE]
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    </div>
+  </div>
+
+  <!-- Email 2 Inline -->
+  <div class="email-card">
+    <div class="email-header" style="background:#0f172a; color:#fff; padding:16px 20px;">
+      <span style="font-size:13px; font-weight:600;">Email 2 &mdash; Inline CSS Version (Copy-Paste Ready)</span>
+    </div>
+    <div style="padding:0;">
+<pre style="font-size:12px; line-height:1.5; overflow-x:auto; padding:16px; background:#f8fafc; margin:0; color:#0f172a; white-space:pre-wrap; word-wrap:break-word;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;/head&gt;
+&lt;body style="margin:0; padding:0; background:#f4f6f8;"&gt;
+&lt;table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f6f8;"&gt;
+&lt;tr&gt;&lt;td align="center" style="padding:20px;"&gt;
+&lt;table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;"&gt;
+
+  &lt;!-- Header --&gt;
+  &lt;tr&gt;
+    &lt;td style="background:#0f172a; padding:16px 24px;"&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; color:#ffffff;"&gt;EDGE77&lt;/td&gt;
+          &lt;td align="right" style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;"&gt;Freight Audit&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Subject --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px 8px; border-bottom:1px solid #e8ecef;"&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;"&gt;Subject: &lt;/span&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:700; color:#0f172a;"&gt;$127K recovered in one quarter — and they paid $0 upfront&lt;/span&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Body --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:24px; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;"&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;[NAME], following up on my note from the other day.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;One of our clients — a mid-market 3PL processing ~4,000 invoices per quarter — came to us thinking their billing was clean. &lt;strong&gt;EDGE77 found $127,000 in overcharges in Q1 alone.&lt;/strong&gt;&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;Duplicate charges. Incorrect freight class assignments. Fuel surcharge overbilling. Carrier tariff violations they didn't know existed.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;They didn't change carriers. They didn't hire more staff. They just turned on EDGE77.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;&lt;strong&gt;They paid $0 upfront.&lt;/strong&gt; Our 15% contingency meant they recovered six figures before we saw a dime.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 8px;"&gt;Here's what EDGE77 catches that manual audits miss:&lt;/p&gt;
+
+      &lt;p style="margin:0 0 4px;"&gt;&amp;bull; &lt;strong&gt;Duplicate invoicing&lt;/strong&gt; — same shipment billed twice&lt;/p&gt;
+      &lt;p style="margin:0 0 4px;"&gt;&amp;bull; &lt;strong&gt;Freight class errors&lt;/strong&gt; — carriers assigning higher classes&lt;/p&gt;
+      &lt;p style="margin:0 0 4px;"&gt;&amp;bull; &lt;strong&gt;Fuel surcharge overcharges&lt;/strong&gt; — wrong base rates applied&lt;/p&gt;
+      &lt;p style="margin:0 0 4px;"&gt;&amp;bull; &lt;strong&gt;Accessorial overcharges&lt;/strong&gt; — liftgate, residential, detention&lt;/p&gt;
+      &lt;p style="margin:0 0 4px;"&gt;&amp;bull; &lt;strong&gt;Weight discrepancies&lt;/strong&gt; — billed vs. actual weight&lt;/p&gt;
+      &lt;p style="margin:0 0 20px;"&gt;&amp;bull; &lt;strong&gt;Contract rate violations&lt;/strong&gt; — rates not matching your terms&lt;/p&gt;
+
+      &lt;p style="margin:0 0 20px;"&gt;SOC 2 compliant. 256-bit encryption. Samsara integration. API-first architecture.&lt;/p&gt;
+
+      &lt;!-- CTA --&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td align="center" style="padding:0 0 16px;"&gt;
+            &lt;table cellpadding="0" cellspacing="0" border="0"&gt;
+              &lt;tr&gt;
+                &lt;td align="center" style="background:#0f172a; border-radius:8px;"&gt;
+                  &lt;a href="https://edge77.com/demo?ref=email2" style="display:inline-block; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; font-weight:700; color:#ffffff !important; text-decoration:none; padding:14px 36px; border-radius:8px;"&gt;Book a 15-Minute Demo&lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;p style="margin:8px 0 0; font-size:12px; color:#94a3b8;"&gt;We'll show you exactly what EDGE77 would find in your invoices&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+
+      &lt;p style="margin:0 0 4px;"&gt;Best,&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-weight:600; color:#0f172a;"&gt;[SENDER_NAME]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;[SENDER_TITLE]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;EDGE77 · AI Freight Invoice Audit&lt;/p&gt;
+      &lt;p style="margin:0; font-size:13px; color:#6366f1;"&gt;[SENDER_EMAIL] · [SENDER_PHONE]&lt;/p&gt;
+
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Footer --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px; border-top:1px solid #e8ecef; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:12px; color:#94a3b8;"&gt;
+      &lt;strong style="color:#475569;"&gt;EDGE77&lt;/strong&gt; · &lt;a href="#" style="color:#94a3b8;"&gt;Unsubscribe&lt;/a&gt; · [COMPANY], [CITY], [STATE]
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    </div>
+  </div>
+
+  <!-- Email 3 Inline -->
+  <div class="email-card">
+    <div class="email-header" style="background:#0f172a; color:#fff; padding:16px 20px;">
+      <span style="font-size:13px; font-weight:600;">Email 3 &mdash; Inline CSS Version (Copy-Paste Ready)</span>
+    </div>
+    <div style="padding:0;">
+<pre style="font-size:12px; line-height:1.5; overflow-x:auto; padding:16px; background:#f8fafc; margin:0; color:#0f172a; white-space:pre-wrap; word-wrap:break-word;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;/head&gt;
+&lt;body style="margin:0; padding:0; background:#f4f6f8;"&gt;
+&lt;table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f6f8;"&gt;
+&lt;tr&gt;&lt;td align="center" style="padding:20px;"&gt;
+&lt;table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;"&gt;
+
+  &lt;!-- Header --&gt;
+  &lt;tr&gt;
+    &lt;td style="background:#0f172a; padding:16px 24px;"&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; color:#ffffff;"&gt;EDGE77&lt;/td&gt;
+          &lt;td align="right" style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;"&gt;Freight Audit&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Subject --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px 8px; border-bottom:1px solid #e8ecef;"&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;"&gt;Subject: &lt;/span&gt;
+      &lt;span style="font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:700; color:#0f172a;"&gt;Last call: [COMPANY] is leaving money on the table&lt;/span&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Body --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:24px; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155;"&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;[NAME], I've reached out a couple of times about auditing [COMPANY]'s freight invoices. I get it — you're busy, and you've heard pitches before.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;So here's my last ask, and I'll keep it short.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;I'll send you a &lt;strong&gt;free, no-obligation recovery estimate&lt;/strong&gt; for [COMPANY]. We'll analyze a sample of your carrier invoices, flag the overcharges, and show you exactly how much we can recover.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 16px;"&gt;No demo. No sales call. Just the numbers.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 6px;"&gt;If the number is meaningful, we can talk. If it's not, I'll close your file and never email you again. Fair?&lt;/p&gt;
+
+      &lt;p style="margin:0 0 24px;"&gt;Quick math: If [COMPANY] spends even &lt;strong&gt;$500K/year&lt;/strong&gt; on freight, a conservative 2% error rate means &lt;strong&gt;$10,000/year&lt;/strong&gt; in overcharges. Our &lt;strong&gt;$0/month starter plan with 15% contingency&lt;/strong&gt; means you keep 85% of every dollar recovered.&lt;/p&gt;
+
+      &lt;p style="margin:0 0 20px; font-size:16px; font-weight:600; color:#0f172a; text-align:center;"&gt;Reply "yes" and I'll start your free recovery estimate today.&lt;/p&gt;
+
+      &lt;!-- CTA --&gt;
+      &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+        &lt;tr&gt;
+          &lt;td align="center" style="padding:0 0 16px;"&gt;
+            &lt;table cellpadding="0" cellspacing="0" border="0"&gt;
+              &lt;tr&gt;
+                &lt;td align="center" style="background:#0f172a; border-radius:8px;"&gt;
+                  &lt;a href="https://edge77.com/free-audit?ref=email3" style="display:inline-block; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:15px; font-weight:700; color:#ffffff !important; text-decoration:none; padding:14px 36px; border-radius:8px;"&gt;Get My Free Recovery Estimate&lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;p style="margin:8px 0 0; font-size:12px; color:#94a3b8;"&gt;2-minute setup — no credit card, no commitment&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+
+      &lt;p style="margin:0 0 4px;"&gt;Best,&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-weight:600; color:#0f172a;"&gt;[SENDER_NAME]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;[SENDER_TITLE]&lt;/p&gt;
+      &lt;p style="margin:0 0 2px; font-size:13px; color:#64748b;"&gt;EDGE77 · AI Freight Invoice Audit&lt;/p&gt;
+      &lt;p style="margin:0; font-size:13px; color:#6366f1;"&gt;[SENDER_EMAIL] · [SENDER_PHONE]&lt;/p&gt;
+
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+  &lt;!-- Footer --&gt;
+  &lt;tr&gt;
+    &lt;td style="padding:16px 24px; border-top:1px solid #e8ecef; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:12px; color:#94a3b8;"&gt;
+      &lt;strong style="color:#475569;"&gt;EDGE77&lt;/strong&gt; · &lt;a href="#" style="color:#94a3b8;"&gt;Unsubscribe&lt;/a&gt; · [COMPANY], [CITY], [STATE]
+    &lt;/td&gt;
+  &lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
