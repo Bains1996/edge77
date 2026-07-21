@@ -6,12 +6,23 @@ from typing import Any
 
 LOG_PREFIX = "[EDGE77 ENGINE]"
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
-OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
-
 HEALTH_TIMEOUT_SECONDS = 5.0
+
+
+def _supabase_url() -> str:
+    return os.getenv("SUPABASE_URL", "").rstrip("/")
+
+
+def _supabase_key() -> str:
+    return os.getenv("SUPABASE_KEY", "")
+
+
+def _openrouter_api_key() -> str:
+    return os.getenv("OPENROUTER_API_KEY", "")
+
+
+def _openrouter_base_url() -> str:
+    return os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 
 
 def _measure_latency(func: Any, *args: Any, **kwargs: Any) -> tuple[dict, float]:
@@ -31,7 +42,9 @@ def _measure_latency(func: Any, *args: Any, **kwargs: Any) -> tuple[dict, float]
 
 
 def check_supabase_health() -> dict:
-    if not SUPABASE_URL or not SUPABASE_KEY:
+    url = _supabase_url()
+    key = _supabase_key()
+    if not url or not key:
         return {
             "status": "degraded",
             "latency_ms": 0.0,
@@ -41,10 +54,10 @@ def check_supabase_health() -> dict:
     try:
         start = time.monotonic()
         resp = httpx.get(
-            f"{SUPABASE_URL}/rest/v1/freight_audits",
+            f"{url}/rest/v1/freight_audits",
             headers={
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {key}",
+                "apikey": key,
             },
             params={"select": "id", "limit": 1},
             timeout=HEALTH_TIMEOUT_SECONDS,
@@ -59,7 +72,8 @@ def check_supabase_health() -> dict:
 
 
 def check_openrouter_health() -> dict:
-    if not OPENROUTER_API_KEY:
+    api_key = _openrouter_api_key()
+    if not api_key:
         return {
             "status": "degraded",
             "latency_ms": 0.0,
@@ -69,9 +83,9 @@ def check_openrouter_health() -> dict:
     try:
         start = time.monotonic()
         response = httpx.get(
-            f"{OPENROUTER_BASE_URL}/models",
+            f"{_openrouter_base_url()}/models",
             headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
             },
             timeout=HEALTH_TIMEOUT_SECONDS,

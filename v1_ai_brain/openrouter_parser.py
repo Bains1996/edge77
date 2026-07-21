@@ -36,7 +36,7 @@ async def _call_with_retry_async(messages: list, model: str, attempt: int = 0) -
             model=model,
             messages=messages,
             temperature=0.0,
-            max_tokens=512,
+            max_tokens=2048,
         )
         return response.choices[0].message.content.strip()
     except Exception as e:

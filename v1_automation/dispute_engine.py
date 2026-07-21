@@ -14,6 +14,13 @@ DEFAULT_FEE_PERCENTAGE = 0.15
 DEFAULT_MIN_OVERCHARGE = 1.00
 
 
+def _calculate_overcharge(actual: float, limit: float) -> float:
+    """Calculate overcharge if actual exceeds the limit. Returns 0 if within limit."""
+    if actual > limit:
+        return round(actual - limit, 2)
+    return 0.0
+
+
 def _calculate_fee(overcharge: float, percentage: float = DEFAULT_FEE_PERCENTAGE) -> float:
     return round(overcharge * percentage, 2)
 

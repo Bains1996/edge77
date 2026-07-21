@@ -12,7 +12,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
 _rest_client: Optional[httpx.Client] = None
 _async_rest_client: Optional[httpx.AsyncClient] = None
-MOCK_MODE = True
+MOCK_MODE = os.getenv("MOCK_MODE", "").lower() == "true"
 
 
 def _get_rest_client() -> Optional[httpx.Client]:
@@ -105,21 +105,30 @@ def _rest_upsert(table: str, data: dict) -> dict:
     return rows[0] if rows else {}
 
 
-try:
-    if SUPABASE_URL and SUPABASE_KEY:
+_explicit_mock = os.getenv("MOCK_MODE", "").lower() in ("true", "false")
+if _explicit_mock:
+    if MOCK_MODE:
+        logger.info("[EDGE77 ENGINE] MOCK_MODE explicitly enabled via env var")
+    else:
+        logger.info("[EDGE77 ENGINE] Production mode explicitly set via MOCK_MODE=false env var")
+elif SUPABASE_URL and SUPABASE_KEY:
+    try:
         c = _get_rest_client()
         if c:
             resp = c.get("/freight_audits", params={"select": "id", "limit": 1})
             resp.raise_for_status()
             MOCK_MODE = False
             logger.info("[EDGE77 ENGINE] Supabase REST client initialized successfully")
-    else:
+    except Exception as e:
         logger.warning(
-            "[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. "
+            f"[EDGE77 ENGINE] Failed to initialize Supabase REST client: {e}. "
             "Operating in MOCK MODE — all data is in-memory and will be lost on restart."
         )
-except Exception as e:
-    logger.warning(f"[EDGE77 ENGINE] Failed to initialize Supabase REST client: {e}. Operating in mock mode.")
+else:
+    logger.warning(
+        "[EDGE77 ENGINE] SUPABASE_URL or SUPABASE_KEY not set. "
+        "Operating in MOCK MODE — all data is in-memory and will be lost on restart."
+    )
 
 
 MOCK_AUDITS: list[dict] = []
