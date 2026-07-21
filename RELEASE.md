@@ -97,7 +97,7 @@ gcloud run deploy edge77 \
 ## Post-Deploy Verification
 
 ```bash
-SERVICE_URL="https://edge77-364995933969.us-central1.run.app"
+SERVICE_URL="https://edge77.app"
 
 # 1. Health check
 curl $SERVICE_URL/health

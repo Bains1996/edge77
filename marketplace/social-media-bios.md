@@ -9,7 +9,7 @@
 AI-powered freight invoice audit & dispute platform
 🔍 Catch errors | 💰 Save 10-20% | ⚡ Audit in 30s
 👇 Start free
-edge77-364995933969.us-central1.run.app/linktree
+edge77.app/linktree
 
 **Profile Pic:** E77 logo (blue circle, white text)
 
@@ -45,7 +45,7 @@ Every year, $4.2 billion is lost to freight overcharges. 87% of shippers never a
 - Growth: $499/mo + 12% contingency
 - Enterprise: $2,999/mo + 10% contingency
 
-**Website:** https://edge77-364995933969.us-central1.run.app
+**Website:** https://edge77.app
 
 ---
 
@@ -59,7 +59,7 @@ AI-powered freight invoice audit & dispute
 💰 Catch $4.2B in carrier overcharges
 ⚡ Audit in 30 seconds
 🚀 Try free ↓
-edge77-364995933969.us-central1.run.app
+edge77.app
 
 ---
 

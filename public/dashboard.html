@@ -364,7 +364,7 @@
                                 <button onclick="copyToClipboard(getCodeSnippet())" class="text-[10px] text-gray-500 hover:text-gray-300 transition-colors font-medium">Copy</button>
                             </div>
                             <pre class="p-4 text-xs text-gray-300 overflow-x-auto leading-relaxed"><code id="codeSnippet"><span class="text-gray-500"># Submit invoice via API</span>
-<span class="text-emerald-400">curl</span> -X POST https://edge77-364995933969.us-central1.run.app/v1/invoice/ingest \
+<span class="text-emerald-400">curl</span> -X POST https://edge77.app/v1/invoice/ingest \
   -H <span class="text-warning">"Authorization: Bearer YOUR_TOKEN"</span> \
   -H <span class="text-warning">"x-client-id: YOUR_CLIENT_ID"</span> \
   -F <span class="text-warning">"file=@invoice.pdf"</span></code></pre>
@@ -721,7 +721,7 @@
         };
 
         window.getCodeSnippet = function() {
-            return `curl -X POST https://edge77-364995933969.us-central1.run.app/v1/invoice/ingest \\
+            return `curl -X POST https://edge77.app/v1/invoice/ingest \\
   -H "Authorization: Bearer YOUR_TOKEN" \\
   -H "x-client-id: ${CLIENT_ID}" \\
   -F "file=@invoice.pdf"`;

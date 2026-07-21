@@ -7,7 +7,7 @@ EDGE77
 Axal Global Inc.
 
 ## Website
-https://edge77-364995933969.us-central1.run.app
+https://edge77.app
 
 ## Category
 Freight Audit and Payment, Transportation Management

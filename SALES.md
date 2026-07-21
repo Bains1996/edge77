@@ -12,9 +12,9 @@ EDGE77 is a **risk-free automated freight audit engine** built by Axal Global In
 
 | Resource | URL |
 |----------|-----|
-| **Landing Page** | https://edge77-364995933969.us-central1.run.app |
-| **Client Dashboard** | https://edge77-364995933969.us-central1.run.app/dashboard |
-| **API Endpoint** | https://edge77-364995933969.us-central1.run.app/v1/ |
+| **Landing Page** | https://edge77.app |
+| **Client Dashboard** | https://edge77.app/dashboard |
+| **API Endpoint** | https://edge77.app/v1/ |
 | **GitHub** | https://github.com/Bains1996/edge77 |
 
 ---
@@ -39,7 +39,7 @@ Each customer gets a unique `client_id` (e.g., `acme_logistics_001`).
 ### Step 2: Generate API Key
 Use the admin endpoint:
 ```bash
-curl -X POST https://edge77-364995933969.us-central1.run.app/v1/admin/api-keys \
+curl -X POST https://edge77.app/v1/admin/api-keys \
   -H "Authorization: Bearer YOUR_INTERNAL_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"client_id": "acme_logistics_001", "name": "Production"}'
@@ -57,7 +57,7 @@ Response:
 
 ### Step 3: Set Up Their Contract
 ```bash
-curl -X POST https://edge77-364995933969.us-central1.run.app/v1/client/acme_logistics_001/contract \
+curl -X POST https://edge77.app/v1/client/acme_logistics_001/contract \
   -H "Authorization: Bearer e77_abc123..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -68,7 +68,7 @@ curl -X POST https://edge77-364995933969.us-central1.run.app/v1/client/acme_logi
 ```
 
 ### Step 4: Share Dashboard Access
-Send them: `https://edge77-364995933969.us-central1.run.app/dashboard`
+Send them: `https://edge77.app/dashboard`
 
 They can:
 - View audit queue
@@ -82,7 +82,7 @@ They can:
 
 ### Submit Invoice
 ```bash
-curl -X POST https://edge77-364995933969.us-central1.run.app/v1/invoice/ingest \
+curl -X POST https://edge77.app/v1/invoice/ingest \
   -H "Authorization: Bearer e77_THEIR_API_KEY" \
   -H "x-client-id: acme_logistics_001" \
   -F "file=@invoice.pdf"
@@ -90,13 +90,13 @@ curl -X POST https://edge77-364995933969.us-central1.run.app/v1/invoice/ingest \
 
 ### Check Audit Status
 ```bash
-curl https://edge77-364995933969.us-central1.run.app/v1/client/acme_logistics_001/audits \
+curl https://edge77.app/v1/client/acme_logistics_001/audits \
   -H "Authorization: Bearer e77_THEIR_API_KEY"
 ```
 
 ### Get Stats
 ```bash
-curl https://edge77-364995933969.us-central1.run.app/v1/client/acme_logistics_001/stats \
+curl https://edge77.app/v1/client/acme_logistics_001/stats \
   -H "Authorization: Bearer e77_THEIR_API_KEY"
 ```
 

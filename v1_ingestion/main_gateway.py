@@ -290,12 +290,14 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://edge77.app",
+        "https://www.edge77.app",
         "https://edge77-yyqrijv53a-uc.a.run.app",
-        "https://edge77.axalglobal.com",
         "https://edge77-364995933969.us-central1.run.app",
     ] if _is_production else [
+        "https://edge77.app",
+        "https://www.edge77.app",
         "https://edge77-yyqrijv53a-uc.a.run.app",
-        "https://edge77.axalglobal.com",
         "https://edge77-364995933969.us-central1.run.app",
         "http://localhost:8000",
         "http://localhost:8080",

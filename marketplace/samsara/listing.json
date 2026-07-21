@@ -29,23 +29,23 @@
     "Third-Party Logistics (3PL)"
   ],
 
-  "pricing": "Free tier available. Subscription plans start at $0/month (contingency-based). Visit https://edge77-364995933969.us-central1.run.app/pricing",
+  "pricing": "Free tier available. Subscription plans start at $0/month (contingency-based). Visit https://edge77.app/pricing",
 
-  "support_email": "axalglobalinc@gmail.com",
-  "website_url": "https://edge77-364995933969.us-central1.run.app",
-  "privacy_url": "https://edge77-364995933969.us-central1.run.app/privacy",
+  "support_email": "admin@edge77.app",
+  "website_url": "https://edge77.app",
+  "privacy_url": "https://edge77.app/privacy",
   "status": "Active — Production Ready",
 
   "company": {
     "name": "AXAL Global Inc.",
     "description": "AI-powered freight invoice audit platform",
-    "website": "https://edge77-364995933969.us-central1.run.app",
-    "email": "axalglobalinc@gmail.com"
+    "website": "https://edge77.app",
+    "email": "admin@edge77.app"
   },
 
   "oauth_config": {
     "redirect_uris": [
-      "https://edge77-364995933969.us-central1.run.app/v1/samsara/callback",
+      "https://edge77.app/v1/samsara/callback",
       "http://localhost:8080/v1/samsara/callback"
     ],
     "scopes": [

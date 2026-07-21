@@ -79,7 +79,7 @@ in accordance with the terms of the applicable service agreement.
 
 <p>
 Please direct any questions or remittance confirmations to
-<a href="mailto:billing@edge77.com">billing@edge77.com</a>, referencing tracking
+<a href="mailto:billing@edge77.app">billing@edge77.app</a>, referencing tracking
 ID <strong>{tracking_id}</strong>.
 </p>
 
@@ -87,7 +87,7 @@ ID <strong>{tracking_id}</strong>.
 Respectfully,<br>
 <strong>EDGE77 Audit Division</strong><br>
 Axal Global Inc.<br>
-<a href="https://edge77.com">edge77.com</a>
+<a href="https://edge77.app">edge77.app</a>
 </p>
 </body>
 </html>"""

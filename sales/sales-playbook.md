@@ -176,7 +176,7 @@
 1. **Dashboard** — Total audits, overcharges found, recovery amount, fees earned
    - "This is what every client sees — real-time visibility into every audit."
 
-2. **Invoice Upload / Email Forward** — "Forward any PDF invoice to audit@edge77.com"
+2. **Invoice Upload / Email Forward** — "Forward any PDF invoice to audit@edge77.app"
    - Show the simplicity: no portal login needed, just forward an email.
 
 3. **AI Extraction Output** — Show the 19+ extracted fields: base rate, fuel surcharge, accessorials, freight class, weight, etc.

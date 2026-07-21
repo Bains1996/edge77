@@ -317,8 +317,8 @@
                         <div class="bg-white/[0.03] rounded-lg border border-white/5 p-4 mb-4">
                             <div class="text-[10px] uppercase tracking-wider text-gray-600 mb-2 font-semibold">Dedicated Ingestion Email</div>
                             <div class="flex items-center gap-2">
-                                <code id="ingestionEmail" class="text-sm text-accent font-medium flex-1 truncate">incoming-docs@edge77.com</code>
-                                <button onclick="copyToClipboard('incoming-docs@edge77.com')" class="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-md text-[11px] text-gray-300 font-medium transition-colors flex items-center gap-1.5">
+                                <code id="ingestionEmail" class="text-sm text-accent font-medium flex-1 truncate">incoming-docs@edge77.app</code>
+                                <button onclick="copyToClipboard('incoming-docs@edge77.app')" class="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-md text-[11px] text-gray-300 font-medium transition-colors flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                     Copy
                                 </button>
@@ -374,7 +374,7 @@
                                 <button onclick="copyToClipboard(getCodeSnippet())" class="text-[10px] text-gray-500 hover:text-gray-300 transition-colors font-medium">Copy</button>
                             </div>
                             <pre class="p-4 text-xs text-gray-300 overflow-x-auto leading-relaxed"><code id="codeSnippet"><span class="text-gray-500"># Submit invoice via API</span>
-<span class="text-emerald-400">curl</span> -X POST https://api.edge77.com/v1/invoice/ingest \
+<span class="text-emerald-400">curl</span> -X POST https://api.edge77.app/v1/invoice/ingest \
   -H <span class="text-warning">"Authorization: Bearer YOUR_TOKEN"</span> \
   -H <span class="text-warning">"Content-Type: multipart/form-data"</span> \
   -F <span class="text-warning">"file=@invoice.pdf"</span> \
@@ -716,7 +716,7 @@
         };
 
         window.getCodeSnippet = function() {
-            return `curl -X POST https://api.edge77.com/v1/invoice/ingest \\
+            return `curl -X POST https://api.edge77.app/v1/invoice/ingest \\
   -H "Authorization: Bearer YOUR_TOKEN" \\
   -H "Content-Type: multipart/form-data" \\
   -F "file=@invoice.pdf" \\

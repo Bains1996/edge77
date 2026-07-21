@@ -4,11 +4,11 @@
 
 **Name:** EDGE77
 **Tagline:** AI-Powered Freight Invoice Audit & Dispute Engine
-**URL:** https://edge77-364995933969.us-central1.run.app
+**URL:** https://edge77.app
 **Description (Short):** EDGE77 uses AI to audit freight invoices, detect overcharges, and automate carrier disputes. Save 15-30% on shipping costs with automated LTL/TL billing error detection.
 **Description (Long):** EDGE77 is an AI-powered freight invoice audit and dispute engine built for logistics companies, freight brokers, and shippers. It automatically audits LTL and TL invoices against tariff rates, identifies billing errors and overcharges, and generates carrier dispute letters with supporting documentation. Features include Samsara ELD integration, real-time rate benchmarking, automated claim filing, and a financial dashboard with P&L tracking. Pricing: Free tier (15% contingency), Growth ($499/mo + 12%), Enterprise ($2,999/mo + 10%).
 **Category:** AI Tools, Logistics, B2B SaaS, FinTech, Transportation
-**Email:** axalglobalinc@gmail.com (or use your business email if available)
+**Email:** admin@edge77.app (or use your business email if available)
 **Logo:** Use the EDGE77 logo from the landing page
 
 ---
@@ -300,5 +300,5 @@
 - Most directories require account creation + email verification
 - Some have editorial review (1-7 days)
 - Submit to 5-10 per day to avoid appearing spammy
-- Use the same email consistently (axalglobalinc@gmail.com or business email)
+- Use the same email consistently (admin@edge77.app or business email)
 - Update links once custom domain is set up

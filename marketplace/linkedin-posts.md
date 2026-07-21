@@ -22,7 +22,7 @@ Average result: 10-20% savings on freight spend.
 
 We're live and serving shippers with $10K-$500K/month freight spend.
 
-Try it free: https://edge77-364995933969.us-central1.run.app
+Try it free: https://edge77.app
 
 #freightaudit #logistics #supplychain #freighttech #AI
 
@@ -80,7 +80,7 @@ And their team spent 0 hours on manual audits.
 
 This is what happens when AI meets freight audit.
 
-Start free: https://edge77-364995933969.us-central1.run.app
+Start free: https://edge77.app
 
 #freightaudit #logistics #ROI #supplychain #freighttech
 
@@ -129,7 +129,7 @@ Here's the deal:
 
 If you know shippers who are overpaying on freight, this is a win-win.
 
-Interested? DM me or check out: https://edge77-364995933969.us-central1.run.app/partners
+Interested? DM me or check out: https://edge77.app/partners
 
 #freightbroker #3PL #partnerships #freighttech #logistics
 
@@ -162,7 +162,7 @@ We're not just building software. We're building a movement to stop the freight 
 
 If you're a shipper spending $10K+/month on freight, I'd love to show you what EDGE77 can do.
 
-Free to try: https://edge77-364995933969.us-central1.run.app
+Free to try: https://edge77.app
 
 #freightaudit #startup #logistics #supplychain #entrepreneurship
 
@@ -186,7 +186,7 @@ EDGE77 fixes all three.
 
 AI-powered audit. 30 seconds per invoice. 10-20% savings.
 
-Start free: https://edge77-364995933969.us-central1.run.app
+Start free: https://edge77.app
 
 #freightaudit #logistics #supplychain #costsaving #B2B
 
@@ -229,7 +229,7 @@ Month 1 results for EDGE77 customers:
 
 The freight audit industry is broken. We're fixing it.
 
-Try it free: https://edge77-364995933969.us-central1.run.app
+Try it free: https://edge77.app
 
 #freightaudit #logistics #supplychain #freighttech #results
 
@@ -251,6 +251,6 @@ Saves you 10-20%.
 
 Free to start. No credit card required.
 
-https://edge77-364995933969.us-central1.run.app
+https://edge77.app
 
 #freightaudit #logistics #supplychain #costsaving #freighttech

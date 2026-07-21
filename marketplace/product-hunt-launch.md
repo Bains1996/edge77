@@ -7,7 +7,7 @@ EDGE77
 AI-powered freight invoice audit & dispute — catch every error, recover every dollar
 
 ## URL
-https://edge77-364995933969.us-central1.run.app
+https://edge77.app
 
 ## Topic
 Productivity > B2B
@@ -73,7 +73,7 @@ EDGE77 uses AI to audit invoices in 30 seconds, catch every error, and auto-file
 
 Would love your feedback! Try it free — no credit card required.
 
-🚀 https://edge77-364995933969.us-central1.run.app
+🚀 https://edge77.app
 
 ---
 

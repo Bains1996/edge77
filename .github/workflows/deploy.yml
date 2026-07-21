@@ -82,4 +82,4 @@ jobs:
       - name: Verify Deployment
         run: |
           sleep 30
-          curl -sf "https://edge77-364995933969.us-central1.run.app/health" || exit 1
+          curl -sf "https://edge77.app/health" || exit 1

@@ -34,7 +34,7 @@ log = get_logger("edge77.billing")
 router = APIRouter(prefix="/v1/billing", tags=["billing"])
 
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://edge77-364995933969.us-central1.run.app")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://edge77.app")
 INTERNAL_API_TOKEN = os.getenv("INTERNAL_API_TOKEN", "")
 
 # Billing-specific rate limiter (10 req/min per client)

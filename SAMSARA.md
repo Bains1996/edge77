@@ -29,13 +29,13 @@ EDGE77 integrates with Samsara to provide AI-powered freight invoice auditing wi
 3. **Configure Redirect URI**
    - Add to your Samsara app settings:
      ```
-     https://edge77-364995933969.us-central1.run.app/v1/samsara/callback
+     https://edge77.app/v1/samsara/callback
      ```
 
 ### For Customers
 
 1. **Connect Samsara Account**
-   - Go to: https://edge77-364995933969.us-central1.run.app/dashboard
+   - Go to: https://edge77.app/dashboard
    - Click "Connect Samsara"
    - Authorize EDGE77 to access your fleet data
 

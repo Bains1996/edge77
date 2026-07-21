@@ -64,7 +64,7 @@ Auto-files disputes.
 10-20% savings on freight spend.
 
 **Tweet 8:**
-Try it free: https://edge77-364995933969.us-central1.run.app
+Try it free: https://edge77.app
 
 No credit card required.
 Start saving in 30 seconds.
@@ -129,7 +129,7 @@ EDGE77 audits every invoice in 30 seconds.
 Catches all 5 errors.
 Auto-files disputes.
 
-Free to try: https://edge77-364995933969.us-central1.run.app
+Free to try: https://edge77.app
 
 ---
 
@@ -175,7 +175,7 @@ AI audits every invoice in 30 seconds.
 Catches every error.
 Auto-files disputes.
 
-Start free: https://edge77-364995933969.us-central1.run.app
+Start free: https://edge77.app
 
 ---
 
@@ -208,7 +208,7 @@ And their team spent 0 hours on manual audits.
 **Tweet 5:**
 This is what happens when AI meets freight audit.
 
-Try it free: https://edge77-364995933969.us-central1.run.app
+Try it free: https://edge77.app
 
 ---
 
@@ -221,7 +221,7 @@ $4.2 billion lost to freight overcharges every year.
 
 EDGE77 fixes that. AI-powered audit in 30 seconds.
 
-Try free: https://edge77-364995933969.us-central1.run.app
+Try free: https://edge77.app
 
 #freightaudit #logistics #supplychain
 
@@ -232,7 +232,7 @@ Freight class manipulation. DIM weight overcharges. Invalid accessorials.
 
 EDGE77 catches them all. 30 seconds. Every invoice.
 
-Start free: https://edge77-364995933969.us-central1.run.app
+Start free: https://edge77.app
 
 **Tweet C:**
 Freight brokers: Want to add audit services to your offering?
@@ -242,7 +242,7 @@ EDGE77 partner program:
 → We handle the product
 → You refer, you earn
 
-Details: https://edge77-364995933969.us-central1.run.app/partners
+Details: https://edge77.app/partners
 
 **Tweet D:**
 Stop manually auditing freight invoices.
@@ -253,7 +253,7 @@ EDGE77 uses AI to:
 → Auto-file disputes
 → Save 10-20%
 
-Free: https://edge77-364995933969.us-central1.run.app
+Free: https://edge77.app
 
 **Tweet E:**
 The freight audit industry is broken.
@@ -264,4 +264,4 @@ We built EDGE77 to fix it.
 
 AI-powered. 30 seconds. 10-20% savings.
 
-Try it: https://edge77-364995933969.us-central1.run.app
+Try it: https://edge77.app

@@ -46,7 +46,7 @@ Would you be open to a 15-minute call to explore how we can work together?
 Best regards,
 [Your Name]
 Axal Global Inc.
-https://edge77-364995933969.us-central1.run.app
+https://edge77.app
 
 ---
 

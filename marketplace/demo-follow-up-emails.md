@@ -17,7 +17,7 @@ In the meantime, here's what you can expect from your demo:
 - **Dispute automation** — Watch EDGE77 generate carrier dispute letters with supporting documentation
 - **Financial dashboard** — Track your savings, recovery rate, and P&L impact
 
-If you have questions before your demo, reply to this email or visit our [FAQ page](https://edge77-364995933969.us-central1.run.app).
+If you have questions before your demo, reply to this email or visit our [FAQ page](https://edge77.app).
 
 Talk soon,
 The EDGE77 Team
@@ -42,7 +42,7 @@ Quick follow-up on your demo request. While we wait to connect, here's what comp
 
 If you're processing {invoice_volume} invoices per month, that could represent **$50,000-$200,000+ in annual recoverable overcharges**.
 
-Ready to see your numbers? [Book a 15-minute call](https://edge77-364995933969.us-central1.run.app/demo) or reply to this email.
+Ready to see your numbers? [Book a 15-minute call](https://edge77.app/demo) or reply to this email.
 
 Best,
 The EDGE77 Team
@@ -70,7 +70,7 @@ EDGE77's AI audit found **$127,000 in overcharges** across 90 days that their ma
 
 The best part? EDGE77 generated the dispute letters automatically, and 94% of claims were resolved within 14 days.
 
-Your demo is the fastest way to see what EDGE77 can find for {company}. [Schedule here](https://edge77-364995933969.us-central1.run.app/demo).
+Your demo is the fastest way to see what EDGE77 can find for {company}. [Schedule here](https://edge77.app/demo).
 
 Best,
 The EDGE77 Team
@@ -95,7 +95,7 @@ We're reaching out because freight overcharges don't wait — every day without 
 2. Free tier charges 15% contingency — you only pay when we save you money
 3. Setup takes less than 15 minutes with Samsara integration
 
-[Complete your demo request](https://edge77-364995933969.us-central1.run/app/demo) before it expires.
+[Complete your demo request](https://edge77.app/demo) before it expires.
 
 Best,
 The EDGE77 Team
@@ -118,7 +118,7 @@ We'll keep you on our low-frequency newsletter (monthly at most) with:
 - New EDGE77 features
 - Case studies from companies like {company}
 
-If you ever want to revisit, your demo request link is still active: [edge77.ai/demo](https://edge77-364995933969.us-central1.run.app/demo)
+If you ever want to revisit, your demo request link is still active: [edge77.ai/demo](https://edge77.app/demo)
 
 Wishing you clean invoices and accurate freight bills.
 

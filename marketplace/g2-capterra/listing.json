@@ -1,7 +1,7 @@
 {
   "product_name": "EDGE77",
   "tagline": "AI-Powered Freight Invoice Audit & Recovery",
-  "website_url": "https://edge77-364995933969.us-central1.run.app",
+  "website_url": "https://edge77.app",
   "category": "Freight Audit & Payment",
   "subcategory": "Logistics & Supply Chain Software",
 
@@ -89,8 +89,8 @@
   ],
 
   "screenshots": [
-    {"title": "Dashboard", "url": "https://edge77-364995933969.us-central1.run.app/dashboard", "description": "Real-time audit dashboard showing total audits, overcharges found, and fees earned."},
-    {"title": "Pricing", "url": "https://edge77-364995933969.us-central1.run.app/pricing", "description": "Transparent pricing with free starter tier."}
+    {"title": "Dashboard", "url": "https://edge77.app/dashboard", "description": "Real-time audit dashboard showing total audits, overcharges found, and fees earned."},
+    {"title": "Pricing", "url": "https://edge77.app/pricing", "description": "Transparent pricing with free starter tier."}
   ],
 
   "company_name": "AXAL Global Inc.",

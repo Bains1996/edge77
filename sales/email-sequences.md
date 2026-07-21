@@ -29,7 +29,7 @@ The best part? You pay nothing upfront. We work on a 15% contingency — meaning
 Want me to run a free audit on a sample of your invoices so you can see what you're leaving on the table?
 
 **[CTA]**: Run My Free Audit
-**CTA Link**: https://edge77.com/free-audit
+**CTA Link**: https://edge77.app/free-audit
 
 Talk soon,
 {{sender_name}}
@@ -70,7 +70,7 @@ We're SOC 2 compliant with 256-bit encryption, so your data stays safe.
 Interested in a quick 15-minute walkthrough?
 
 **[CTA]**: Book a 15-Minute Demo
-**CTA Link**: https://edge77.com/demo
+**CTA Link**: https://edge77.app/demo
 
 Best,
 {{sender_name}}
@@ -98,7 +98,7 @@ If not, no hard feelings. But if even 1% of your freight spend is being overchar
 Just reply "yes" and I'll send it right over.
 
 **[CTA]**: Yes, Send the Overview
-**CTA Link**: https://edge77.com/overview
+**CTA Link**: https://edge77.app/overview
 
 Best,
 {{sender_name}}
@@ -139,7 +139,7 @@ A few things I wanted to highlight from our conversation:
 I'll follow up in a couple of days to answer any questions. In the meantime, here's the deck I shared: [Insert Link to Deck]
 
 **[CTA]**: Download ROI Estimate (PDF)
-**CTA Link**: https://edge77.com/roi-estimate?ref={{lead_id}}
+**CTA Link**: https://edge77.app/roi-estimate?ref={{lead_id}}
 
 Talk soon,
 {{sender_name}}
@@ -206,7 +206,7 @@ If you'd rather not continue, no reply needed — I'll close it out and wish you
 Either way, the offer stands: **$0 upfront, 15% contingency**. Whenever the timing works.
 
 **[CTA]**: Keep My File Open
-**CTA Link**: https://edge77.com/keep-alive?ref={{lead_id}}
+**CTA Link**: https://edge77.app/keep-alive?ref={{lead_id}}
 
 {{sender_name}}
 EDGE77 | AI Freight Invoice Audit
@@ -240,7 +240,7 @@ We've also added new integrations with major TMS platforms, so onboarding takes 
 If you've been on the fence about freight invoice audit, now might be a good time to take another look. Want me to run a quick comparison of what we'd recover vs. what you're currently leaving on the table?
 
 **[CTA]**: Run a Recovery Estimate
-**CTA Link**: https://edge77.com/recovery-estimate
+**CTA Link**: https://edge77.app/recovery-estimate
 
 Best,
 {{sender_name}}
@@ -274,7 +274,7 @@ EDGE77 catches all of it. And again — **$0 upfront, 15% contingency**. We lite
 Curious what your specific recovery number might be? Happy to run the math.
 
 **[CTA]**: Get My Recovery Estimate
-**CTA Link**: https://edge77.com/recovery-estimate?ref={{lead_id}}
+**CTA Link**: https://edge77.app/recovery-estimate?ref={{lead_id}}
 
 {{sender_name}}
 EDGE77 | AI Freight Invoice Audit
@@ -301,7 +301,7 @@ If the number is meaningful, we talk next steps. If it's not, I'll never email y
 Fair?
 
 **[CTA]**: Book 15 Minutes
-**CTA Link**: https://edge77.com/quick-call?ref={{lead_id}}
+**CTA Link**: https://edge77.app/quick-call?ref={{lead_id}}
 
 {{sender_name}}
 EDGE77 | AI Freight Invoice Audit
@@ -352,7 +352,7 @@ We're currently onboarding partners across North America. If you have clients sp
 Want to see how the partner program works? Happy to walk you through it in 20 minutes.
 
 **[CTA]**: Join the Partner Program
-**CTA Link**: https://edge77.com/partner?ref={{lead_id}}
+**CTA Link**: https://edge77.app/partner?ref={{lead_id}}
 
 Best,
 {{sender_name}}
@@ -399,7 +399,7 @@ That's it. No hard sell. Just a genuine value-add.
 Want me to send you a one-pager you can share with your clients?
 
 **[CTA]**: Send Me the Client One-Pager
-**CTA Link**: https://edge77.com/partner-one-pager?ref={{lead_id}}
+**CTA Link**: https://edge77.app/partner-one-pager?ref={{lead_id}}
 
 Best,
 {{sender_name}}
@@ -416,7 +416,7 @@ Use these variables in your email platform (Outreach, Salesloft, HubSpot, etc.):
 | {{first_name}} | Recipient's first name | Sarah |
 | {{company_name}} | Recipient's company | Acme Logistics |
 | {{sender_name}} | Your name | Alex Johnson |
-| {{sender_email}} | Your email | alex@edge77.com |
+| {{sender_email}} | Your email | alex@edge77.app |
 | {{sender_phone}} | Your phone | (555) 123-4567 |
 | {{annual_freight_spend}} | Estimated annual spend | $4,200,000 |
 | {{invoice_volume}} | Monthly/annual invoice count | 3,200 |

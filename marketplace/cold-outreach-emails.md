@@ -19,7 +19,7 @@ Worth a 15-minute look? I can show you what EDGE77 would find in your last 30 da
 Best,
 [Your Name]
 EDGE77 | Axal Global Inc.
-[edge77.ai](https://edge77-364995933969.us-central1.run.app)
+[edge77.ai](https://edge77.app)
 
 ---
 
@@ -44,7 +44,7 @@ Want to see what EDGE77 would find for {company}? I can run a free audit on your
 Best,
 [Your Name]
 EDGE77 | Axal Global Inc.
-[edge77.ai](https://edge77-364995933969.us-central1.run.app)
+[edge77.ai](https://edge77.app)
 
 ---
 
@@ -72,7 +72,7 @@ Interested in a 15-minute overview? Happy to walk you through the program.
 Best,
 [Your Name]
 EDGE77 | Axal Global Inc.
-[edge77.ai](https://edge77-364995933969.us-central1.run.app)
+[edge77.ai](https://edge77.app)
 
 ---
 

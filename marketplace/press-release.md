@@ -8,7 +8,7 @@
 
 ---
 
-**[City, State] — [Date]** — Axal Global Inc. today announced the launch of EDGE77, an AI-powered freight invoice audit and dispute engine designed to help logistics companies, freight brokers, and shippers recover millions in carrier overcharges. The platform is now available at [edge77.ai](https://edge77-364995933969.us-central1.run.app).
+**[City, State] — [Date]** — Axal Global Inc. today announced the launch of EDGE77, an AI-powered freight invoice audit and dispute engine designed to help logistics companies, freight brokers, and shippers recover millions in carrier overcharges. The platform is now available at [edge77.ai](https://edge77.app).
 
 Freight billing errors are endemic in the logistics industry. Studies show that 12-15% of all Less-Than-Truckload (LTL) invoices contain billing errors, and the average company recovers less than 30% of overcharges due to the complexity of manual audit processes. EDGE77 addresses this problem with an AI engine that automatically audits invoices against tariff rates, detects overcharges, and generates carrier dispute letters with supporting documentation.
 
@@ -32,7 +32,7 @@ EDGE77 offers three pricing tiers:
 
 ### Availability
 
-EDGE77 is available immediately at [edge77.ai](https://edge77-364995933969.us-central1.run.app). Companies can sign up for a free account and begin auditing invoices within minutes.
+EDGE77 is available immediately at [edge77.ai](https://edge77.app). Companies can sign up for a free account and begin auditing invoices within minutes.
 
 ### About Axal Global Inc.
 
@@ -44,7 +44,7 @@ Axal Global Inc. is a logistics technology company focused on using artificial i
 [Name]
 Axal Global Inc.
 [email@edge77.ai]
-[edge77.ai](https://edge77-364995933969.us-central1.run.app)
+[edge77.ai](https://edge77.app)
 
 ---
 
