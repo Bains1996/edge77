@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime, timezone
 
-os.environ.setdefault("INTERNAL_API_TOKEN", "test_token_for_tests")
+os.environ["INTERNAL_API_TOKEN"] = "test_token_for_tests"
 os.environ["HMAC_SECRET"] = "test_hmac_secret_for_tests"
 
 import pytest

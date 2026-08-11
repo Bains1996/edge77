@@ -4,7 +4,7 @@ import time
 import json
 from io import StringIO
 
-os.environ.setdefault("INTERNAL_API_TOKEN", "test_token_for_tests")
+os.environ["INTERNAL_API_TOKEN"] = "test_token_for_tests"
 os.environ["MOCK_MODE"] = "true"
 
 import pytest
