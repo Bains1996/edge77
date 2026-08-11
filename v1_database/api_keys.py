@@ -23,6 +23,20 @@ KEY_LENGTH = 32
 HASH_ALGO = "sha512"
 
 
+def _supabase_headers() -> dict:
+    """Return headers for Supabase REST API, handling both legacy and new key formats."""
+    # New Supabase keys (sb_secret_...) are not JWTs and must not be sent on Authorization header
+    is_new_key = SUPABASE_KEY.startswith("sb_")
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if not is_new_key:
+        headers["Authorization"] = f"Bearer {SUPABASE_KEY}"
+    return headers
+
+
 def _hash_key(raw_key: str) -> str:
     """Hash an API key using SHA-512."""
     return hashlib.sha512(raw_key.encode("utf-8")).hexdigest()
@@ -52,12 +66,7 @@ def generate_api_key(client_id: str, name: str = "default") -> dict:
                     "name": name,
                     "active": True,
                 },
-                headers={
-                    "Authorization": f"Bearer {SUPABASE_KEY}",
-                    "apikey": SUPABASE_KEY,
-                    "Content-Type": "application/json",
-                    "Prefer": "return=representation",
-                },
+                headers=_supabase_headers(),
                 timeout=10.0,
             )
             resp.raise_for_status()
@@ -98,10 +107,7 @@ def validate_api_key(api_key: str) -> Optional[dict]:
                 "active": "eq.true",
                 "limit": 1,
             },
-            headers={
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "apikey": SUPABASE_KEY,
-            },
+            headers=_supabase_headers(),
             timeout=10.0,
         )
         resp.raise_for_status()
@@ -114,15 +120,13 @@ def validate_api_key(api_key: str) -> Optional[dict]:
 
         # Update last_used_at
         try:
+            headers = _supabase_headers()
+            headers["Content-Type"] = "application/json"
             httpx.patch(
                 f"{SUPABASE_URL}/rest/v1/client_api_keys",
                 json={"last_used_at": datetime.now(timezone.utc).isoformat()},
                 params={"key_hash": f"eq.{key_hash}"},
-                headers={
-                    "Authorization": f"Bearer {SUPABASE_KEY}",
-                    "apikey": SUPABASE_KEY,
-                    "Content-Type": "application/json",
-                },
+                headers=headers,
                 timeout=5.0,
             )
         except Exception:

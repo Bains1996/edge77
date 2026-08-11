@@ -13,7 +13,7 @@ import secrets
 import hashlib
 import base64
 from typing import Optional, Dict, List, Any, Tuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from urllib.parse import urlencode
 
 import httpx
@@ -184,9 +184,9 @@ class SamsaraClient:
     ) -> List[Dict[str, Any]]:
         """Fetch trips, optionally filtered by vehicle and time range."""
         if not start_time:
-            start_time = datetime.utcnow() - timedelta(days=7)
+            start_time = datetime.now(timezone.utc) - timedelta(days=7)
         if not end_time:
-            end_time = datetime.utcnow()
+            end_time = datetime.now(timezone.utc)
 
         params: Dict[str, Any] = {
             "start_time": start_time.isoformat() + "Z",
@@ -328,8 +328,8 @@ def store_samsara_credentials(
             "refresh_token": refresh_token,
             "expires_at": datetime.fromtimestamp(expires_at).isoformat(),
             "scope": scope,
-            "connected_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
+            "connected_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         })
         log.info("samsara_credentials_stored", client_id=client_id)
     except Exception as e:

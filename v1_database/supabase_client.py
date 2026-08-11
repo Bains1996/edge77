@@ -21,14 +21,18 @@ def _get_rest_client() -> Optional[httpx.Client]:
         return _rest_client
     if not SUPABASE_URL or not SUPABASE_KEY:
         return None
+    # New Supabase keys (sb_secret_...) are not JWTs and must not be sent on Authorization header
+    is_new_key = SUPABASE_KEY.startswith("sb_")
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if not is_new_key:
+        headers["Authorization"] = f"Bearer {SUPABASE_KEY}"
     _rest_client = httpx.Client(
         base_url=f"{SUPABASE_URL}/rest/v1",
-        headers={
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "apikey": SUPABASE_KEY,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation",
-        },
+        headers=headers,
         timeout=15.0,
     )
     return _rest_client
@@ -40,14 +44,18 @@ def _get_async_rest_client() -> Optional[httpx.AsyncClient]:
         return _async_rest_client
     if not SUPABASE_URL or not SUPABASE_KEY:
         return None
+    # New Supabase keys (sb_secret_...) are not JWTs and must not be sent on Authorization header
+    is_new_key = SUPABASE_KEY.startswith("sb_")
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if not is_new_key:
+        headers["Authorization"] = f"Bearer {SUPABASE_KEY}"
     _async_rest_client = httpx.AsyncClient(
         base_url=f"{SUPABASE_URL}/rest/v1",
-        headers={
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "apikey": SUPABASE_KEY,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation",
-        },
+        headers=headers,
         timeout=15.0,
     )
     return _async_rest_client

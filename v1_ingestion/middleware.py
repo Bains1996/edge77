@@ -3,6 +3,7 @@ import hashlib
 import time
 import os
 import uuid
+import logging
 from datetime import datetime, timezone
 from collections import defaultdict
 from typing import Any, Callable, Optional
@@ -10,6 +11,8 @@ from typing import Any, Callable, Optional
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+
+logger = logging.getLogger("edge77")
 
 LOG_PREFIX = "[EDGE77 ENGINE]"
 
@@ -75,6 +78,11 @@ class RateLimiter:
 
     Tracks request counts per client ID using a fixed window approach.
     Expired entries are cleaned up on each check to prevent memory leaks.
+
+    NOTE: This is an in-memory rate limiter. It does NOT persist across restarts
+    and does NOT share state between multiple instances. For production with
+    multiple Cloud Run instances, consider using Redis or a similar shared store.
+    For single-instance deployment, this is sufficient.
     """
 
     def __init__(self, max_requests: int = 100, window_seconds: int = 60) -> None:
@@ -202,8 +210,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.rate_limiter = rate_limiter or RateLimiter()
         environment = os.getenv("ENVIRONMENT", "development")
         if environment == "production" and not self.hmac_secret:
-            import sys
-            print("[EDGE77 ENGINE] WARNING: HMAC_SECRET not set in production mode. HMAC verification is disabled.", file=sys.stderr, flush=True)
+            logger.warning("[EDGE77 ENGINE] WARNING: HMAC_SECRET not set in production mode. HMAC verification is disabled.")
 
     def _get_client_id(self, request: Request) -> str:
         """Extract a client identifier from the request for rate limiting."""

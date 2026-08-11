@@ -91,8 +91,6 @@ async def process_invoice_background(
       2. Parse with AI via OpenRouter
       3. Evaluate overcharge and optionally send dispute
     """
-    import sys
-    print(f"{LOG_PREFIX} Background pipeline STARTED for tracking_id={tracking_id}", file=sys.stderr, flush=True)
     try:
         log.info(
             f"{LOG_PREFIX} Background pipeline started",
@@ -101,9 +99,9 @@ async def process_invoice_background(
         )
 
         # 1. Extract text from PDF
-        print(f"{LOG_PREFIX} STEP1: Extracting text from {len(pdf_bytes)} bytes", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} Extracting text from {len(pdf_bytes)} bytes", tracking_id=tracking_id)
         extracted = extract_text(pdf_bytes)
-        print(f"{LOG_PREFIX} STEP1 result: success={extracted.success}", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} PDF extraction result: success={extracted.success}", tracking_id=tracking_id)
         if not extracted.success:
             log.error(
                 f"{LOG_PREFIX} PDF extraction failed",
@@ -121,9 +119,9 @@ async def process_invoice_background(
         )
 
         # 2. Parse with AI
-        print(f"{LOG_PREFIX} STEP2: Parsing with AI, text_len={len(extracted.raw_text)}", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} Parsing with AI, text_len={len(extracted.raw_text)}", tracking_id=tracking_id)
         parsed: FreightInvoiceSchema = await parse_invoice(extracted.raw_text)
-        print(f"{LOG_PREFIX} STEP2 result: parsed OK, total={parsed.total_charge}", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} AI parse complete, total={parsed.total_charge}", tracking_id=tracking_id)
 
         log.info(
             f"{LOG_PREFIX} AI parse complete",
@@ -133,16 +131,16 @@ async def process_invoice_background(
         )
 
         # 3. Evaluate and dispute
-        print(f"{LOG_PREFIX} STEP3: Evaluating overcharge", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} Evaluating overcharge", tracking_id=tracking_id)
         result = evaluate_and_dispute(parsed.model_dump(), client_id)
-        print(f"{LOG_PREFIX} STEP3 result: overcharge={result.overcharge}, fee={result.fee_earned}", file=sys.stderr, flush=True)
+        log.info(f"{LOG_PREFIX} Overcharge result: overcharge={result.overcharge}, fee={result.fee_earned}", tracking_id=tracking_id)
 
         # 4. Log usage for Stripe metered billing
         try:
             from v1_integrations.stripe_client import log_usage_event
             log_usage_event(client_id, "invoice_audited", 1)
         except Exception as usage_err:
-            print(f"{LOG_PREFIX} Usage logging failed (non-critical): {usage_err}", file=sys.stderr, flush=True)
+            log.warning(f"{LOG_PREFIX} Usage logging failed (non-critical): {usage_err}", tracking_id=tracking_id)
 
         log.info(
             f"{LOG_PREFIX} Pipeline complete",
@@ -159,7 +157,6 @@ async def process_invoice_background(
             error=str(exc),
             exc_info=True,
         )
-        print(f"{LOG_PREFIX} PIPELINE FAILED: {exc}", file=sys.stderr, flush=True)
         sentry_sdk.capture_exception(exc)
         try:
             update_audit_status_by_tracking(client_id, tracking_id, "PIPELINE_FAILED")
@@ -885,10 +882,34 @@ async def register_user(req: RegisterRequest):
     """Auto-generate an API key for a newly signed-up user.
     Called from the frontend after successful Supabase signup/login.
     Creates client_api_keys, client_contracts, and client_profiles records.
+    Idempotent: returns existing key if one already exists for this client.
     """
     from v1_database.api_keys import generate_api_key
 
     client_id = req.user_id
+
+    # Check if client already has an active API key — return it instead of creating a new one
+    if not MOCK_MODE:
+        try:
+            from v1_database.supabase_client import _rest_select
+            existing_keys = _rest_select("client_api_keys", {
+                "select": "key_prefix",
+                "client_id": f"eq.{client_id}",
+                "active": "eq.true",
+                "limit": 1,
+            })
+            if existing_keys:
+                # Key already exists — return a synthetic key indicator
+                # The real key is only shown once at creation; subsequent logins use localStorage
+                log.info(f"{LOG_PREFIX} User already has API key", client_id=client_id, email=req.email)
+                return {
+                    "status": "success",
+                    "client_id": client_id,
+                    "api_key": "",
+                    "message": "Account already registered",
+                }
+        except Exception as exc:
+            log.warning(f"{LOG_PREFIX} Failed to check existing keys: {exc}")
 
     try:
         result = generate_api_key(client_id, name="default")

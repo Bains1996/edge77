@@ -391,7 +391,7 @@
         'use strict';
 
         const SUPABASE_URL = 'https://ruarvrwswjhtgywkkjie.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YXJ2cndzd2podGd5d2traWplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYwNjA4MDAsImV4cCI6MjA0MTYzNjgwMH0.eNEFzO7vQnHjGo4EvYfGjKjYBfNvFnNcFqJfHq3pWkY';
+        const SUPABASE_ANON_KEY = 'sb_publishable_J20fP1jvfDpnh3AV9uDAjA_wAleQZOk';
 
         let CLIENT_ID = localStorage.getItem('edge77_user_id') || '';
         const USER_EMAIL = localStorage.getItem('edge77_user_email') || '';
@@ -598,10 +598,16 @@
                 document.getElementById('connectionStatus').classList.remove('hidden');
                 document.getElementById('connectionStatus').classList.add('flex');
             } catch (err) {
-                console.debug('API unavailable, using demo data:', err.message);
-                allAudits = [...MOCK_AUDITS];
+                console.debug('API unavailable, showing empty state:', err.message);
+                allAudits = [];
                 loading.classList.add('hidden');
-                renderAudits(allAudits);
+                empty.classList.remove('hidden');
+                document.getElementById('statTotal').textContent = '0';
+                document.getElementById('statPending').textContent = '0';
+                document.getElementById('statOvercharges').textContent = '0';
+                document.getElementById('statFees').textContent = '$0.00';
+                document.getElementById('connectionStatus').classList.remove('hidden');
+                document.getElementById('connectionStatus').classList.add('flex');
             }
         }
 
@@ -618,7 +624,7 @@
                 const data = await res.json();
                 currentContract = data;
             } catch (err) {
-                console.debug('API unavailable, using mock contract:', err.message);
+                console.debug('API unavailable, showing default contract:', err.message);
                 currentContract = { ...MOCK_CONTRACT };
             }
 
